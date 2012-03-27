@@ -1,0 +1,10 @@
+AverageList	KEYWORD1
+addValue	KEYWORD2
+getAverage	KEYWORD2
+getTotalAverage	KEYWORD2
+getMin	KEYWORD2
+getMax	KEYWORD2
+reset	KEYWORD2
+remove	KEYWORD2
+debug	KEYWORD2
+getCurrentIndex	KEYWORD2
