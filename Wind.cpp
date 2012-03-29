@@ -17,6 +17,8 @@
  */
 
 #include "Wind.h"
+
+//lots out here because they are accessed by interrupts
 const unsigned int SPEED_DEBOUNCE = 0;
 const unsigned int DIR_DEBOUNCE = 0;
 volatile unsigned long lastPulse;
@@ -25,8 +27,7 @@ volatile unsigned long windSpeedMicros;
 volatile unsigned long windDirDur;
 volatile bool windSpeedFlag;
 volatile bool windDirFlag;
-//unsigned long lastNmeaUpdate;
-//volatile int windCount;
+
 typedef volatile long val; //change float to the datatype you want to use
 const byte MAX_NUMBER_OF_READINGS = 5;
 val speedStorage[MAX_NUMBER_OF_READINGS] = {0};
@@ -40,9 +41,7 @@ Wind::Wind( FreeBoardModel* model) {
 	//initialise the wind interrupt
 	//analogReference(INTERNAL); //ref to about 1.1V
 	model->setWindLastUpdate(millis()); // time of last screen update
-
 	model->setWindAverage(0); // the average of spikes over time/factor to give knots
-	model->setWindFactor(1000000); //adjust factor to actual knots
 	model->setWindMax(0); //max of wind average
 	model->setWindAlarmTriggered(false); //set to true to trigger wind alarm
 	model->setWindLastUpdate(0);
@@ -55,12 +54,9 @@ Wind::Wind( FreeBoardModel* model) {
 	dirList.reset();
 
 	// read the last wind alarm values
-	model->setWindAlarmSpeed(readWindAlarmSpeed());
 	if (model->getWindAlarmSpeed() > 99) {
 		model->setWindAlarmSpeed(99);
-		saveWindAlarmSpeed(model->getWindAlarmSpeed());
 	}
-	model->setWindAlarmOn(readWindAlarmState());
 
 }
 

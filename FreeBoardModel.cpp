@@ -518,6 +518,63 @@ void FreeBoardModel::setWindAlarmTriggered(bool windAlarmTriggered)
     this->windAlarmTriggered = windAlarmTriggered;
 }
 
+template<class T> int EEPROM_writeAnything(int ee, const T& value) {
+	const unsigned char* p = (const unsigned char*) (const void*) &value;
+	unsigned int i;
+	for (i = 0; i < sizeof(value); i++)
+		EEPROM.write(ee++, *p++);
+	return i;
+}
+
+template<class T> int EEPROM_readAnything(int ee, T& value) {
+	unsigned char* p = (unsigned char*) (void*) &value;
+	unsigned int i;
+	for (i = 0; i < sizeof(value); i++)
+		*p++ = EEPROM.read(ee++);
+	return i;
+}
+void FreeBoardModel::saveConfig()
+{
+	//load data
+	config.anchorAlarmOn=isAnchorAlarmOn();
+	config.anchorLat=getAnchorLat();
+	config.anchorLon=getAnchorLon();
+	config.anchorRadius=getAnchorRadius();
+	config.autopilotOn=isAutopilotOn();
+	config.autopilotAlarmOn=isAutopilotOn();
+	config.gpsSpeedUnit=getGpsSpeedUnit();
+	config.gpsAlarmOn=isGpsAlarmOn();
+	config.radarAlarmOn=isRadarAlarmOn();
+	config.mobAlarmOn=isMobAlarmOn();
+	config.windAlarmSpeed=getWindAlarmSpeed();
+	config.windAlarmOn=isWindAlarmOn();
+	config.windFactor=getWindFactor();
+	EEPROM_writeAnything(4,config);
+}
+
+void FreeBoardModel::readConfig()
+{
+	EEPROM_readAnything(4,config);
+	setAnchorAlarmOn(config.anchorAlarmOn );
+	setAnchorLat(config.anchorLat);
+	setAnchorLon(config.anchorLon);
+	setAnchorRadius(config.anchorRadius);
+	setAutopilotOn(config.autopilotOn);
+	setAutopilotOn(config.autopilotAlarmOn);
+	setGpsSpeedUnit(config.gpsSpeedUnit);
+	setGpsAlarmOn(config.gpsAlarmOn);
+	setRadarAlarmOn(config.radarAlarmOn);
+	setMobAlarmOn(config.mobAlarmOn);
+	setWindAlarmSpeed(config.windAlarmSpeed);
+	setWindAlarmOn(config.windAlarmOn);
+	setWindFactor(config.windFactor);
+
+}
+
+
+
+
+
 
 
 

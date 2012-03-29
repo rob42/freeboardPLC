@@ -10,16 +10,20 @@
 #ifndef FREEBOARDMODEL_H_
 #define FREEBOARDMODEL_H_
 
+#include <EEPROM/EEPROM.h>
+
 class FreeBoardModel {
 public:
 //alarms
+
 	unsigned long alarmLast; //toggle to make alarm beep - beep beep
 	unsigned long alarmSnooze; //5 minute alarm snooze
 	//unsigned long alarmTriggered ; //true if any alarm is triggered - derived
 
+
 	//anchor
-	float anchorRadius; //alarm radius in meters
-	float anchorRadiusDeg; //alarm radius in decimal degrees, eg 1deg = 60NM.
+	float anchorRadius; //anchor alarm radius in meters
+	float anchorRadiusDeg; //anchor alarm radius in decimal degrees, eg 1deg = 60NM.
 
 	//anchor alarm data
 	float anchorLat; // variable for reading the anchor latitude
@@ -82,6 +86,22 @@ public:
 	int windAlarmSpeed;
 	bool windAlarmOn;
 	bool windAlarmTriggered;
+
+	struct Configuration{
+		float anchorLat;
+		float anchorLon;
+		float anchorRadius;
+		bool anchorAlarmOn;
+		bool autopilotOn;
+		bool autopilotAlarmOn;
+		float gpsSpeedUnit;
+		bool gpsAlarmOn;
+		volatile bool radarAlarmOn;
+		volatile bool mobAlarmOn;
+		int windAlarmSpeed;
+		bool windAlarmOn;
+		float windFactor;
+	}config;
 
 	bool isWindAlarmTriggered() const;
 	void setWindAlarmTriggered(bool windAlarmTriggered);
@@ -186,7 +206,8 @@ public:
 	void setRadarAlarmOn(volatile bool radarAlarmOn);
     bool isAutopilotOn() const;
     void setAutopilotOn(bool autopilotOn);
-
+    void saveConfig();
+    void readConfig();
 private:
 
 };

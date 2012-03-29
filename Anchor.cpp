@@ -24,11 +24,6 @@ Anchor::Anchor(FreeBoardModel* model) {
 
 	model->setAnchorAlarmTriggered(false); //set to true to trigger anchor alarm
 
-	// read the last anchor alarm values
-	model->setAnchorAlarmOn(getAnchorAlarmState());//flag to turn anchor alarm on/off toggle
-	model->setAnchorLat(getAnchorAlarmLat());
-	model->setAnchorLon(getAnchorAlarmLon());
-	model->setAnchorRadius(getAnchorAlarmRadius());
 	resetAnchorBox(model->getAnchorLat(), model->getAnchorLon());
 }
 
@@ -145,8 +140,7 @@ void Anchor::setAnchorPoint() {
 	model->setAnchorLat(model->getGpsLatitude());
 	model->setAnchorLon(model->getGpsLongitude());
 	model->setAnchorMaxDistance(0);
-	saveAnchorAlarmLat(model->getAnchorLat());
-	saveAnchorAlarmLon(model->getAnchorLon());
+
 }
 
 

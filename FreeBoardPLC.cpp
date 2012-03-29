@@ -111,6 +111,7 @@ public:
 ButtonCatcher p;
 
 void setup() {
+	model.readConfig();
 	// initialize  serial ports:
 	Serial.begin(38400, 8, 1, 0);
 	if (DEBUG)
@@ -303,7 +304,6 @@ void loop() {
 
 	//show data, these are internally timed
 	lcd.showData();
-
 
 //	//check buttons
 	menu.checkButtons();
