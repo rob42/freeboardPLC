@@ -7,7 +7,137 @@
 
 #include "FreeBoardModel.h"
 
+FreeBoardModel::FreeBoardModel(){
+	alarmLast=0; //millis time of last beep state change
+	alarmSnooze=0; //5 minute alarm snooze
+	//unsigned long alarmTriggered ; //true if any alarm is triggered - derived
 
+	//anchor
+	//float anchorRadius; //anchor alarm radius in meters
+	anchorRadiusDeg=0.0; //anchor alarm radius in decimal degrees, eg 1deg = 60NM.
+
+	//anchor alarm data
+	//float anchorLat; // variable for reading the anchor latitude
+	//float anchorLon; // variable for reading the anchor longitude
+	anchorDistance=0.0;
+	anchorMaxDistance=0.0;
+	//bool anchorAlarmOn; //flag to turn anchor alarm on/off toggle
+	anchorAlarmTriggered=false; //set to true to trigger anchor alarm
+
+	//a box around the anchor, shrinks with every GPS reading to home in on the anchor itself
+	anchorN=90.0;
+	anchorS=-90.0;
+	anchorE=180.0;
+	anchorW=-180.0;
+
+	//autopilot
+	//bool autopilotOn;
+	autopilotCurrentHeading=0; //Input
+	autopilotTargetHeading=0; //Setpoint
+	autopilotRudderCommand=0; //Output
+	//bool autopilotAlarmOn;
+	autopilotAlarmTriggered=false;
+	autopilotAlarmMaxXTError=0; //cross track error
+	autopilotAlarmMaxWindError=0; //wind angle change
+	autopilotAlarmMaxCourseError=0; //course error
+
+	//gps
+	gpsDecode=false; //flag to indicate a new sentence was decoded.
+	gpsLastFix=0; //time of last good gps fix.
+	gpsUtc=0; // decimal value of UTC term in last full GPRMC sentence
+	gpsStatus='V'; //  status character in last full GPRMC sentence ('A' or 'V')
+	gpsLatitude=0.0; // signed degree-decimal value of latitude terms in last full GPRMC sentence
+	gpsLongitude=0.0; // signed degree-decimal value of longitude terms in last full GPRMC sentence
+	//float gpsSpeedUnit; //unit multiplier for gpsSpeed. 1.0 = KNT,1.1507794	=MPH, see nmea.h
+	gpsSpeed=0.0; // speed-on-ground term in last full GPRMC sentence
+	gpsCourse=0.0; // track-angle-made-good term in last full GPRMC sentence
+	//bool gpsAlarmOn; //true to engage alarm
+	gpsAlarmTriggered=false; //set to true to trigger gps alarm
+	//double gpsAlarmFixTime; //max time in millis without fix
+
+	//lcd
+	lcdLastUpdate=0;
+
+	//menu
+	menuState=GPS; //default, show gps data
+	menuLevel=0;
+
+	//seatalk
+	//volatile bool radarAlarmOn; //set to true to enable radar alarm
+	radarAlarmTriggered=false; //set to true to trigger radar alarm
+	//volatile bool mobAlarmOn; //set to true to enable mob alarm
+	mobAlarmTriggered=false; //set to true to trigger MOB alarm
+
+	//wind
+	windLastUpdate=0;
+	windAverage=0;
+	//float windFactor;
+	windMax=0;
+	windApparentDir=0;
+	//int windAlarmSpeed;
+	//bool windAlarmOn;
+	windAlarmTriggered=false;
+
+	//struct Configuration{
+		config.anchorLat=0.0;
+		config.anchorLon=0.0;
+		config.anchorRadius=40.0;
+		config.anchorAlarmOn=false;
+		config.autopilotOn=false;
+		config.autopilotAlarmOn=false;
+		config.gpsSpeedUnit=KTS;
+		config.gpsAlarmOn=false;
+		config.gpsAlarmFixTime=1000l*60*5; //5 min
+		config.radarAlarmOn=false;
+		config.mobAlarmOn=false;
+		config.windAlarmSpeed=99;
+		config.windAlarmOn=false;
+		config.windFactor=1000000;
+	//}config;
+//we change this if we change the struct so we can tell before reloading incompatible versions
+	version=1;
+}
+
+
+template<class T> int EEPROM_writeAnything(int ee, const T& value) {
+	const unsigned char* p = (const unsigned char*) (const void*) &value;
+	unsigned int i;
+	for (i = 0; i < sizeof(value); i++)
+		EEPROM.write(ee++, *p++);
+	return i;
+}
+//saving
+template<class T> int EEPROM_readAnything(int ee, T& value) {
+	unsigned char* p = (unsigned char*) (void*) &value;
+	unsigned int i;
+	for (i = 0; i < sizeof(value); i++)
+		*p++ = EEPROM.read(ee++);
+	return i;
+}
+void FreeBoardModel::saveConfig()
+{
+	//write out a current version
+	EEPROM_writeAnything(0,version);
+	//write data
+	EEPROM_writeAnything(4,config);
+}
+
+void FreeBoardModel::readConfig()
+{
+	//check versions here
+	int ver;
+	EEPROM_readAnything(0,ver);
+	if(ver!=version){
+		//do any conversion of old data here
+		//save
+		saveConfig();
+	}
+	//now we know its compatible
+	EEPROM_readAnything(4,config);
+
+
+}
+//accessors
 bool FreeBoardModel::isWindAlarmTriggered() const
 {
     return windAlarmTriggered;
@@ -35,12 +165,12 @@ float FreeBoardModel::getAnchorE() const
 
 float FreeBoardModel::getAnchorLat() const
 {
-    return anchorLat;
+    return config.anchorLat;
 }
 
 float FreeBoardModel::getAnchorLon() const
 {
-    return anchorLon;
+    return config.anchorLon;
 }
 
 float FreeBoardModel::getAnchorMaxDistance() const
@@ -55,7 +185,7 @@ float FreeBoardModel::getAnchorN() const
 
 float FreeBoardModel::getAnchorRadius() const
 {
-    return anchorRadius;
+    return config.anchorRadius;
 }
 
 float FreeBoardModel::getAnchorRadiusDeg() const
@@ -104,9 +234,9 @@ double FreeBoardModel::getAutopilotCurrentHeading() const
     return autopilotCurrentHeading;
 }
 
-double FreeBoardModel::getGpsAlarmFixTime() const
+long FreeBoardModel::getGpsAlarmFixTime() const
 {
-    return gpsAlarmFixTime;
+    return config.gpsAlarmFixTime;
 }
 
 float FreeBoardModel::getGpsCourse() const
@@ -136,7 +266,7 @@ float FreeBoardModel::getGpsSpeed() const
 
 float FreeBoardModel::getGpsSpeedUnit() const
 {
-    return gpsSpeedUnit;
+    return config.gpsSpeedUnit;
 }
 
 char FreeBoardModel::getGpsStatus() const
@@ -176,7 +306,7 @@ volatile bool FreeBoardModel::isRadarAlarmTriggered() const
 
 int FreeBoardModel::getWindAlarmSpeed() const
 {
-    return windAlarmSpeed;
+    return config.windAlarmSpeed;
 }
 
 int FreeBoardModel::getWindApparentDir() const
@@ -191,7 +321,7 @@ int FreeBoardModel::getWindAverage() const
 
 float FreeBoardModel::getWindFactor() const
 {
-    return windFactor;
+    return config.windFactor;
 }
 
 unsigned long FreeBoardModel::getWindLastUpdate() const
@@ -207,7 +337,7 @@ int FreeBoardModel::getWindMax() const
 
 bool FreeBoardModel::isAnchorAlarmOn() const
 {
-    return anchorAlarmOn;
+    return config.anchorAlarmOn;
 }
 
 bool FreeBoardModel::isAnchorAlarmTriggered() const
@@ -217,7 +347,7 @@ bool FreeBoardModel::isAnchorAlarmTriggered() const
 
 bool FreeBoardModel::isAutopilotAlarmOn() const
 {
-    return autopilotAlarmOn;
+    return config.autopilotAlarmOn;
 }
 
 bool FreeBoardModel::isAutopilotAlarmTriggered() const
@@ -227,7 +357,7 @@ bool FreeBoardModel::isAutopilotAlarmTriggered() const
 
 bool FreeBoardModel::isGpsAlarmOn() const
 {
-    return gpsAlarmOn;
+    return config.gpsAlarmOn;
 }
 
 bool FreeBoardModel::isGpsAlarmTriggered() const
@@ -242,7 +372,7 @@ bool FreeBoardModel::isGpsDecode() const
 
 bool FreeBoardModel::isWindAlarmOn() const
 {
-    return windAlarmOn;
+    return config.windAlarmOn;
 }
 
 
@@ -258,7 +388,7 @@ void FreeBoardModel::setAlarmSnooze(unsigned long  alarmSnooze)
 
 void FreeBoardModel::setAnchorAlarmOn(bool anchorAlarmOn)
 {
-    this->anchorAlarmOn = anchorAlarmOn;
+    this->config.anchorAlarmOn = anchorAlarmOn;
 }
 
 void FreeBoardModel::setAnchorAlarmTriggered(bool anchorAlarmTriggered)
@@ -278,12 +408,12 @@ void FreeBoardModel::setAnchorE(float anchorE)
 
 void FreeBoardModel::setAnchorLat(float anchorLat)
 {
-    this->anchorLat = anchorLat;
+    this->config.anchorLat = anchorLat;
 }
 
 void FreeBoardModel::setAnchorLon(float anchorLon)
 {
-    this->anchorLon = anchorLon;
+    this->config.anchorLon = anchorLon;
 }
 
 void FreeBoardModel::setAnchorMaxDistance(float anchorMaxDistance)
@@ -298,7 +428,7 @@ void FreeBoardModel::setAnchorN(float anchorN)
 
 void FreeBoardModel::setAnchorRadius(float anchorRadius)
 {
-    this->anchorRadius = anchorRadius;
+    this->config.anchorRadius = anchorRadius;
 }
 
 void FreeBoardModel::setAnchorRadiusDeg(float anchorRadiusDeg)
@@ -334,7 +464,7 @@ void FreeBoardModel::setAutopilotAlarmMaxXtError(double autopilotAlarmMaxXtError
 
 void FreeBoardModel::setAutopilotAlarmOn(bool autopilotAlarmOn)
 {
-    this->autopilotAlarmOn = autopilotAlarmOn;
+    this->config.autopilotAlarmOn = autopilotAlarmOn;
 }
 
 void FreeBoardModel::setAutopilotAlarmTriggered(bool autopilotAlarmTriggered)
@@ -357,14 +487,14 @@ void FreeBoardModel::setAutopilotTargetHeading(double autopilotTargetHeading)
     this->autopilotTargetHeading = autopilotTargetHeading;
 }
 
-void FreeBoardModel::setGpsAlarmFixTime(double gpsAlarmFixTime)
+void FreeBoardModel::setGpsAlarmFixTime(long gpsAlarmFixTime)
 {
-    this->gpsAlarmFixTime = gpsAlarmFixTime;
+    this->config.gpsAlarmFixTime = gpsAlarmFixTime;
 }
 
 void FreeBoardModel::setGpsAlarmOn(bool gpsAlarmOn)
 {
-    this->gpsAlarmOn = gpsAlarmOn;
+    this->config.gpsAlarmOn = gpsAlarmOn;
 }
 
 void FreeBoardModel::setGpsAlarmTriggered(bool gpsAlarmTriggered)
@@ -404,7 +534,7 @@ void FreeBoardModel::setGpsSpeed(float gpsSpeed)
 
 void FreeBoardModel::setGpsSpeedUnit(float gpsSpeedUnit)
 {
-    this->gpsSpeedUnit = gpsSpeedUnit;
+    this->config.gpsSpeedUnit = gpsSpeedUnit;
 }
 
 void FreeBoardModel::setGpsStatus(char gpsStatus)
@@ -444,12 +574,12 @@ void FreeBoardModel::setRadarAlarmTriggered(volatile bool radarAlarmTriggered)
 
 void FreeBoardModel::setWindAlarmOn(bool windAlarmOn)
 {
-    this->windAlarmOn = windAlarmOn;
+    this->config.windAlarmOn = windAlarmOn;
 }
 
 void FreeBoardModel::setWindAlarmSpeed(int windAlarmSpeed)
 {
-    this->windAlarmSpeed = windAlarmSpeed;
+    this->config.windAlarmSpeed = windAlarmSpeed;
 }
 
 void FreeBoardModel::setWindApparentDir(int windApparentDir)
@@ -464,7 +594,7 @@ void FreeBoardModel::setWindAverage(int windAverage)
 
 void FreeBoardModel::setWindFactor(float windFactor)
 {
-    this->windFactor = windFactor;
+    this->config.windFactor = windFactor;
 }
 
 void FreeBoardModel::setWindLastUpdate(unsigned long  windLastUpdate)
@@ -480,32 +610,32 @@ volatile bool FreeBoardModel::isAlarmTriggered() const
 
 volatile bool FreeBoardModel::isMobAlarmOn() const
 {
-    return mobAlarmOn;
+    return config.mobAlarmOn;
 }
 
 volatile bool FreeBoardModel::isRadarAlarmOn() const
 {
-    return radarAlarmOn;
+    return config.radarAlarmOn;
 }
 
 void FreeBoardModel::setMobAlarmOn(volatile bool mobAlarmOn)
 {
-    this->mobAlarmOn = mobAlarmOn;
+    this->config.mobAlarmOn = mobAlarmOn;
 }
 
 bool FreeBoardModel::isAutopilotOn() const
 {
-    return autopilotOn;
+    return config.autopilotOn;
 }
 
 void FreeBoardModel::setAutopilotOn(bool autopilotOn)
 {
-    this->autopilotOn = autopilotOn;
+    this->config.autopilotOn = autopilotOn;
 }
 
 void FreeBoardModel::setRadarAlarmOn(volatile bool radarAlarmOn)
 {
-    this->radarAlarmOn = radarAlarmOn;
+    this->config.radarAlarmOn = radarAlarmOn;
 }
 
 void FreeBoardModel::setWindMax(int windMax)
@@ -516,59 +646,6 @@ void FreeBoardModel::setWindMax(int windMax)
 void FreeBoardModel::setWindAlarmTriggered(bool windAlarmTriggered)
 {
     this->windAlarmTriggered = windAlarmTriggered;
-}
-
-template<class T> int EEPROM_writeAnything(int ee, const T& value) {
-	const unsigned char* p = (const unsigned char*) (const void*) &value;
-	unsigned int i;
-	for (i = 0; i < sizeof(value); i++)
-		EEPROM.write(ee++, *p++);
-	return i;
-}
-
-template<class T> int EEPROM_readAnything(int ee, T& value) {
-	unsigned char* p = (unsigned char*) (void*) &value;
-	unsigned int i;
-	for (i = 0; i < sizeof(value); i++)
-		*p++ = EEPROM.read(ee++);
-	return i;
-}
-void FreeBoardModel::saveConfig()
-{
-	//load data
-	config.anchorAlarmOn=isAnchorAlarmOn();
-	config.anchorLat=getAnchorLat();
-	config.anchorLon=getAnchorLon();
-	config.anchorRadius=getAnchorRadius();
-	config.autopilotOn=isAutopilotOn();
-	config.autopilotAlarmOn=isAutopilotOn();
-	config.gpsSpeedUnit=getGpsSpeedUnit();
-	config.gpsAlarmOn=isGpsAlarmOn();
-	config.radarAlarmOn=isRadarAlarmOn();
-	config.mobAlarmOn=isMobAlarmOn();
-	config.windAlarmSpeed=getWindAlarmSpeed();
-	config.windAlarmOn=isWindAlarmOn();
-	config.windFactor=getWindFactor();
-	EEPROM_writeAnything(4,config);
-}
-
-void FreeBoardModel::readConfig()
-{
-	EEPROM_readAnything(4,config);
-	setAnchorAlarmOn(config.anchorAlarmOn );
-	setAnchorLat(config.anchorLat);
-	setAnchorLon(config.anchorLon);
-	setAnchorRadius(config.anchorRadius);
-	setAutopilotOn(config.autopilotOn);
-	setAutopilotOn(config.autopilotAlarmOn);
-	setGpsSpeedUnit(config.gpsSpeedUnit);
-	setGpsAlarmOn(config.gpsAlarmOn);
-	setRadarAlarmOn(config.radarAlarmOn);
-	setMobAlarmOn(config.mobAlarmOn);
-	setWindAlarmSpeed(config.windAlarmSpeed);
-	setWindAlarmOn(config.windAlarmOn);
-	setWindFactor(config.windFactor);
-
 }
 
 

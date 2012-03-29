@@ -47,7 +47,6 @@ private:
 	void resetGPS();
 	//bool gpsDecode;
 	//unsigned long gpsLastFix;
-	unsigned long lastLcdUpdate;
 
 
 	// create a GPS data connection to GPRMC sentence type

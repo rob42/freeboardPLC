@@ -9,21 +9,6 @@ Anchor::Anchor(FreeBoardModel* model) {
 
 
 	this->model=model;
-
-	model->setAnchorRadiusDeg(0.0);
-	model->setAnchorDistance(0);
-	model->setAnchorMaxDistance(0);
-
-	//a box around the anchor, shrinks with every GPS reading to home in on the anchor itself
-	model->setAnchorN(90.0);
-	model->setAnchorS(-90.0);
-	model->setAnchorE(180.0);
-	model->setAnchorW(-180.0);
-
-	//alarm
-
-	model->setAnchorAlarmTriggered(false); //set to true to trigger anchor alarm
-
 	resetAnchorBox(model->getAnchorLat(), model->getAnchorLon());
 }
 

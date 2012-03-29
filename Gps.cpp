@@ -7,9 +7,6 @@ Gps::~Gps() {
 Gps::Gps(NMEA* gpsSource,FreeBoardModel* model) {
 
 	this->model=model;
-	model->setGpsDecode(false);
-	model->setGpsLastFix(0);
-	lastLcdUpdate=0;
 	this->gpsSource = gpsSource;
 	//setupGps();
 }

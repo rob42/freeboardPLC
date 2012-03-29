@@ -27,11 +27,10 @@
 
 Autopilot::Autopilot(FreeBoardModel* model) {
 	this->model = model;
+	autopilotTargetHeading=model->getAutopilotTargetHeading();
+	autopilotCurrentHeading = model->getAutopilotCurrentHeading();
+	autopilotRudderCommand=model->getAutopilotRudderCommand();
 	this->headingPid = PID(&autopilotCurrentHeading, &autopilotRudderCommand, &autopilotTargetHeading, P_Param, I_Param, D_Param, DIRECT);
-	//autopilotCurrentHeading = 0;
-	autopilotTargetHeading = 0; //Setpoint
-	autopilotCurrentHeading = 0; //Input
-	autopilotRudderCommand = 0; //Output
 	//headingPid.SetOutputLimits(0,66); //output limits
 	headingPid.SetSampleTime(100);
 

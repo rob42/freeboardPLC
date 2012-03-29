@@ -40,11 +40,6 @@ Wind::Wind( FreeBoardModel* model) {
 	this->model=model;
 	//initialise the wind interrupt
 	//analogReference(INTERNAL); //ref to about 1.1V
-	model->setWindLastUpdate(millis()); // time of last screen update
-	model->setWindAverage(0); // the average of spikes over time/factor to give knots
-	model->setWindMax(0); //max of wind average
-	model->setWindAlarmTriggered(false); //set to true to trigger wind alarm
-	model->setWindLastUpdate(0);
 	windSpeedDur=0;
 	windSpeedMicros=micros();
 	windDirDur=0;
