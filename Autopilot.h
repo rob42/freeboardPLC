@@ -18,6 +18,7 @@ try to keep the boat on this target heading.
 #include "Arduino.h"
 
 #include "FreeBoardConstants.h"
+#include "FreeBoardModel.h"
 #include "Gps.h"
 #include <PID_v1/PID_v1.h>
 #define P_Param  2.0l //proportional param
@@ -26,24 +27,21 @@ try to keep the boat on this target heading.
 
 class Autopilot {
 public:
-	Autopilot(Gps* gps);
+	Autopilot(FreeBoardModel* model);
 	~Autopilot();
-	void enableAutoPilot();
-	void disableAutoPilot();
 	void calcAutoPilot();
 	double getRudderCorrection();
-	void sendAutopilotNmea();
-	double getCurrentHeading();
-	void setCurrentHeading(double heading);
-	void setTargetHeading(double target);
-	double getTargetHeading();
-	bool isEnabled();
+
 
 private:
 
+	//double autopilotCurrentHeading; //current heading
+	double autopilotTargetHeading; //Setpoint
+	double autopilotCurrentHeading; //Input
+	double autopilotRudderCommand; //Output
 
-//PID headingPid;
-Gps* gps;
+	FreeBoardModel* model;
+	PID headingPid;
 };
 
 #endif

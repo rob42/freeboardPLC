@@ -47,33 +47,26 @@
 
 #include <HardwareSerial.h>
 #include "FreeBoardConstants.h"
-#include "Alarm.h"
+#include "FreeBoardModel.h"
+
 class Seatalk {
 
 public:
-	Seatalk(Alarm* alarm, HardwareSerial* serial);
+	Seatalk( HardwareSerial* serial, FreeBoardModel* model);
 
-	bool getMobAlarmTriggered() ;
-	bool getRadarAlarmTriggered() ;
 	void windAlarmOff();
 	void radarAlarmOff() ;
 	void cancelMOB() ;
 	void processSeaTalkByte(byte inByte);
 private:
-	void setMobAlarmTriggered(bool value);
-
-	void setRadarAlarmTriggered(bool value);
 	void windCommand(byte * seatalkStream);
-
 	void radarCommand(byte * seatalkStream);
 	void processSeatalk(byte * seatalkStream);
 
 	//seatalk
-	volatile bool radarAlarmTriggered; //set to true to trigger radar alarm
-	volatile bool mobAlarmTriggered; //set to true to trigger MOB alarm
 	volatile int seaTalkPos;
 	byte seatalkStream[20]; //Seatalk datagram is 3-18 chars
-	Alarm* alarm;
+	FreeBoardModel* model;
 	HardwareSerial* serial;
 };
 #endif

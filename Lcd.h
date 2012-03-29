@@ -11,12 +11,20 @@
 #include "Arduino.h"
 
 #include <SoftwareSerial/SoftwareSerial.h>
+#include <PString/PString.h>
+#include "Gps.h"
 #include "FreeBoardConstants.h"
+#include "FreeBoardModel.h"
 
 class Lcd: public SoftwareSerial {
 public:
 
-	Lcd(uint8_t receivePin, uint8_t transmitPin, bool inverse_logic=false):SoftwareSerial(receivePin,transmitPin,inverse_logic=false) {};
+	Lcd(FreeBoardModel* model, uint8_t receivePin, uint8_t transmitPin,
+			bool inverse_logic = false) :model(model),lastScreenUpdate(0),
+			SoftwareSerial(receivePin, transmitPin, inverse_logic = false){
+
+	};
+
 	~Lcd();
 
 	/* Routines to write to lcd*/
@@ -39,8 +47,26 @@ public:
 
 	void setLastScreenUpdate(unsigned long lastScreenUpdate);
 
+	//anchor
+	unsigned long lastLcdUpdate;
+	void drawAnchorScreen(int menuState);
+	void showAnchorAlarmData(int menuLevel, int menuState);
+	void drawAnchorBox(int menuState);
+	void eraseAnchorBox(int menuState);
+
+	//wind
+	void drawWindScreen( int menuLevel);
+	void drawWindBox( int menuState);
+	void eraseWindBox( int menuState);
+	void showWindData(int menuLevel, int menuState);
+
+	//gps
+	void showGPSData(int menuState);
+
 private:
 	unsigned long lastScreenUpdate;
+	FreeBoardModel* model;
 };
+
 
 #endif /* LCD_H_ */

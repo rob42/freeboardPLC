@@ -27,6 +27,7 @@ typedef unsigned char byte;
 #include "Anchor.h"
 #include "NmeaSerial.h"
 #include "Autopilot.h"
+#include "FreeBoardModel.h"
 
 
 //end of add your includes here
@@ -38,6 +39,8 @@ void setup();
 #ifdef __cplusplus
 } // extern "C"
 #endif
+
+
 
 //add your function definitions for the project  here
 void check_mem();

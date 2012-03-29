@@ -13,6 +13,8 @@
 
 #include <PID_v1/PID_v1.h>
 
+PID::PID(){};
+
 /*Constructor (...)*********************************************************
  *    The parameters specified here are those for for which we can't set up 
  *    reliable defaults, so we need to have the user set them.

@@ -1,10 +1,14 @@
 #include "Gps.h"
+char gpsBuffer[40];
+PString gpsStr(gpsBuffer, sizeof(gpsBuffer));
 
 Gps::~Gps() {
 }
-Gps::Gps(NMEA* gpsSource) {
-	gpsDecode = false;
-	lastGpsFix = 0;
+Gps::Gps(NMEA* gpsSource,FreeBoardModel* model) {
+
+	this->model=model;
+	model->setGpsDecode(false);
+	model->setGpsLastFix(0);
 	lastLcdUpdate=0;
 	this->gpsSource = gpsSource;
 	//setupGps();
@@ -133,40 +137,48 @@ void Gps::setupGps() {
 }
 
 
-
-float Gps::getLatitude() {
-	return gpsSource->gprmc_latitude();
+float Gps::getMetersTo(float targetLat, float targetLon, float currentLat, float currentLon){
+		// returns distance in meters between two positions, both specified
+		// as signed decimal-degrees latitude and longitude. Uses great-circle
+		// distance computation for hypothised sphere of radius 6372795 meters.
+		// Because Earth is no exact sphere, rounding errors may be upto 0.5%.
+	  float delta = radians(targetLon-currentLon);
+	  float sdlong = sin(delta);
+	  float cdlong = cos(delta);
+	  targetLat = radians(targetLat);
+	  currentLat = radians(currentLat);
+	  float slat1 = sin(targetLat);
+	  float clat1 = cos(targetLat);
+	  float slat2 = sin(currentLat);
+	  float clat2 = cos(currentLat);
+	  delta = (clat1 * slat2) - (slat1 * clat2 * cdlong);
+	  delta = sq(delta);
+	  delta += sq(clat2 * sdlong);
+	  delta = sqrt(delta);
+	  float denom = (slat1 * slat2) + (clat1 * clat2 * cdlong);
+	  delta = atan2(delta, denom);
+	  return delta * 6372795 * MTR;
 }
 
-float Gps::getLongitude() {
-	return gpsSource->gprmc_longitude();
-}
-
-unsigned long Gps::getLastGpsFix() {
-	return lastGpsFix;
-}
-
-bool Gps::getRmcStatus() {
-	return (gpsSource->gprmc_status() == 'A');
-}
-
-float Gps::getRmcMetersTo(float lat, float lon) {
-	return gpsSource->gprmc_distance_to(lat, lon, MTR);
-}
-float Gps::getRmcCourse() {
-	return gpsSource->gprmc_course();
-}
 
 bool Gps::decode(byte inByte) {
 	// check if the character completes a valid GPS sentence
-	gpsDecode = gpsSource->decode(inByte);
+	model->setGpsDecode(gpsSource->decode(inByte));
 	//if(DEBUG)Serial.print(inByte,BYTE);
-	if (gpsDecode) {
-		if (gpsSource->gprmc_status() == 'A') {
-			lastGpsFix = millis();
+	if (model->isGpsDecode()) {
+		model->setGpsStatus(gpsSource->gprmc_status());
+		if (gpsSource->gprmc_status() == 'A'
+				&& gpsSource->term(0)[2] != 'R' && gpsSource->term(0)[3] != 'M'
+				&& gpsSource->term(0)[4] != 'C') {
+			model->setGpsLastFix(millis());
+			model->setGpsCourse(gpsSource->gprmc_course());
+			model->setGpsLatitude(gpsSource->gprmc_latitude());
+			model->setGpsLongitude(gpsSource->gprmc_longitude());
+			model->setGpsSpeed(gpsSource->gprmc_speed(model->getGpsSpeedUnit()));
+			model->setGpsUtc(gpsSource->gprmc_utc());
 		}
 	}
-	return gpsDecode;
+	return model->isGpsDecode();
 }
 
 /*
@@ -187,65 +199,9 @@ void Gps::resetGPS() {
 	Serial1.println("$PSRF105,0*3F");
 }
 
-/* NMEA GPS routines
- */
-void Gps::showGPSData(Lcd lcd, int menuState) {
-	if (menuState != GPS){
-		return;
-	}
-	//check if active
-	if (millis() - lastLcdUpdate > 2000) {
-		//update
-		lastLcdUpdate= millis();
 
-		//check we still have a fix
-		if (millis() - lastGpsFix > 10000) {
-			//show bad GPS fix
-			lcd.setCursor(2, 20);
-			lcd.print("WARNING: NO GPS FIX! ");
-			delay(50);
-			return;
-		}
+PString Gps::getLatString(float lat, int decimals, int padding, PString str) {
 
-		if (lastGpsFix>0 && gpsSource->gprmc_status() == 'A') {
-			if ((gpsSource->term(0))[2] != 'R' && gpsSource->term(0)[3] != 'M'
-					&& gpsSource->term(0)[4] != 'C')
-				return;
-
-			//clearLcd();
-
-			lcd.setCursor(2, 60);
-			lcd.print("Lat: ");
-			lcd.print(getLatString(gpsSource->gprmc_latitude(), 4, 10));
-			delay(50);
-
-			lcd.setCursor(2, 50);
-			lcd.print("Lon: ");
-			lcd.print(getLonString(gpsSource->gprmc_longitude(), 4, 10));
-			delay(50);
-
-			lcd.setCursor(2, 40);
-			lcd.print("Knots: ");
-			lcd.print(gpsSource->gprmc_speed(KTS),1);
-			delay(50);
-			//lcd.print("  ");
-
-			lcd.setCursor(2, 30);
-			lcd.print("Heading: ");
-			lcd.print(gpsSource->gprmc_course(),0);
-			lcd.print("T   ");
-			delay(50);
-			lcd.setCursor(2, 20);
-			lcd.print("                    ");
-			lcd.writeButtonLabels(EMPTY,PGDN,PGUP);
-			delay(50);
-		}
-
-	}
-}
-
-char* Gps::getLatString(float lat, int decimals, int padding) {
-	PString str(latBuffer, sizeof(latBuffer));
 	str.begin();
 	if (lat >= 0.0) {
 		str.print("N");
@@ -260,11 +216,11 @@ char* Gps::getLatString(float lat, int decimals, int padding) {
 	//float absLat = abs(lat);
 	//char * rslt = padFloat(absLat,decimals,padding);
 	//str.print(rslt);
-	return latBuffer;
+	return str;
 }
 
-char* Gps::getLonString(float lon, int decimals, int padding) {
-	PString str(lonBuffer, sizeof(lonBuffer));
+PString Gps::getLonString(float lon, int decimals, int padding, PString str) {
+
 	str.begin();
 	if (lon >= 0) {
 		str.print("E");
@@ -280,6 +236,6 @@ char* Gps::getLonString(float lon, int decimals, int padding) {
 	//char * rslt = padFloat(absLon,decimals,padding);
 	//str.print(printFloat(abs(lon),decimals));
 
-	return lonBuffer;
+	return str;
 }
 

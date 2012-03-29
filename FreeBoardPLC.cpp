@@ -32,47 +32,53 @@
 
 #include "FreeBoardPLC.h"
 
-// set up a new serial port for the lcd
-Lcd lcd((uint8_t) rxPin, (uint8_t) txPin);
-
-//NMEA output - The arduino puts out TTL, NMEA is RS232. They are different V and amps. The +-5V levels may need inverting or you get
-// garbage.
-// See http://forums.parallax.com/forums/default.aspx?f=19&m=50925
-// See http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=63469&start=0
-NmeaSerial nmea((uint8_t) nmeaRxPin, (uint8_t) nmeaTxPin, (bool) false);
-
-//NMEA ports
-NMEA gpsSource(ALL);
-//NMEA talker0(ALL);
-//NMEA talker2(ALL);
-//NMEA talker3(ALL);
-
-//alarm
-Alarm alarm;
-
-//wind
-Wind wind(&nmea);
-
-//Gps
-Gps gps(&gpsSource);
-
-//Autopilot
-Autopilot autopilot(&gps);
-
-//Anchor
-Anchor anchor(&gps);
-
-Seatalk seatalk(&alarm, &Serial2);
-
-//Menu
-Menu menu(&lcd, &alarm, &anchor, &wind, &seatalk);
-
 volatile boolean execute = false;
 volatile int interval = 0;
 int inByteSerial1;
 int inByteSerial2;
 int inByteSerial3;
 char input;
+
+//freeboard model
+FreeBoardModel model;
+
+// set up a new serial port for the lcd
+Lcd lcd(&model,(uint8_t) rxPin, (uint8_t) txPin);
+
+//NMEA output - The arduino puts out TTL, NMEA is RS232. They are different V and amps. The +-5V levels may need inverting or you get
+// garbage.
+// See http://forums.parallax.com/forums/default.aspx?f=19&m=50925
+// See http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=63469&start=0
+NmeaSerial nmea(&model,(uint8_t) nmeaRxPin, (uint8_t) nmeaTxPin, (bool) false);
+
+//NMEA ports
+NMEA gpsSource(ALL);
+NMEA talker0(ALL);
+NMEA talker2(ALL);
+NMEA talker3(ALL);
+
+
+//alarm
+Alarm alarm(&model);
+
+//wind
+Wind wind( &model);
+
+//Gps
+Gps gps(&gpsSource, &model);
+
+//Autopilot
+Autopilot autopilot(&model);
+
+//Anchor
+Anchor anchor(&model);
+
+Seatalk seatalk( &Serial2, &model);
+
+//Menu
+Menu menu(&lcd, &model);
+
+
 
 //re-enable ISR2 in SoftwareSerial.cpp line 314 if you stop using this
 class ButtonCatcher: public PinCatcher {
@@ -118,8 +124,8 @@ void setup() {
 	gps.setupGps();
 
 	if (DEBUG)
-		//Serial.println("Start seatalk - serial2..");
-	//Serial2.begin(4800, 9, 1, 0); //Seatalk interface
+		Serial.println("Start seatalk - serial2..");
+	Serial2.begin(4800, 9, 1, 0); //Seatalk interface
 
 	if (DEBUG)
 		Serial.println("Start nmea Rx - serial3..");
@@ -208,20 +214,21 @@ void loop() {
 		input = Serial.read();
 		if (input == 'a') {
 			Serial.println("Enable autopilot..");
-			autopilot.enableAutoPilot();
+			model.setAutopilotTargetHeading(model.getAutopilotCurrentHeading());
+			model.setAutopilotOn(true);
 		}
 		if (input == 'd') {
 			Serial.println("Disable autopilot..");
-			autopilot.disableAutoPilot();
+			model.setAutopilotOn(false);
 		}
 		if (input == '-') {
 			Serial.println("Autopilot heading - 5");
 			//TODO: consider the 0-360 circle, cant be neg
-			autopilot.setTargetHeading(autopilot.getTargetHeading() - 5);
+			model.setAutopilotTargetHeading(model.getAutopilotTargetHeading() - 5);
 		}
 		if (input == '+') {
 			Serial.println("Autopilot heading + 5");
-			autopilot.setTargetHeading(autopilot.getTargetHeading() + 5);
+			model.setAutopilotTargetHeading(model.getAutopilotTargetHeading() + 5);
 		}
 		input = ' ';
 	}
@@ -241,21 +248,21 @@ void loop() {
 
 	}
 
-//	while (Serial2.available() > 0) {
-//  	inByteSerial2=Serial2.read();
-//		seatalk.processSeaTalkByte(inByteSerial2);
-//	}
+	while (Serial2.available() > 0) {
+  	inByteSerial2=Serial2.read();
+		seatalk.processSeaTalkByte(inByteSerial2);
+	}
 
-//	while (Serial3.available() > 0) {
-//		inByteSerial3=Serial3.read();
-//		// check if the character completes a valid NMEA sentence
-//		if(DEBUG)Serial.print(inByteSerial3);
-//		if (talker3.decode(inByteSerial3) && MUX) {
-//			nmea.printNmea(talker3.sentence());
-//		}
-//		if(MUX && DEBUG)Serial.println(talker3.sentence());
-//		break;//every sentence
-//	}
+	while (Serial3.available() > 0) {
+		inByteSerial3=Serial3.read();
+		// check if the character completes a valid NMEA sentence
+		if(DEBUG)Serial.print(inByteSerial3);
+		if (talker3.decode(inByteSerial3) && MUX) {
+			nmea.printNmea(talker3.sentence());
+		}
+		if(MUX && DEBUG)Serial.println(talker3.sentence());
+		break;//every sentence
+	}
 	if (execute) {
 		//timer ping
 		//do these every 100ms
@@ -274,18 +281,18 @@ void loop() {
 		if (interval % 10 == 0) {
 			//do every 1000ms
 			wind.calcWindData();
-			if (DEBUG && autopilot.isEnabled()) {
+			if (DEBUG && model.isAutopilotOn()) {
 					Serial.print("Target deg = ");
-					Serial.print(autopilot.getTargetHeading());
+					Serial.print(model.getAutopilotTargetHeading());
 					Serial.print("Heading deg = ");
-					Serial.print(autopilot.getCurrentHeading());
+					Serial.print(model.getAutopilotCurrentHeading());
 					Serial.print(", Rudder = ");
-					Serial.println(autopilot.getRudderCorrection());
-					autopilot.setCurrentHeading(autopilot.getCurrentHeading()+autopilot.getRudderCorrection());
+					Serial.println(model.getAutopilotRudderCommand());
+					model.setAutopilotCurrentHeading(model.getAutopilotCurrentHeading()+model.getAutopilotRudderCommand());
 				}
 			anchor.checkAnchor();
-			wind.checkWindAlarm();
-			wind.printWindNmea();
+			alarm.checkWindAlarm();
+			nmea.printWindNmea();
 		}
 		//if (interval % 20 == 0) {
 			//do every 2000ms
@@ -295,10 +302,10 @@ void loop() {
 	}
 
 	//show data, these are internally timed
-	//gps.showGPSData(lcd, menu.getMenuState());
+	lcd.showGPSData( model.getMenuState());
 
-	//wind.showWindData(lcd, menu.getMenuLevel(), menu.getMenuState());
-	//anchor.showAnchorAlarmData(lcd, menu.getMenuLevel(), menu.getMenuState());
+	lcd.showWindData( model.getMenuLevel(), model.getMenuState());
+	lcd.showAnchorAlarmData( model.getMenuLevel(), model.getMenuState());
 
 //	//check buttons
 	menu.checkButtons();

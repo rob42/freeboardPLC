@@ -9,12 +9,9 @@
 
 
 
-Menu::Menu(Lcd* lcd, Alarm* alarm, Anchor* anchor, Wind* wind, Seatalk* seatalk) {
-	this->lcd = lcd;
-	this->alarm=alarm;
-	this->anchor=anchor;
-	this->wind=wind;
-	this->seatalk=seatalk;
+Menu::Menu(Lcd* lcd, FreeBoardModel* model) {
+	this->model=model;
+
 
 	this->button0Bouncer = LOW; //anchorPoint
 	this->button1Bouncer = LOW; //radius
@@ -24,8 +21,8 @@ Menu::Menu(Lcd* lcd, Alarm* alarm, Anchor* anchor, Wind* wind, Seatalk* seatalk)
 
 
 	this->lastButtonCheck = 0;
-	this->menuState = GPS; //default, show gps data
-	this->menuLevel = 0; //main menu
+	model->setMenuState(GPS); //default, show gps data
+	model->setMenuLevel(0); //main menu
 }
 
 Menu::~Menu() {
@@ -49,34 +46,34 @@ void Menu::checkButtons() {
 //	//mainMenu();
 //	if(DEBUG)Serial.print("Menu level=");
 //	if(DEBUG)Serial.println(menuLevel);
-	switch (menuLevel) {
+	switch (model->getMenuLevel()) {
 	case 0:
 		mainMenu();
 		break;
 
 	case 1:
-		if (menuState == ANCHOR || (menuState >= ANCHORMINMENU
-				&& menuState <= ANCHORMAXMENU)) {
+		if (model->getMenuState() == ANCHOR || (model->getMenuState() >= ANCHORMINMENU
+				&& model->getMenuState() <= ANCHORMAXMENU)) {
 			if(DEBUG)Serial.print("Anchor menu");
 			anchorMenu();
 			return;
 		}
-		if (menuState == WIND || (menuState >= WINDMINMENU && menuState
+		if (model->getMenuState() == WIND || (model->getMenuState() >= WINDMINMENU && model->getMenuState()
 				<= WINDMAXMENU)) {
 			windMenu();
 			return;
 		}
-		menuState = MINMENU;
-		menuLevel = 0;
+		model->setMenuState(MINMENU);
+		model->setMenuLevel(0);
 
 		break;
 
 	case 2:
-		if (menuState == ANCHORRADIUS) {
+		if (model->getMenuState() == ANCHORRADIUS) {
 			anchorRadiusMenu();
 			return;
 		}
-		if (menuState == WINDSPEED) {
+		if (model->getMenuState() == WINDSPEED) {
 			windSpeedMenu();
 			return;
 		}
@@ -100,10 +97,10 @@ void Menu::mainMenu() {
 		if(DEBUG)Serial.print("Pushed button 0");
 		handleButtonPushOnAlarm();
 
-		menuState++;
+		model->setMenuState(model->getMenuState()+1);
 		lcd->clearLcd();
-		if (menuState > MAXMENU)
-			menuState = MINMENU;
+		if (model->getMenuState() > MAXMENU)
+			model->setMenuState(MINMENU);
 		button0Bouncer=LOW;
 		return;
 	}
@@ -112,10 +109,10 @@ void Menu::mainMenu() {
 
 		if(DEBUG)Serial.print("Pushed button 1");
 		handleButtonPushOnAlarm();
-		menuState--;
+		model->setMenuState(model->getMenuState()-1);
 		lcd->clearLcd();
-		if (menuState < MINMENU)
-			menuState = MAXMENU;
+		if (model->getMenuState() < MINMENU)
+			model->setMenuState(MAXMENU);
 		button1Bouncer=LOW;
 		return;
 	}
@@ -124,16 +121,16 @@ void Menu::mainMenu() {
 
 		if(DEBUG)Serial.print("Pushed button 2");
 		handleButtonPushOnAlarm();
-		if (menuState == ANCHOR) {
-			menuState = ANCHORMINMENU;
-			menuLevel++;
-			anchor->drawAnchorBox(*lcd,getMenuState());
-			anchor->drawAnchorScreen(*lcd,getMenuState());
-		}else if (menuState == WIND) {
-			menuState = WINDMINMENU;
-			menuLevel++;
-			wind->drawWindBox(*lcd, getMenuState());
-			wind->drawWindScreen(*lcd, getMenuLevel());
+		if (model->getMenuState() == ANCHOR) {
+			model->setMenuState(ANCHORMINMENU);
+			model->setMenuLevel(model->getMenuLevel()+1);
+			lcd->drawAnchorBox(model->getMenuState());
+			lcd->drawAnchorScreen(model->getMenuState());
+		}else if (model->getMenuState() == WIND) {
+			model->setMenuState(WINDMINMENU);
+			model->setMenuLevel(model->getMenuLevel()+1);
+			lcd->drawWindBox(model->getMenuState());
+			lcd->drawWindScreen(model->getMenuLevel());
 		}else{
 			button2Bouncer=LOW;
 		}
@@ -148,47 +145,48 @@ void Menu::mainMenu() {
 
 void Menu::anchorMenu() {
 	if (button0Bouncer == HIGH) {
-		anchor->eraseAnchorBox(*lcd, getMenuState());
-		menuState++;
-		if (menuState > ANCHORMAXMENU)
-			menuState = ANCHORMINMENU;
-		anchor->drawAnchorBox(*lcd, getMenuState());
-		anchor->drawAnchorScreen(*lcd, getMenuState());
+		lcd->eraseAnchorBox( model->getMenuState());
+		model->setMenuState(model->getMenuState()+1);
+		if (model->getMenuState() > ANCHORMAXMENU)
+			model->setMenuState(ANCHORMINMENU);
+		lcd->drawAnchorBox( model->getMenuState());
+		lcd->drawAnchorScreen( model->getMenuState());
 		button0Bouncer=LOW;
 		return;
 	}
 	if (button1Bouncer == HIGH) {
 
-		anchor->eraseAnchorBox(*lcd, getMenuState());
-		menuState--;
-		if (menuState < ANCHORMINMENU)
-			menuState = ANCHORMAXMENU;
-		anchor->drawAnchorBox(*lcd, getMenuState());
-		anchor->drawAnchorScreen(*lcd, getMenuState());
+		lcd->eraseAnchorBox(model->getMenuState());
+		model->setMenuState(model->getMenuState()-1);
+		if (model->getMenuState() < ANCHORMINMENU)
+			model->setMenuState(ANCHORMAXMENU);
+		lcd->drawAnchorBox( model->getMenuState());
+		lcd->drawAnchorScreen( model->getMenuState());
 		button1Bouncer=LOW;
 		return;
 	}
 	if (button2Bouncer == HIGH) {
 
-		switch (menuState) {
+		switch (model->getMenuState()) {
 		case ANCHORSTATE:
-			anchor->setAnchorAlarmState(!anchor->getAnchorAlarmState());
+			model->setAnchorAlarmOn(!model->isAnchorAlarmOn());
 			break;
 		case ANCHORPOINT:
-			anchor->setAnchorPoint();
+			model->setAnchorLat(model->getGpsLatitude());
+			model->setAnchorLon(model->getGpsLongitude());
 			break;
 		case ANCHORRADIUS:
-			menuLevel++;
+			model->setMenuLevel(model->getMenuLevel()+1);
 			break;
 		case ANCHORRTN:
 			lcd->clearLcd();
-			menuLevel--;
-			menuState = ANCHOR;
+			model->setMenuLevel(model->getMenuLevel()-1);
+			model->setMenuState(ANCHOR);
 
 			break;
 
 		}
-		anchor->drawAnchorScreen(*lcd, getMenuState());
+		lcd->drawAnchorScreen( model->getMenuState());
 		button2Bouncer=LOW;
 		return;
 	}
@@ -200,23 +198,23 @@ void Menu::anchorRadiusMenu() {
 	if (button0Bouncer == HIGH) {
 
 		//add 5M to anchor radius
-		anchor->setAnchorRadius(anchor->getAnchorRadius() + 5.0);
-		anchor->drawAnchorScreen(*lcd, getMenuState());
+		model->setAnchorRadius(model->getAnchorRadius() + 5.0);
+		lcd->drawAnchorScreen( model->getMenuState());
 		button0Bouncer=LOW;
 		return;
 	}
 	if (button1Bouncer == HIGH) {
 
 		//subtract 5M from anchor radius
-		anchor->setAnchorRadius(anchor->getAnchorRadius() - 5.0);
-		anchor->drawAnchorScreen(*lcd, getMenuState());
+		model->setAnchorRadius(model->getAnchorRadius() - 5.0);
+		lcd->drawAnchorScreen( model->getMenuState());
 		button1Bouncer=LOW;
 		return;
 	}
 	if (button2Bouncer == HIGH) {
 
-		menuLevel--;
-		anchor->drawAnchorScreen(*lcd,getMenuState());
+		model->setMenuLevel(model->getMenuLevel()-1);
+		lcd->drawAnchorScreen(model->getMenuState());
 		button2Bouncer=LOW;
 		return;
 	}
@@ -230,43 +228,43 @@ void Menu::anchorRadiusMenu() {
 void Menu::windMenu() {
 	if (button0Bouncer == HIGH) {
 
-		wind->eraseWindBox(*lcd, getMenuState());
-		menuState++;
-		if (menuState > WINDMAXMENU)
-			menuState = WINDMINMENU;
-		wind->drawWindBox(*lcd, getMenuState());
-		wind->drawWindScreen(*lcd,getMenuLevel());
+		lcd->eraseWindBox( model->getMenuState());
+		model->setMenuState(model->getMenuState()+1);
+		if (model->getMenuState() > WINDMAXMENU)
+			model->setMenuState(WINDMINMENU);
+		lcd->drawWindBox( model->getMenuState());
+		lcd->drawWindScreen(model->getMenuLevel());
 		button0Bouncer=LOW;
 		return;
 	}
 	if (button1Bouncer == HIGH) {
 
-		wind->eraseWindBox(*lcd, getMenuState());
-		menuState--;
-		if (menuState < WINDMINMENU)
-			menuState = WINDMAXMENU;
-		wind->drawWindBox(*lcd, getMenuState());
-		wind->drawWindScreen(*lcd,getMenuLevel());
+		lcd->eraseWindBox( model->getMenuState());
+		model->setMenuState(model->getMenuState()-1);
+		if (model->getMenuState() < WINDMINMENU)
+			model->setMenuState(WINDMAXMENU);
+		lcd->drawWindBox( model->getMenuState());
+		lcd->drawWindScreen(model->getMenuLevel());
 		button1Bouncer=LOW;
 		return;
 	}
 	if (button2Bouncer == HIGH) {
 
-		switch (menuState) {
+		switch (model->getMenuState()) {
 		case WINDSTATE:
-			wind->setWindAlarm(!wind->getWindAlarm());
+			model->setWindAlarmOn(!model->isWindAlarmOn());
 			break;
 		case WINDSPEED:
-			menuLevel++;
+			model->setMenuLevel(model->getMenuLevel()+1);
 			break;
 		case WINDRTN:
 			lcd->clearLcd();
-			menuLevel--;
-			menuState = WIND;
+			model->setMenuLevel(model->getMenuLevel()-1);
+			model->setMenuState(WIND);
 			break;
 
 		}
-		wind->drawWindScreen(*lcd, getMenuLevel());
+		lcd->drawWindScreen( model->getMenuLevel());
 		button2Bouncer=LOW;
 		return;
 	}
@@ -278,25 +276,25 @@ void Menu::windSpeedMenu() {
 	if (button0Bouncer == HIGH) {
 
 		//add 5kts to windspeed
-		wind->setWindAlarmSpeed(wind->getWindAlarmSpeed() + 5);
-		wind->drawWindScreen(*lcd, getMenuLevel());
+		model->setWindAlarmSpeed(model->getWindAlarmSpeed() + 5);
+		lcd->drawWindScreen( model->getMenuLevel());
 		button0Bouncer=LOW;
 		return;
 	}
 	if (button1Bouncer == HIGH) {
 		//add 5kts to windspeed
 
-		wind->setWindAlarmSpeed(wind->getWindAlarmSpeed() - 5);
-		if (wind->getWindAlarmSpeed() < 0)
-			wind->setWindAlarmSpeed(0);
-		wind->drawWindScreen(*lcd, getMenuLevel());
+		model->setWindAlarmSpeed(model->getWindAlarmSpeed() - 5);
+		if (model->getWindAlarmSpeed() < 0)
+			model->setWindAlarmSpeed(0);
+		lcd->drawWindScreen( model->getMenuLevel());
 		button1Bouncer=LOW;
 		return;
 	}
 	if (button2Bouncer == HIGH) {
-		menuLevel--;
+		model->setMenuLevel(model->getMenuLevel()-1);
 
-		wind->drawWindScreen(*lcd, getMenuLevel());
+		lcd->drawWindScreen( model->getMenuLevel());
 		button2Bouncer=LOW;
 		return;
 	}
@@ -305,37 +303,16 @@ void Menu::windSpeedMenu() {
 
 /* handle the alarm if a button is pushed while alarming*/
 void Menu::handleButtonPushOnAlarm() {
-	if (alarm->alarmTriggered()) {
+	if (model->isAlarmTriggered()) {
 		//give 5 minutes respite from noise!
-		alarm->setSnoozeAlarm(millis() + SNOOZE_TIME_MILLIS);
-		if (alarm->isMobAlarmTriggered()) {
-			//send cancel ? no, waypoint is cancelled
-			//seatalk->cancelMOB();
-		}
-		if (alarm->isRadarAlarmTriggered()) {
-			//send acknowledge alarm
-			seatalk->radarAlarmOff();
-		}
-		if (alarm->isWindAlarmTriggered()) {
-			//send acknowledge alarm
-			wind->setWindAlarm(false);
-		}
+		model->setAlarmSnooze(millis() + SNOOZE_TIME_MILLIS);
+		model->setRadarAlarmTriggered(false);
+		model->setMobAlarmTriggered(false);
+		model->setWindAlarmTriggered(false);
+		model->setAnchorAlarmTriggered(false);
+		model->setGpsAlarmTriggered(false);
+
 	}
 }
 
-int Menu::getMenuLevel() {
-	return menuLevel;
-}
-
-int Menu::getMenuState()  {
-	return menuState;
-}
-
-void Menu::setMenuLevel(int level) {
-	this->menuLevel = level;
-}
-
-void Menu::setMenuState(int state) {
-	this->menuState = state;
-}
 

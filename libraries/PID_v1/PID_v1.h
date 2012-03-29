@@ -13,7 +13,7 @@ class PID
   #define MANUAL	0
   #define DIRECT  0
   #define REVERSE  1
-
+	PID(); //convienience constructor
   //commonly used functions **************************************************************************
     PID(double*, double*, double*,        // * constructor.  links the PID to the Input, Output, and 
         double, double, double, int);     //   Setpoint.  Initial tuning parameters are also set here

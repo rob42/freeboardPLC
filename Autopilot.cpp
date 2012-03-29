@@ -25,18 +25,13 @@
  */
 #include "Autopilot.h"
 
-double currentHeading = 0;
-double targetHeading; //Setpoint
-double actualHeading; //Input
-double rudderCommand; //Output
-PID headingPid(&actualHeading, &rudderCommand, &targetHeading, P_Param, I_Param,
-		D_Param, DIRECT);
-
-Autopilot::Autopilot(Gps* gps) {
-	this->gps = gps;
-	targetHeading = 0; //Setpoint
-	actualHeading = 0; //Input
-	rudderCommand = 0; //Output
+Autopilot::Autopilot(FreeBoardModel* model) {
+	this->model = model;
+	this->headingPid = PID(&autopilotCurrentHeading, &autopilotRudderCommand, &autopilotTargetHeading, P_Param, I_Param, D_Param, DIRECT);
+	//autopilotCurrentHeading = 0;
+	autopilotTargetHeading = 0; //Setpoint
+	autopilotCurrentHeading = 0; //Input
+	autopilotRudderCommand = 0; //Output
 	//headingPid.SetOutputLimits(0,66); //output limits
 	headingPid.SetSampleTime(100);
 
@@ -45,50 +40,19 @@ Autopilot::~Autopilot() {
 
 }
 
-bool Autopilot::isEnabled(){
-	return headingPid.GetMode();
-}
 
-void Autopilot::enableAutoPilot() {
-	//initialize the variables we're linked to
-	targetHeading = getCurrentHeading();
-	actualHeading = getCurrentHeading();
 
-	//turn the PID on
-	headingPid.SetMode(AUTOMATIC);
-}
-
-void Autopilot::disableAutoPilot() {
-	headingPid.SetMode(MANUAL);
-}
-
-/*
- * Returns the current heading 0-360 deg (assume T?)
- */
-double Autopilot::getCurrentHeading() {
-	return currentHeading; //gps->getRmcCourse();
-}
-
-void Autopilot::setCurrentHeading(double heading) {
-	currentHeading = heading; //gps->getRmcCourse();
-}
-
-void Autopilot::setTargetHeading(double target) {
-	targetHeading = target;
-}
-double Autopilot::getTargetHeading() {
-	return targetHeading;
-}
-
-double Autopilot::getRudderCorrection() {
-	//send out -33 to 33 as deg rudder correction
-	return (rudderCommand - 128) / 6;
-}
 void Autopilot::calcAutoPilot() {
 	//we dont do this if the autopilot is MANUAL
-	if (headingPid.GetMode() == AUTOMATIC) {
-		actualHeading = getCurrentHeading();
+	if (model->isAutopilotOn()){
+		//does nothing if its already on, inits if off
+		headingPid.SetMode(AUTOMATIC);
+		autopilotTargetHeading=model->getAutopilotTargetHeading();
+		autopilotCurrentHeading = model->getAutopilotCurrentHeading();
 		headingPid.Compute();
+		model->setAutopilotRudderCommand(autopilotRudderCommand);
 
+	}else{
+		headingPid.SetMode(MANUAL);
 	}
 }

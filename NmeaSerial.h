@@ -9,16 +9,22 @@
 #define NMEASERIAL_H_
 
 #include "Arduino.h"
-
+#include <PString/PString.h>
 #include <SoftwareSerial/SoftwareSerial.h>
 #include "FreeBoardConstants.h"
+#include "FreeBoardModel.h"
 
 class NmeaSerial: SoftwareSerial {
 public:
-	NmeaSerial(uint8_t receivePin, uint8_t transmitPin, bool inverse_logic = false):SoftwareSerial(receivePin, transmitPin, inverse_logic = false){};
+	NmeaSerial(FreeBoardModel* model, uint8_t receivePin, uint8_t transmitPin, bool inverse_logic = false):model(model),SoftwareSerial(receivePin, transmitPin, inverse_logic = false){};
 	virtual ~NmeaSerial();
 	void printNmea(char* sentence);
+	void printWindNmea();
 	void begin(long speed);
+private:
+	FreeBoardModel* model;
+	char windSentence [30];
+	int cs;
 };
 
 

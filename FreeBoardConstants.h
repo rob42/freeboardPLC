@@ -73,10 +73,9 @@
 #define WINDRTN 22
 #define WINDMAXMENU WINDRTN
 
-//alarms
-#define ANCHORALARM 1
-#define WINDALARM	2
-#define RADARALARM	4
-#define MOBALARM	8
+// 0.00053995680 nautical miles per meter
+//decimal lat lon is in degrees, and we have 60 NM per degree so degrees per meter
+#define  LLMTRS .00000899928
+#define  MINMTRS	LLMTRS*5.0
 
 #endif

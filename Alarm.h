@@ -11,26 +11,22 @@
 #include "Arduino.h"
 
 #include "FreeBoardConstants.h"
+#include "FreeBoardModel.h"
 
 class Alarm {
 public:
-	Alarm();
+	Alarm(FreeBoardModel* model);
 	virtual ~Alarm();
 	void checkAlarms();
 	bool alarmTriggered();
-	void setAlarm(int alarm);
-	void clearAlarm(int alarm);
-	void setSnoozeAlarm(unsigned long value);
-	unsigned long getSnoozeAlarm();
-	bool isMobAlarmTriggered();
-	bool isRadarAlarmTriggered();
-	bool isWindAlarmTriggered();
+	void checkWindAlarm();
 
 private:
-	unsigned long lastAlarm;   //toggle to make alarm beep - beep beep
+	FreeBoardModel* model;
+	//unsigned long alarmLast;   //toggle to make alarm beep - beep beep
 	bool alarmBeepState; //beep on or off
-	char alarmValue;
-	unsigned long snoozeAlarm ; //5 minute alarm snooze
+	//char alarmValue;
+	//unsigned long alarmSnooze ; //5 minute alarm snooze
 };
 
 #endif /* ALARM_H_ */

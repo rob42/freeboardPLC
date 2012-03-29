@@ -8,6 +8,7 @@ CPP_SRCS += \
 ../Anchor.cpp \
 ../Autopilot.cpp \
 ../Eeprom.cpp \
+../FreeBoardModel.cpp \
 ../FreeBoardPLC.cpp \
 ../Gps.cpp \
 ../Lcd.cpp \
@@ -22,6 +23,7 @@ OBJS += \
 ./Anchor.o \
 ./Autopilot.o \
 ./Eeprom.o \
+./FreeBoardModel.o \
 ./FreeBoardPLC.o \
 ./Gps.o \
 ./Lcd.o \
@@ -36,6 +38,7 @@ CPP_DEPS += \
 ./Anchor.d \
 ./Autopilot.d \
 ./Eeprom.d \
+./FreeBoardModel.d \
 ./FreeBoardPLC.d \
 ./Gps.d \
 ./Lcd.d \

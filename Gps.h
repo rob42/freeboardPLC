@@ -13,24 +13,25 @@
 #include <NMEA/nmea.h>
 #include <PString/PString.h>
 #include "FreeBoardConstants.h"
+#include "FreeBoardModel.h"
 #include "Lcd.h"
 
 class Gps {
 public:
-	Gps(NMEA* gpsSource);
+	Gps(NMEA* gpsSource, FreeBoardModel* model);
 	virtual ~Gps();
 
 	/* NMEA GPS routines
 	 */
-	void showGPSData(Lcd lcd, int menuState);
+
 	bool decode(byte inByte);
-	bool getRmcStatus();
-	float getRmcCourse();
-	float getRmcMetersTo(float lat, float lon);
-	char* getLatString(float lat, int decimals, int padding);
-	char* getLonString(float lon, int decimals, int padding);
-	float getLatitude();
-	float getLongitude();
+	//bool getRmcStatus();
+	//float getRmcCourse();
+	static float getMetersTo(float targetLat, float targetLon, float currentLat, float currentLon);
+	static PString getLatString(float lat, int decimals, int padding, PString str);
+	static PString getLonString(float lon, int decimals, int padding, PString str);
+	//float getLatitude();
+	//float getLongitude();
 	//bool getGpsDecode();
 	unsigned long getLastGpsFix();
 	/*
@@ -44,13 +45,14 @@ private:
 	int autoBaud();
 	bool testMsg();
 	void resetGPS();
-	bool gpsDecode;
-	unsigned long lastGpsFix;
+	//bool gpsDecode;
+	//unsigned long gpsLastFix;
 	unsigned long lastLcdUpdate;
-	char latBuffer[40];
-	char lonBuffer[40];
+
+
 	// create a GPS data connection to GPRMC sentence type
 	//NMEA gps(GPRMC);
 	NMEA* gpsSource;
+	FreeBoardModel* model;
 };
 #endif /* GPS_H_ */

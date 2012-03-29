@@ -41,21 +41,12 @@
 
 #include "Seatalk.h"
 
-	Seatalk::Seatalk(Alarm* alarm, HardwareSerial* serial) {
-	this->alarm=alarm;
+	Seatalk::Seatalk( HardwareSerial* serial, FreeBoardModel* model) {
+	this->model=model;
 	this->serial=serial;
-	radarAlarmTriggered = false; //set to true to trigger radar alarm
-	mobAlarmTriggered = false; //set to true to trigger MOB alarm
 	seaTalkPos = 0;
 }
 
-bool Seatalk::getMobAlarmTriggered() {
-	return mobAlarmTriggered;
-}
-
-bool Seatalk::getRadarAlarmTriggered() {
-	return radarAlarmTriggered;
-}
 void Seatalk::windAlarmOff() {
 	// send 66  00 00 Wind alarm over
 	serial->write9(0x66, true);
@@ -96,21 +87,15 @@ void Seatalk::processSeaTalkByte(byte inByte) {
 
 }
 
-void Seatalk::setMobAlarmTriggered(bool value) {
-	mobAlarmTriggered = value;
-}
 
-void Seatalk::setRadarAlarmTriggered(bool value) {
-	radarAlarmTriggered = value;
-}
 void Seatalk::windCommand(byte * seatalkStream) {
 	if (seatalkStream[1] == 0x00) {
 		if (seatalkStream[2] == 0x00) {
 			//alarm off
-			alarm->clearAlarm(WINDALARM);
+			model->setWindAlarmTriggered(false);
 		} else {
-			alarm->setSnoozeAlarm(0);
-			alarm->setAlarm(WINDALARM);
+			model->setAlarmSnooze(0);
+			model->setWindAlarmTriggered(true);
 		}
 
 	}
@@ -123,13 +108,13 @@ void Seatalk::radarCommand(byte * seatalkStream) {
 		if (seatalkStream[5] == 0xD3) {
 			if (DEBUG)
 				Serial.println("  Radar Guard Zone Alarm ON");
-			alarm->setSnoozeAlarm(0);
-			radarAlarmTriggered = true;
+			model->setAlarmSnooze(0);
+			model->setRadarAlarmTriggered(true);
 		}
 		if (seatalkStream[5] == 0xC3) {
 			if (DEBUG)
 				Serial.println("  Radar Guard Zone Alarm OFF");
-			radarAlarmTriggered = false;
+			model->setRadarAlarmTriggered(false);
 		}
 
 	}
@@ -155,14 +140,14 @@ void Seatalk::processSeatalk(byte * seatalkStream) {
 				&& seatalkStream[8] == 0x00 && seatalkStream[9] == 0x00) {
 			if (DEBUG)
 				Serial.println("  MOB Alarm ON");
-			mobAlarmTriggered = true;
+			model->setMobAlarmTriggered(true);
 		}
 		break;
 	case 0x36:
 		if (seatalkStream[1] == 0x00 && seatalkStream[2] == 0x01) {
 			if (DEBUG)
 				Serial.println("  Cancel MOB Alarm");
-			mobAlarmTriggered = false;
+			model->setMobAlarmTriggered(false);
 		}
 		break;
 

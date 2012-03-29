@@ -11,6 +11,7 @@
 #include "Arduino.h"
 
 #include "FreeBoardConstants.h"
+#include "FreeBoardModel.h"
 #include "Lcd.h"
 #include "Alarm.h"
 #include "Anchor.h"
@@ -19,8 +20,7 @@
 
 class Menu {
 public:
-	Menu(Lcd* lcd, Alarm* alarm, Anchor* anchor, Wind* wind,
-			Seatalk* seatalk);
+	Menu(Lcd* lcd,  FreeBoardModel* model);
 	virtual ~Menu();
 
 	/*Check if buttons are pressed initiating a menu
@@ -38,15 +38,11 @@ public:
 	/*
 	 Check if the windAlarm and speed buttons are pressed
 	 */
-
 	void windMenu();
 	/* Adjust the wind alarm speed*/
 	void windSpeedMenu();
 	void handleButtonPushOnAlarm();
-	int getMenuLevel();
-	int getMenuState();
-	void setMenuLevel(int menuLevel);
-	void setMenuState(int menuState);
+
 
 private:
 	static const unsigned long SNOOZE_TIME_MILLIS = 300000;
@@ -58,13 +54,11 @@ private:
 	volatile bool button3Bouncer; //remote alarm
 	volatile int button0Pin;
 		volatile int lastButtonCheck;
-		volatile int menuState; //default, show gps data
-		volatile int menuLevel;
+		//volatile int menuState; //default, show gps data
+		//volatile int menuLevel;
 	Lcd* lcd;
-	Alarm* alarm;
-	Anchor* anchor;
-	Wind* wind;
-	Seatalk* seatalk;
+
+	FreeBoardModel* model;
 
 };
 

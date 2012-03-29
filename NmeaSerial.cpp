@@ -7,7 +7,6 @@
 
 #include "NmeaSerial.h"
 
-
 NmeaSerial::~NmeaSerial(){
 
 }
@@ -25,4 +24,25 @@ void NmeaSerial::printNmea(char* sentence){
 	  println(sentence);
 	 // interrupts();
 	  //if(DEBUG)Serial.println(sentence);
+}
+
+void NmeaSerial::printWindNmea() {
+		//Assemble a sentence of the various parts so that we can calculate the proper checksum
+
+		PString str(windSentence, sizeof(windSentence));
+		str.print("$IIMWV,");
+		str.print(model->getWindApparentDir());
+		str.print(".0,R,");
+		str.print(model->getWindAverage());
+		str.print(".0,N,A*");
+		//calculate the checksum
+
+		cs = 0; //clear any old checksum
+		for (unsigned int n = 1; n < strlen(windSentence) - 1; n++) {
+			cs ^= windSentence[n]; //calculates the checksum
+		}
+		str.print(cs, HEX); // Assemble the final message and send it out the serial port
+		if(DEBUG)Serial.println(windSentence);
+		printNmea(windSentence);
+
 }

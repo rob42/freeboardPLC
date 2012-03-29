@@ -7,10 +7,10 @@
 
 #include "Alarm.h"
 
-Alarm::Alarm() {
-	alarmBeepState = false;
-	lastAlarm = 0;
-	alarmValue = 0;
+Alarm::Alarm(FreeBoardModel* model) {
+	this->model=model;
+	alarmBeepState=false;
+	model->setAlarmLast(0);
 	pinMode(alarmPin0, OUTPUT);
 	pinMode(alarmPin1, OUTPUT);
 	pinMode(alarmPin2, OUTPUT);
@@ -20,51 +20,25 @@ Alarm::Alarm() {
 Alarm::~Alarm() {
 
 }
-void Alarm::setAlarm(int alarm) {
-	alarmValue=alarmValue+alarm;
-}
-void Alarm::clearAlarm(int alarm) {
-	alarmValue=alarmValue-alarm;
-}
+
 bool Alarm::alarmTriggered() {
-	if (alarmValue > 0) {
-		if (getSnoozeAlarm() > millis()) {
-			return false;
-		}
-		return true;
-	}
-	return false;
+	return model->isAlarmTriggered() && model->getAlarmSnooze() < millis() ;
 }
 
-bool Alarm::isWindAlarmTriggered() {
-	if ((alarmValue & WINDALARM) == WINDALARM)
-		return true;
-	return false;
-}
 
-bool Alarm::isRadarAlarmTriggered() {
-	if ((alarmValue & RADARALARM) == RADARALARM)
-		return true;
-	return false;
-}
-bool Alarm::isMobAlarmTriggered() {
-	if ((alarmValue & MOBALARM) == MOBALARM)
-		return true;
-	return false;
-}
 /* Take action if alarms are triggered*/
 void Alarm::checkAlarms() {
 	if (alarmTriggered()) {
 		//alarm beeps on off on off
 		//once in the alarm state, hitting any button will give a 5 minute respite from the beeping, eg snooze
-		if (millis() - lastAlarm > 1000) {
+		if (millis() - model->getAlarmLast() > 1000) {
 			digitalWrite(alarmPin0, alarmBeepState);
 			digitalWrite(alarmPin1, alarmBeepState);
 			digitalWrite(alarmPin2, alarmBeepState);
 			digitalWrite(alarmPin3, alarmBeepState);
 			alarmBeepState = !alarmBeepState;
-			lastAlarm = millis();
-			snoozeAlarm = 0; //5 minute alarm snooze
+			model->setAlarmLast(millis());
+			//model->setAlarmSnooze(0); //5 minute alarm snooze
 		}
 	} else {
 		//no alarm
@@ -75,9 +49,14 @@ void Alarm::checkAlarms() {
 	}
 }
 
-void Alarm::setSnoozeAlarm(unsigned long value) {
-	snoozeAlarm = value;
-}
-unsigned long Alarm::getSnoozeAlarm() {
-	return snoozeAlarm;
+void Alarm::checkWindAlarm(){
+	//check alarm val
+		if (model->isWindAlarmOn() && model->getWindAlarmSpeed() > 0
+				&& model->getWindAverage() > model->getWindAlarmSpeed()) {
+			//TODO: Alarm snooze, better handling of this
+			//setSnoozeAlarm(0);
+			model->setWindAlarmTriggered(true);
+		} else {
+			model->setWindAlarmTriggered(false);
+		}
 }
