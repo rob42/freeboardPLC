@@ -302,10 +302,8 @@ void loop() {
 	}
 
 	//show data, these are internally timed
-	lcd.showGPSData( model.getMenuState());
+	lcd.showData();
 
-	lcd.showWindData( model.getMenuLevel(), model.getMenuState());
-	lcd.showAnchorAlarmData( model.getMenuLevel(), model.getMenuState());
 
 //	//check buttons
 	menu.checkButtons();

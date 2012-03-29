@@ -10,17 +10,8 @@ char lcdBuffer[40];
 PString lcdStr(lcdBuffer, sizeof(lcdBuffer));
 
 
-
 Lcd:: ~Lcd(){
 
-}
-
-unsigned long Lcd::getLastScreenUpdate() {
-	return lastScreenUpdate;
-}
-
-void Lcd::setLastScreenUpdate(unsigned long lastScreenUpdate) {
-	this->lastScreenUpdate = lastScreenUpdate;
 }
 
 /* Routines to write to lcd*/
@@ -80,6 +71,11 @@ void Lcd::setupLcd() {
 	print("Init-please wait..");
 	delay(2000);
 
+}
+void Lcd::showData(){
+	showGPSData();
+	showWindData();
+	showAnchorAlarmData();
 }
 
 /* Text offsets measured in pixels from the bottom left. The x,y point defines the upper left of the character cell*/
@@ -149,7 +145,7 @@ void Lcd::eraseLine(int lx, int ly, int ux, int uy) {
 	delay(50);
 }
 
-void Lcd::writeButtonLabels(char* b0, char* b1, char* b2) {
+void Lcd::writeButtonLabels(String b0, String b1, String b2) {
 	 setCursor(0,10);
 	 print(b0);
 	 setCursor(50,10);
@@ -161,38 +157,38 @@ void Lcd::writeButtonLabels(char* b0, char* b1, char* b2) {
 
 }
 
-void Lcd::drawAnchorBox( int menuState) {
-	if (menuState >= ANCHORMINMENU && menuState <= ANCHORMAXMENU) {
+void Lcd::drawAnchorBox( ) {
+	if (model->getMenuState() >= ANCHORMINMENU && model->getMenuState() <= ANCHORMAXMENU) {
 		//draw the correct box
-		if (menuState == ANCHORSTATE)
+		if (model->getMenuState() == ANCHORSTATE)
 			drawBox(0, 51, 127, 62);
-		if (menuState == ANCHORPOINT)
+		if (model->getMenuState() == ANCHORPOINT)
 			drawBox(0, 31, 127, 52);
-		if (menuState == ANCHORRADIUS)
+		if (model->getMenuState() == ANCHORRADIUS)
 			drawBox(0, 21, 127, 32);
-		if (menuState == ANCHORRTN)
+		if (model->getMenuState() == ANCHORRTN)
 			drawBox(0, 11, 127, 22);
 		lastLcdUpdate= millis();
 	}
 }
 
-void Lcd::eraseAnchorBox( int menuState) {
-	if (menuState >= ANCHORMINMENU && menuState <= ANCHORMAXMENU) {
+void Lcd::eraseAnchorBox() {
+	if (model->getMenuState() >= ANCHORMINMENU && model->getMenuState() <= ANCHORMAXMENU) {
 		//draw the correct box
-		if (menuState == ANCHORSTATE)
+		if (model->getMenuState() == ANCHORSTATE)
 			eraseBox(0, 51, 127, 62);
-		if (menuState == ANCHORPOINT)
+		if (model->getMenuState() == ANCHORPOINT)
 			eraseBox(0, 31, 127, 52);
-		if (menuState == ANCHORRADIUS)
+		if (model->getMenuState() == ANCHORRADIUS)
 			eraseBox(0, 21, 127, 32);
-		if (menuState == ANCHORRTN)
+		if (model->getMenuState() == ANCHORRTN)
 			eraseBox(0, 11, 127, 22);
 		lastLcdUpdate= millis();
 	}
 }
 
 
-void Lcd::drawAnchorScreen( int menuState) {
+void Lcd::drawAnchorScreen() {
 	setCursor(2, 60);
 	if (model->isAnchorAlarmOn()) {
 		print("Anchor alarm ON  ");
@@ -212,7 +208,7 @@ void Lcd::drawAnchorScreen( int menuState) {
 	print((int) model->getAnchorRadius());
 	print("M     ");
 	setCursor(2, 20);
-	if (menuState >= ANCHORMINMENU && menuState <= ANCHORMAXMENU) {
+	if (model->getMenuState() >= ANCHORMINMENU && model->getMenuState() <= ANCHORMAXMENU) {
 		print("Back to prev menu ");
 		//writeButtonLabels(SET, NEXT, PREV);
 	} else {
@@ -234,13 +230,13 @@ void Lcd::drawAnchorScreen( int menuState) {
 }
 
 /*display anchor data on screen*/
-void Lcd::showAnchorAlarmData( int menuLevel, int menuState) {
-	if (menuLevel == 0 && (menuState == ANCHOR || (menuState >= ANCHORMINMENU && menuState <= ANCHORMAXMENU))
+void Lcd::showAnchorAlarmData( ) {
+	if (model->getMenuLevel() == 0 && (model->getMenuState() == ANCHOR || (model->getMenuState() >= ANCHORMINMENU && model->getMenuState() <= ANCHORMAXMENU))
 			&& model->getGpsStatus()) {
 		if (millis() - lastLcdUpdate > 1000) {
 			//update
 			lastLcdUpdate= millis();
-			drawAnchorScreen( menuState);
+			drawAnchorScreen();
 		}
 	}
 }
@@ -249,16 +245,16 @@ void Lcd::showAnchorAlarmData( int menuLevel, int menuState) {
 /*
  Write wind data to screen
  */
-void Lcd::showWindData( int menuLevel, int menuState) {
-	if (menuState == WIND && menuLevel == 0) {
+void Lcd::showWindData( ) {
+	if (model->getMenuState() == WIND && model->getMenuLevel() == 0) {
 		//how long
 		if (millis() - lastLcdUpdate > 1500) {
-			drawWindScreen( menuLevel);
+			drawWindScreen();
 			lastLcdUpdate= millis();
 		}
 	}
 }
-void Lcd::drawWindScreen( int menuLevel) {
+void Lcd::drawWindScreen( ) {
 	//update screen
 	setCursor(2, 60);
 	print("WIND: ");
@@ -280,7 +276,7 @@ void Lcd::drawWindScreen( int menuLevel) {
 	print("Alarm Speed: ");
 	print((int) model->getWindAlarmSpeed());
 	print("KNTS   ");
-	if (menuLevel >= 1) {
+	if (model->getMenuLevel() >= 1) {
 		setCursor(2, 20);
 		print("Return to prev menu");
 		writeButtonLabels(SET, NEXT, PREV);
@@ -296,27 +292,27 @@ void Lcd::drawWindScreen( int menuLevel) {
 	}
 }
 
-void Lcd::drawWindBox(int menuState) {
-	if (menuState >= WINDMINMENU && menuState <= WINDMAXMENU) {
+void Lcd::drawWindBox() {
+	if (model->getMenuState() >= WINDMINMENU && model->getMenuState() <= WINDMAXMENU) {
 		//draw the correct box
-		if (menuState == WINDSTATE)
+		if (model->getMenuState() == WINDSTATE)
 			drawBox(0, 31, 127, 42);
-		if (menuState == WINDSPEED)
+		if (model->getMenuState() == WINDSPEED)
 			drawBox(0, 21, 127, 32);
-		if (menuState == WINDRTN)
+		if (model->getMenuState() == WINDRTN)
 			drawBox(0, 11, 127, 22);
 		lastLcdUpdate= millis();
 	}
 }
 
-void Lcd::eraseWindBox( int menuState) {
-	if (menuState >= WINDMINMENU && menuState <= WINDMAXMENU) {
+void Lcd::eraseWindBox( ) {
+	if (model->getMenuState() >= WINDMINMENU && model->getMenuState() <= WINDMAXMENU) {
 		//draw the correct box
-		if (menuState == WINDSTATE)
+		if (model->getMenuState() == WINDSTATE)
 			eraseBox(0, 31, 127, 42);
-		if (menuState == WINDSPEED)
+		if (model->getMenuState() == WINDSPEED)
 			eraseBox(0, 21, 127, 32);
-		if (menuState == WINDRTN)
+		if (model->getMenuState() == WINDRTN)
 			eraseBox(0, 11, 127, 22);
 		lastLcdUpdate= millis();
 	}
@@ -324,8 +320,8 @@ void Lcd::eraseWindBox( int menuState) {
 
 /* NMEA GPS routines
  */
-void Lcd::showGPSData( int menuState) {
-	if (menuState != GPS){
+void Lcd::showGPSData() {
+	if (model->getMenuState() != GPS){
 		return;
 	}
 	//check if active

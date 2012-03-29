@@ -124,13 +124,13 @@ void Menu::mainMenu() {
 		if (model->getMenuState() == ANCHOR) {
 			model->setMenuState(ANCHORMINMENU);
 			model->setMenuLevel(model->getMenuLevel()+1);
-			lcd->drawAnchorBox(model->getMenuState());
-			lcd->drawAnchorScreen(model->getMenuState());
+			lcd->drawAnchorBox();
+			lcd->drawAnchorScreen();
 		}else if (model->getMenuState() == WIND) {
 			model->setMenuState(WINDMINMENU);
 			model->setMenuLevel(model->getMenuLevel()+1);
-			lcd->drawWindBox(model->getMenuState());
-			lcd->drawWindScreen(model->getMenuLevel());
+			lcd->drawWindBox();
+			lcd->drawWindScreen();
 		}else{
 			button2Bouncer=LOW;
 		}
@@ -145,23 +145,23 @@ void Menu::mainMenu() {
 
 void Menu::anchorMenu() {
 	if (button0Bouncer == HIGH) {
-		lcd->eraseAnchorBox( model->getMenuState());
+		lcd->eraseAnchorBox( );
 		model->setMenuState(model->getMenuState()+1);
 		if (model->getMenuState() > ANCHORMAXMENU)
 			model->setMenuState(ANCHORMINMENU);
-		lcd->drawAnchorBox( model->getMenuState());
-		lcd->drawAnchorScreen( model->getMenuState());
+		lcd->drawAnchorBox();
+		lcd->drawAnchorScreen( );
 		button0Bouncer=LOW;
 		return;
 	}
 	if (button1Bouncer == HIGH) {
 
-		lcd->eraseAnchorBox(model->getMenuState());
+		lcd->eraseAnchorBox();
 		model->setMenuState(model->getMenuState()-1);
 		if (model->getMenuState() < ANCHORMINMENU)
 			model->setMenuState(ANCHORMAXMENU);
-		lcd->drawAnchorBox( model->getMenuState());
-		lcd->drawAnchorScreen( model->getMenuState());
+		lcd->drawAnchorBox();
+		lcd->drawAnchorScreen( );
 		button1Bouncer=LOW;
 		return;
 	}
@@ -186,7 +186,7 @@ void Menu::anchorMenu() {
 			break;
 
 		}
-		lcd->drawAnchorScreen( model->getMenuState());
+		lcd->drawAnchorScreen();
 		button2Bouncer=LOW;
 		return;
 	}
@@ -199,7 +199,7 @@ void Menu::anchorRadiusMenu() {
 
 		//add 5M to anchor radius
 		model->setAnchorRadius(model->getAnchorRadius() + 5.0);
-		lcd->drawAnchorScreen( model->getMenuState());
+		lcd->drawAnchorScreen();
 		button0Bouncer=LOW;
 		return;
 	}
@@ -207,14 +207,14 @@ void Menu::anchorRadiusMenu() {
 
 		//subtract 5M from anchor radius
 		model->setAnchorRadius(model->getAnchorRadius() - 5.0);
-		lcd->drawAnchorScreen( model->getMenuState());
+		lcd->drawAnchorScreen();
 		button1Bouncer=LOW;
 		return;
 	}
 	if (button2Bouncer == HIGH) {
 
 		model->setMenuLevel(model->getMenuLevel()-1);
-		lcd->drawAnchorScreen(model->getMenuState());
+		lcd->drawAnchorScreen();
 		button2Bouncer=LOW;
 		return;
 	}
@@ -228,23 +228,23 @@ void Menu::anchorRadiusMenu() {
 void Menu::windMenu() {
 	if (button0Bouncer == HIGH) {
 
-		lcd->eraseWindBox( model->getMenuState());
+		lcd->eraseWindBox( );
 		model->setMenuState(model->getMenuState()+1);
 		if (model->getMenuState() > WINDMAXMENU)
 			model->setMenuState(WINDMINMENU);
-		lcd->drawWindBox( model->getMenuState());
-		lcd->drawWindScreen(model->getMenuLevel());
+		lcd->drawWindBox( );
+		lcd->drawWindScreen();
 		button0Bouncer=LOW;
 		return;
 	}
 	if (button1Bouncer == HIGH) {
 
-		lcd->eraseWindBox( model->getMenuState());
+		lcd->eraseWindBox();
 		model->setMenuState(model->getMenuState()-1);
 		if (model->getMenuState() < WINDMINMENU)
 			model->setMenuState(WINDMAXMENU);
-		lcd->drawWindBox( model->getMenuState());
-		lcd->drawWindScreen(model->getMenuLevel());
+		lcd->drawWindBox( );
+		lcd->drawWindScreen();
 		button1Bouncer=LOW;
 		return;
 	}
@@ -264,7 +264,7 @@ void Menu::windMenu() {
 			break;
 
 		}
-		lcd->drawWindScreen( model->getMenuLevel());
+		lcd->drawWindScreen( );
 		button2Bouncer=LOW;
 		return;
 	}
@@ -277,7 +277,7 @@ void Menu::windSpeedMenu() {
 
 		//add 5kts to windspeed
 		model->setWindAlarmSpeed(model->getWindAlarmSpeed() + 5);
-		lcd->drawWindScreen( model->getMenuLevel());
+		lcd->drawWindScreen( );
 		button0Bouncer=LOW;
 		return;
 	}
@@ -287,14 +287,14 @@ void Menu::windSpeedMenu() {
 		model->setWindAlarmSpeed(model->getWindAlarmSpeed() - 5);
 		if (model->getWindAlarmSpeed() < 0)
 			model->setWindAlarmSpeed(0);
-		lcd->drawWindScreen( model->getMenuLevel());
+		lcd->drawWindScreen( );
 		button1Bouncer=LOW;
 		return;
 	}
 	if (button2Bouncer == HIGH) {
 		model->setMenuLevel(model->getMenuLevel()-1);
 
-		lcd->drawWindScreen( model->getMenuLevel());
+		lcd->drawWindScreen();
 		button2Bouncer=LOW;
 		return;
 	}

@@ -32,6 +32,7 @@ public:
 	void setBacklight(int dutyCycle);
 	void clearLcd();
 	void setupLcd();
+	void showData();
 	/* Text offsets measured in pixels from the bottom left. The x,y point defines the upper left of the character cell*/
 	void setCursor(int x, int y);
 	/*Draw a box from lower lx,ly to upper ux,uy*/
@@ -42,26 +43,23 @@ public:
 	void drawLine(int lx, int ly, int ux, int uy);
 	/*Erase a line from lower lx,ly to upper ux,uy*/
 	void eraseLine(int lx, int ly, int ux, int uy);
-	void writeButtonLabels(char* b0, char* b1, char* b2);
-	unsigned long getLastScreenUpdate();
-
-	void setLastScreenUpdate(unsigned long lastScreenUpdate);
+	void writeButtonLabels(String b0, String b1, String b2);
 
 	//anchor
 	unsigned long lastLcdUpdate;
-	void drawAnchorScreen(int menuState);
-	void showAnchorAlarmData(int menuLevel, int menuState);
-	void drawAnchorBox(int menuState);
-	void eraseAnchorBox(int menuState);
+	void drawAnchorScreen();
+	void showAnchorAlarmData();
+	void drawAnchorBox();
+	void eraseAnchorBox();
 
 	//wind
-	void drawWindScreen( int menuLevel);
-	void drawWindBox( int menuState);
-	void eraseWindBox( int menuState);
-	void showWindData(int menuLevel, int menuState);
+	void drawWindScreen( );
+	void drawWindBox( );
+	void eraseWindBox( );
+	void showWindData();
 
 	//gps
-	void showGPSData(int menuState);
+	void showGPSData();
 
 private:
 	unsigned long lastScreenUpdate;
