@@ -54,7 +54,7 @@ char input;
 FreeBoardModel model;
 
 // set up a new serial port for the lcd
-Lcd lcd(&model,(uint8_t) rxPin, (uint8_t) txPin);
+//Lcd lcd(&model,(uint8_t) rxPin, (uint8_t) txPin);
 
 //NMEA output - The arduino puts out TTL, NMEA is RS232. They are different V and amps. The +-5V levels may need inverting or you get
 // garbage.
@@ -87,7 +87,7 @@ Anchor anchor(&model);
 Seatalk seatalk( &Serial2, &model);
 
 //Menu
-Menu menu(&lcd, &model);
+//Menu menu(&lcd, &model);
 
 
 
@@ -100,7 +100,7 @@ void setup() {
 	if (DEBUG)
 		Serial.println("Initializing..");
 
-	lcd.setupLcd();
+	//lcd.setupLcd();
 
 	//start gps on serial1, autobaud
 	if (DEBUG)
@@ -143,7 +143,7 @@ void setup() {
 		Serial.println("Start timer..");
 	FlexiTimer2::set(100, calculate); // 100ms period
 	FlexiTimer2::start();
-	lcd.clearLcd();
+	//lcd.clearLcd();
 
 	if (DEBUG)
 		Serial.println("Setup complete..");
@@ -170,18 +170,6 @@ void readWDD() {
 	wind.readWindDataDir();
 }
 
-void checkPress0() {
-	//set button
-	menu.setButton(button0);
-}
-void checkPress1() {
-	//set button
-	menu.setButton(button1);
-}
-void checkPress2() {
-	//set button
-	menu.setButton(button2);
-}
 
 void loop() {
 
@@ -284,7 +272,7 @@ void loop() {
 	//lcd.showData();
 
 //	//check buttons
-	menu.checkButtons();
+	//menu.checkButtons();
 
 //DEBUG
 //printf("Looping\n");

@@ -14,7 +14,7 @@ typedef unsigned char byte;
 #include "FreeBoardConstants.h"
 #include <EEPROM/EEPROM.h>
 #include <PString/PString.h>
-#include <SoftwareSerial/SoftwareSerial.h>
+//#include <SoftwareSerial/SoftwareSerial.h>
 //#include <PinChangeInt/PinChangeInt.h>
 //#include <PinChangeInt/PinChangeIntConfig.h>
 #include <PinCatcher/PinCatcher.h>

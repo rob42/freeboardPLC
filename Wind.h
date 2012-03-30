@@ -11,7 +11,7 @@
 #include "Arduino.h"
 
 #include <PString/PString.h>
-#include <SoftwareSerial/SoftwareSerial.h>
+
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
 #include <AverageList/AverageList.h>

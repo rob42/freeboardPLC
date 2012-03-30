@@ -10,18 +10,16 @@
 
 #include "Arduino.h"
 
-#include <SoftwareSerial/SoftwareSerial.h>
+#include <AltSoftSerial/AltSoftSerial.h>
 #include <PString/PString.h>
 #include "Gps.h"
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
 
-class Lcd: public SoftwareSerial {
+class Lcd: public AltSoftSerial {
 public:
 
-	Lcd(FreeBoardModel* model, uint8_t receivePin, uint8_t transmitPin,
-			bool inverse_logic = false) :model(model),lastScreenUpdate(0),
-			SoftwareSerial(receivePin, transmitPin, inverse_logic = false){
+	Lcd(FreeBoardModel* model) :model(model),lastScreenUpdate(0){
 
 	};
 
