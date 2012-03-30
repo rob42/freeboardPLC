@@ -35,7 +35,6 @@ public:
 
 private:
 
-	//double autopilotCurrentHeading; //current heading
 	double autopilotTargetHeading; //Setpoint
 	double autopilotCurrentHeading; //Input
 	double autopilotRudderCommand; //Output

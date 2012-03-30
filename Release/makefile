@@ -8,8 +8,6 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include libraries/SoftwareSerial/subdir.mk
--include libraries/Servo/subdir.mk
 -include libraries/SPI/subdir.mk
 -include libraries/PinCatcher/subdir.mk
 -include libraries/PString/subdir.mk
@@ -20,6 +18,7 @@ RM := rm -rf
 -include libraries/Firmata/subdir.mk
 -include libraries/EEPROM/subdir.mk
 -include libraries/Bounce/subdir.mk
+-include libraries/AltSoftSerial/subdir.mk
 -include subdir.mk
 -include objects.mk
 
@@ -73,7 +72,7 @@ sizedummy \
 all: FreeBoardPLC.elf secondary-outputs
 
 dependents:
-	-cd /home/robert/arduinoWorkspace/Arduino_Mega_ATmega1280/Release && $(MAKE) all
+	-cd /home/robert/arduinoWorkspace/Arduino_Mega_ATmega1280/Release && $(MAKE) clean all
 
 # Tool invocations
 FreeBoardPLC.elf: $(OBJS) $(USER_OBJS) /home/robert/arduinoWorkspace/Arduino_Mega_ATmega1280/Release/libArduino_Mega_ATmega1280.a

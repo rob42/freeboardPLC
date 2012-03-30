@@ -32,8 +32,6 @@ SIZEDUMMY :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 . \
-libraries/SoftwareSerial \
-libraries/Servo \
 libraries/SPI \
 libraries/PinCatcher \
 libraries/PString \
@@ -44,4 +42,5 @@ libraries/FlexiTimer2 \
 libraries/Firmata \
 libraries/EEPROM \
 libraries/Bounce \
+libraries/AltSoftSerial \
 

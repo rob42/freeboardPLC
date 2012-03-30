@@ -31,7 +31,8 @@ Autopilot::Autopilot(FreeBoardModel* model) {
 	autopilotCurrentHeading = model->getAutopilotCurrentHeading();
 	autopilotRudderCommand=model->getAutopilotRudderCommand();
 	this->headingPid = PID(&autopilotCurrentHeading, &autopilotRudderCommand, &autopilotTargetHeading, P_Param, I_Param, D_Param, DIRECT);
-	//headingPid.SetOutputLimits(0,66); //output limits
+	headingPid.SetOutputLimits(0,360); //input limits
+	headingPid.SetOutputLimits(0,66); //output limits
 	headingPid.SetSampleTime(100);
 
 }
@@ -49,6 +50,15 @@ void Autopilot::calcAutoPilot() {
 		autopilotTargetHeading=model->getAutopilotTargetHeading();
 		autopilotCurrentHeading = model->getAutopilotCurrentHeading();
 		headingPid.Compute();
+		if (DEBUG ) {
+					Serial.print("Target deg = ");
+					Serial.print(model->getAutopilotTargetHeading());
+					Serial.print("Heading deg = ");
+					Serial.print(model->getAutopilotCurrentHeading());
+					Serial.print(", Rudder = ");
+					Serial.println(model->getAutopilotRudderCommand());
+					model->setAutopilotCurrentHeading(model->getAutopilotCurrentHeading()+(0.1*(model->getAutopilotRudderCommand()-33)));
+				}
 		model->setAutopilotRudderCommand(autopilotRudderCommand);
 
 	}else{

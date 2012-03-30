@@ -10,13 +10,13 @@
 
 #include "Arduino.h"
 #include <PString/PString.h>
-#include <SoftwareSerial/SoftwareSerial.h>
+#include <AltSoftSerial/AltSoftSerial.h>
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
 
-class NmeaSerial: SoftwareSerial {
+class NmeaSerial: AltSoftSerial {
 public:
-	NmeaSerial(FreeBoardModel* model, uint8_t receivePin, uint8_t transmitPin, bool inverse_logic = false):model(model),SoftwareSerial(receivePin, transmitPin, inverse_logic = false){};
+	NmeaSerial(FreeBoardModel* model):model(model){};
 	virtual ~NmeaSerial();
 	void printNmea(char* sentence);
 	void printWindNmea();

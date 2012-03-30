@@ -14,7 +14,7 @@ void NmeaSerial::begin(long speed){
 	//initialise the nmea output
 		//pinMode(nmeaRxPin, INPUT);
 		//pinMode(nmeaTxPin, OUTPUT);
-		SoftwareSerial::begin(speed);
+		AltSoftSerial::begin(speed);
 }
 
 void NmeaSerial::printNmea(char* sentence){

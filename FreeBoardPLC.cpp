@@ -2,6 +2,16 @@
  * Copyright R T Huitema, All rights reserved
  */
 
+// AltSoftSerial always uses these pins:
+//
+// Board          Transmit  Receive   PWM Unusable
+// -----          --------  -------   ------------
+// Teensy 2.0         9        10       (none)
+// Teensy++ 2.0      25         4       26, 27
+// Arduino Uno        9         8         10
+// Arduino Mega      46        48       44, 45
+// Wiring-S           5         6          4
+// Sanguino          13        14         12
 /*
  10 Jan 2012 - ported to Eclipse Indigo build env
  Updated to use Arduino 1.0 IDE classes.
@@ -24,7 +34,8 @@
  All at 4800 default
  GPS at 38400
  Lcd at 19200
- SoftSerials on 50,51 (lcd) ,52,53 (NMEA)
+ Lcd disabled,  on 50,51 (lcd)
+ AltSoftSerial Tx46,Rx48 (NMEA)
  Alarm devices on pin 22,23,24,25
  Wind speed on pin 21 - INT3
  Wind dir on pin 20 - INT2
@@ -49,7 +60,7 @@ Lcd lcd(&model,(uint8_t) rxPin, (uint8_t) txPin);
 // garbage.
 // See http://forums.parallax.com/forums/default.aspx?f=19&m=50925
 // See http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=63469&start=0
-NmeaSerial nmea(&model,(uint8_t) nmeaRxPin, (uint8_t) nmeaTxPin, (bool) false);
+NmeaSerial nmea(&model);
 
 //NMEA ports
 NMEA gpsSource(ALL);
@@ -80,35 +91,7 @@ Menu menu(&lcd, &model);
 
 
 
-//re-enable ISR2 in SoftwareSerial.cpp line 314 if you stop using this
-class ButtonCatcher: public PinCatcher {
-	typedef PinCatcher parent;
-public:
-	ButtonCatcher() {
-	}
-
-	~ButtonCatcher() {
-	}
-
-	void watch(unsigned pin) {
-		attach(pin);
-	}
-
-	void ignore(unsigned pin) {
-		detach(pin);
-	}
-
-	virtual void handle(unsigned pin, bool rising_edge_transition) {
-		if (pin == button0)
-			checkPress0();
-		if (pin == button1)
-			checkPress1();
-		if (pin == button2)
-			checkPress2();
-	}
-};
-
-ButtonCatcher p;
+//re-enable ISR2 in SoftwareSerial.cpp line 314 if you stop using ButtonCatcher
 
 void setup() {
 	model.readConfig();
@@ -154,11 +137,6 @@ void setup() {
 	pinMode(button2, INPUT);
 	//pinMode(button3, INPUT);
 
-	//PinCatcher
-	p.watch(button0);
-	p.watch(button1);
-	p.watch(button2);
-	//p.watch(button3);
 
 //	//setup timers
 	if (DEBUG)
@@ -283,13 +261,13 @@ void loop() {
 			//do every 1000ms
 			wind.calcWindData();
 			if (DEBUG && model.isAutopilotOn()) {
-					Serial.print("Target deg = ");
+					Serial.print("From model: Target deg = ");
 					Serial.print(model.getAutopilotTargetHeading());
 					Serial.print("Heading deg = ");
 					Serial.print(model.getAutopilotCurrentHeading());
 					Serial.print(", Rudder = ");
 					Serial.println(model.getAutopilotRudderCommand());
-					model.setAutopilotCurrentHeading(model.getAutopilotCurrentHeading()+model.getAutopilotRudderCommand());
+					//model.setAutopilotCurrentHeading(model.getAutopilotCurrentHeading()+(0.2*(model.getAutopilotRudderCommand()-33)));
 				}
 			anchor.checkAnchor();
 			alarm.checkWindAlarm();
@@ -303,7 +281,7 @@ void loop() {
 	}
 
 	//show data, these are internally timed
-	lcd.showData();
+	//lcd.showData();
 
 //	//check buttons
 	menu.checkButtons();

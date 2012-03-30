@@ -19,6 +19,7 @@ class FreeBoardModel {
 public:
 //alarms
 	FreeBoardModel();
+
 	bool isWindAlarmTriggered() const;
 	void setWindAlarmTriggered(bool windAlarmTriggered);
 	unsigned long getAlarmLast() const;
@@ -36,9 +37,9 @@ public:
 	double getAutopilotAlarmMaxCourseError() const;
 	double getAutopilotAlarmMaxWindError() const;
 	double getAutopilotAlarmMaxXtError() const;
-	double getAutopilotCurrentHeading() const;
-	double getAutopilotRudderCommand() const;
-	double getAutopilotTargetHeading() const;
+	double getAutopilotCurrentHeading();
+	double getAutopilotRudderCommand();
+	double getAutopilotTargetHeading();
 	long getGpsAlarmFixTime() const;
 	float getGpsCourse() const;
 	unsigned long getGpsLastFix() const;
@@ -150,9 +151,10 @@ private:
 
 	//autopilot
 	//bool autopilotOn;
-	double autopilotCurrentHeading; //Input
-	double autopilotTargetHeading; //Setpoint
-	double autopilotRudderCommand; //Output
+	//these need to always be positive for autopilot
+	double autopilotCurrentHeading; //Input 0-360
+	double autopilotTargetHeading; //Setpoint 0-360
+	double autopilotRudderCommand; //Output 0-66
 	//bool autopilotAlarmOn;
 	bool autopilotAlarmTriggered;
 	double autopilotAlarmMaxXTError; //cross track error

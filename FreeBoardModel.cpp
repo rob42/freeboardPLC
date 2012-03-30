@@ -32,9 +32,9 @@ FreeBoardModel::FreeBoardModel(){
 
 	//autopilot
 	//bool autopilotOn;
-	autopilotCurrentHeading=0; //Input
-	autopilotTargetHeading=0; //Setpoint
-	autopilotRudderCommand=0; //Output
+	autopilotCurrentHeading=180; //Input
+	autopilotTargetHeading=180; //Setpoint
+	autopilotRudderCommand=33; //Output
 	//bool autopilotAlarmOn;
 	autopilotAlarmTriggered=false;
 	autopilotAlarmMaxXTError=0; //cross track error
@@ -220,16 +220,16 @@ double FreeBoardModel::getAutopilotAlarmMaxXtError() const
 }
 
 
-double FreeBoardModel::getAutopilotRudderCommand() const
+double FreeBoardModel::getAutopilotRudderCommand()
 {
     return autopilotRudderCommand;
 }
 
-double FreeBoardModel::getAutopilotTargetHeading() const
+double FreeBoardModel::getAutopilotTargetHeading()
 {
     return autopilotTargetHeading;
 }
-double FreeBoardModel::getAutopilotCurrentHeading() const
+double FreeBoardModel::getAutopilotCurrentHeading()
 {
     return autopilotCurrentHeading;
 }
@@ -472,6 +472,7 @@ void FreeBoardModel::setAutopilotAlarmTriggered(bool autopilotAlarmTriggered)
     this->autopilotAlarmTriggered = autopilotAlarmTriggered;
 }
 
+
 void FreeBoardModel::setAutopilotCurrentHeading(double autopilotCurrentHeading)
 {
     this->autopilotCurrentHeading = autopilotCurrentHeading;
@@ -482,10 +483,13 @@ void FreeBoardModel::setAutopilotRudderCommand(double autopilotRudderCommand)
     this->autopilotRudderCommand = autopilotRudderCommand;
 }
 
+
+
 void FreeBoardModel::setAutopilotTargetHeading(double autopilotTargetHeading)
 {
     this->autopilotTargetHeading = autopilotTargetHeading;
 }
+
 
 void FreeBoardModel::setGpsAlarmFixTime(long gpsAlarmFixTime)
 {
