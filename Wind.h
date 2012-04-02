@@ -32,9 +32,5 @@ private:
 
 	FreeBoardModel* model;
 
-
-
-
-
 };
 #endif /* WIND_H_ */

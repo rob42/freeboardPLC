@@ -37,7 +37,7 @@
  Lcd disabled,  on 50,51 (lcd)
  AltSoftSerial Tx46,Rx48 (NMEA)
  Alarm devices on pin 22,23,24,25
- Wind speed on pin 21 - INT3
+ Wind speed on pin 21 - INT3 - yellow
  Wind dir on pin 20 - INT2
  */
 
@@ -125,9 +125,9 @@ void setup() {
 	if (DEBUG)
 		Serial.println("Start wind..");
 	pinMode(windSpeedPin, INPUT);
-	attachInterrupt(windSpeedInterrupt, readWDS, RISING);
+	attachInterrupt(windSpeedInterrupt, readWDS, FALLING);
 	pinMode(windDirPin, INPUT);
-	attachInterrupt(windDirInterrupt, readWDD, RISING);
+	attachInterrupt(windDirInterrupt, readWDD, FALLING);
 
 	if (DEBUG)
 		Serial.println("Start button interrupts..");

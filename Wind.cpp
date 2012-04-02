@@ -71,11 +71,11 @@ void Wind::readWindDataSpeed() {
 		lastPulse=millis();
 		windSpeedDur=micros()-windSpeedMicros;
 		//debounce 5ms
-		if(windSpeedDur>SPEED_DEBOUNCE){
+		if(windSpeedDur>0){
 			//average a bit
 			speedList.addValue(windSpeedDur);
 			windSpeedMicros=micros();
-		}else if (windSpeedDur<0){
+		}else {
 			windDirDur=0;
 			windSpeedDur=0;
 			windSpeedMicros=micros();
@@ -93,15 +93,17 @@ void Wind::readWindDataDir() {
 		windDirDur=micros()-windSpeedMicros;
 		// calc direction, degrees clockwise
 		//check for 0's and no wind.
-		if(windSpeedDur>windDirDur && windDirDur>DIR_DEBOUNCE && windSpeedDur>SPEED_DEBOUNCE && windSpeedDur< (3*1000000)){
-			//total time to rotate = windSpeedDur
-			//time to arrow = windDirDur
-			//so windDirDur/windSpeedDur gives the fraction of 360deg
-			//should round to int, min 1
-			dirList.addRotationalValue(360*((float)windDirDur/windSpeedDur));
-		}else if(windDirDur<0){
+		if(windDirDur<1){
 			windDirDur=0;
 			windSpeedDur=0;
+		}else{
+			if(windSpeedDur>windDirDur && windSpeedDur< (3*1000000)){
+				//total time to rotate = windSpeedDur
+				//time to arrow = windDirDur
+				//so windDirDur/windSpeedDur gives the fraction of 360deg
+				//should round to int, min 1
+				dirList.addRotationalValue(360*((float)windDirDur/(float)windSpeedDur));
+			}
 		}
 	}
 }
@@ -116,13 +118,23 @@ void Wind::calcWindData() {
 //		Serial.print(", WindDirDur:");
 //		Serial.println(windDirDur);
 		model->setWindLastUpdate(millis());
-
+		/*if(DEBUG){
+			Serial.print("Wind dir:");
+						Serial.print(dirList.getTotalAverage());
+						Serial.print(", Wind speed:");
+						Serial.println(speedList.getTotalAverage());
+					}*/
 		//convert to windAverage
 		if(millis()-lastPulse>3000){
 			//no rotation, no wind
 			model->setWindAverage(0);
+			//Serial.println("Wind speed reset");
 			speedList.reset();
 		}else{
+			/*if(DEBUG){
+				Serial.print("Wind speed:");
+				Serial.println(speedList.getTotalAverage());
+			}*/
 			model->setWindAverage(model->getWindFactor() / speedList.getTotalAverage()) ;
 
 			//update gusts

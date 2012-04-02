@@ -13,8 +13,10 @@
 #include <NMEA/nmea.h>
 #include <EEPROM/EEPROM.h>
 #include "FreeBoardConstants.h"
+#include "math.h"
 
-
+#define AUTOPILOT_WIND 1;
+#define AUTOPILOT_COMPASS 0;
 class FreeBoardModel {
 public:
 //alarms
@@ -34,6 +36,8 @@ public:
 	float getAnchorRadiusDeg() const;
 	float getAnchorS() const;
 	float getAnchorW() const;
+	int getAutopilotReference() const;
+	double getAutopilotOffCourse();
 	double getAutopilotAlarmMaxCourseError() const;
 	double getAutopilotAlarmMaxWindError() const;
 	double getAutopilotAlarmMaxXtError() const;
@@ -84,6 +88,7 @@ public:
 	void setAnchorRadiusDeg(float anchorRadiusDeg);
 	void setAnchorS(float anchorS);
 	void setAnchorW(float anchorW);
+	void setAutopilotReference(int ref);
 	void setAutopilotAlarmMaxCourseError(double autopilotAlarmMaxCourseError);
 	void setAutopilotAlarmMaxWindError(double autopilotAlarmMaxWindError);
 	void setAutopilotAlarmMaxXtError(double autopilotAlarmMaxXtError);
@@ -126,6 +131,7 @@ public:
     void saveConfig();
     void readConfig();
 private:
+
 	unsigned long alarmLast; //toggle to make alarm beep - beep beep
 	unsigned long alarmSnooze; //5 minute alarm snooze
 	//unsigned long alarmTriggered ; //true if any alarm is triggered - derived
@@ -151,6 +157,9 @@ private:
 
 	//autopilot
 	//bool autopilotOn;
+
+	double autopilotOffCourse; //-179 to +180
+	int autopilotReference; //WIND (1) or COMPASS(0)
 	//these need to always be positive for autopilot
 	double autopilotCurrentHeading; //Input 0-360
 	double autopilotTargetHeading; //Setpoint 0-360
@@ -158,7 +167,7 @@ private:
 	//bool autopilotAlarmOn;
 	bool autopilotAlarmTriggered;
 	double autopilotAlarmMaxXTError; //cross track error
-	double autopilotAlarmMaxWindError; //wind angle change
+	double autopilotAlarmMaxWindError; //wind angle change while on windpilot
 	double autopilotAlarmMaxCourseError; //course error
 
 	//gps
@@ -213,6 +222,8 @@ private:
 		int windAlarmSpeed;
 		bool windAlarmOn;
 		float windFactor;
+	    int getAutopilotReference() const;
+	    void setAutopilotReference(int autopilotReference);
 	}config;
 
 	int version;

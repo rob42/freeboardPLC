@@ -32,14 +32,15 @@ FreeBoardModel::FreeBoardModel(){
 
 	//autopilot
 	//bool autopilotOn;
-	autopilotCurrentHeading=180; //Input
-	autopilotTargetHeading=180; //Setpoint
-	autopilotRudderCommand=33; //Output
+	autopilotReference=AUTOPILOT_COMPASS;
+	autopilotCurrentHeading=0; //Input
+	autopilotTargetHeading=0; //Setpoint
+	autopilotRudderCommand=33; //Output (rudder central)
 	//bool autopilotAlarmOn;
 	autopilotAlarmTriggered=false;
-	autopilotAlarmMaxXTError=0; //cross track error
-	autopilotAlarmMaxWindError=0; //wind angle change
-	autopilotAlarmMaxCourseError=0; //course error
+	autopilotAlarmMaxXTError=100; // +/- meters cross track error
+	autopilotAlarmMaxWindError=10; // +/- wind angle change, for over 1 minute
+	autopilotAlarmMaxCourseError=10; // +/- course error, for over 1 minute
 
 	//gps
 	gpsDecode=false; //flag to indicate a new sentence was decoded.
@@ -98,6 +99,17 @@ FreeBoardModel::FreeBoardModel(){
 	version=1;
 }
 
+/*
+ * Returns -179 to +180 as the degrees off course
+ */
+double FreeBoardModel::getAutopilotOffCourse(){
+	//get degrees between
+	autopilotOffCourse=(getAutopilotTargetHeading()+360)- (getAutopilotCurrentHeading()+360);
+	autopilotOffCourse=fmod(autopilotOffCourse,360.0);
+	//if its >abs(180), then we want to go the -ve (shorter) direction
+	if(fabs(autopilotOffCourse)>180)autopilotOffCourse=autopilotOffCourse-360;
+	return autopilotOffCourse;
+}
 
 template<class T> int EEPROM_writeAnything(int ee, const T& value) {
 	const unsigned char* p = (const unsigned char*) (const void*) &value;
@@ -651,6 +663,18 @@ void FreeBoardModel::setWindAlarmTriggered(bool windAlarmTriggered)
 {
     this->windAlarmTriggered = windAlarmTriggered;
 }
+
+int FreeBoardModel::getAutopilotReference() const
+{
+    return autopilotReference;
+}
+
+void FreeBoardModel::setAutopilotReference(int autopilotReference)
+{
+    this->autopilotReference = autopilotReference;
+}
+
+
 
 
 

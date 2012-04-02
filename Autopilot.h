@@ -39,6 +39,7 @@ private:
 	double autopilotCurrentHeading; //Input
 	double autopilotRudderCommand; //Output
 
+
 	FreeBoardModel* model;
 	PID headingPid;
 };

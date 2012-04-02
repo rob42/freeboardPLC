@@ -3,7 +3,8 @@
  * by Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
  *
  * This Library is licensed under a GPLv3 License
- **********************************************************************************************/
+ *
+  **********************************************************************************************/
 
 #if ARDUINO >= 100
   #include "Arduino.h"
@@ -16,7 +17,7 @@
 PID::PID(){};
 
 /*Constructor (...)*********************************************************
- *    The parameters specified here are those for for which we can't set up 
+ *    The parameters specified here are those for which we can't set up
  *    reliable defaults, so we need to have the user set them.
  ***************************************************************************/
 PID::PID(double* Input, double* Output, double* Setpoint,
