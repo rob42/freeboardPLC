@@ -89,12 +89,19 @@ Seatalk seatalk( &Serial2, &model);
 //Menu
 //Menu menu(&lcd, &model);
 
+String inputSerial = "";         // a string to hold incoming data
+boolean inputSerialComplete = false;  // whether the string is complete
+boolean inputSerial1Complete = false;  // whether the GPS string is complete
+boolean inputSerial2Complete = false;  // whether the string is complete
+boolean inputSerial3Complete = false;  // whether the string is complete
 
 
 //re-enable ISR2 in SoftwareSerial.cpp line 314 if you stop using ButtonCatcher
 
 void setup() {
+
 	model.readConfig();
+	inputSerial.reserve(40);
 	// initialize  serial ports:
 	Serial.begin(38400, 8, 1, 0);
 	if (DEBUG)
@@ -170,66 +177,89 @@ void readWDD() {
 	wind.readWindDataDir();
 }
 
+/*
+  SerialEvent occurs whenever a new data comes in the
+ hardware serial RX.  This routine is run between each
+ time loop() runs, so using delay inside loop can delay
+ response.  Multiple bytes of data may be available.
+ */
+void serialEvent() {
+  while (Serial.available()) {
+    // get the new byte:
+    char inChar = (char)Serial.read();
+    // add it to the inputString:
+    inputSerial += inChar;
+    // if the incoming character is a newline, set a flag
+    // so the main loop can do something about it:
+    if (inChar == '\n') {
+    	inputSerialComplete = true;
+    }
+  }
+}
+
+void serialEvent1() {
+  while (Serial1.available()) {
+    inputSerial1Complete = gps.decode(Serial1.read());
+    // read from port 1 (GPS), send to port 0:
+	if (inputSerial1Complete) {
+			if (MUX)
+				nmea.printNmea(gpsSource.sentence());
+			if (MUX && DEBUG)
+				Serial.println(gpsSource.sentence());
+			//loop every sentence
+			break;
+	}
+  }
+}
+
+void serialEvent2() {
+  while (Serial2.available()) {
+	  seatalk.processSeaTalkByte(Serial2.read());
+  }
+}
+
+void serialEvent3() {
+  while (Serial3.available()) {
+    	inputSerial3Complete = talker3.decode(Serial3.read());
+    	if(inputSerial3Complete){
+			if (MUX) nmea.printNmea(talker3.sentence());
+			if( DEBUG)Serial.println(talker3.sentence());
+			//loop every sentence
+			break;
+    	}
+  }
+}
 
 void loop() {
 
-	if (DEBUG)
+	//if (DEBUG)
 		//Serial.println("Looping..");
 	//dont get caught endlessly reading/writing
 	//allow single character commands
-	while (Serial.available() > 0) {
-		input = Serial.read();
-		if (input == 'a') {
-			Serial.println("Enable autopilot..");
+	if (inputSerialComplete) {
+
+		if (inputSerial.charAt(0) ==  'a') {
+			if (DEBUG)Serial.println("Enable autopilot..");
 			model.setAutopilotTargetHeading(model.getAutopilotCurrentHeading());
 			model.setAutopilotOn(true);
 		}
-		if (input == 'd') {
-			Serial.println("Disable autopilot..");
+		if (inputSerial.charAt(0) ==  'd') {
+			if (DEBUG)Serial.println("Disable autopilot..");
 			model.setAutopilotOn(false);
 		}
-		if (input == '-') {
-			Serial.println("Autopilot heading - 5");
+		if (inputSerial.charAt(0) == '-') {
+			if (DEBUG)Serial.println("Autopilot heading - 5");
 			//TODO: consider the 0-360 circle, cant be neg
 			model.setAutopilotTargetHeading(model.getAutopilotTargetHeading() - 5);
 		}
-		if (input == '+') {
-			Serial.println("Autopilot heading + 5");
+		if (inputSerial.charAt(0) ==  '+') {
+			if (DEBUG)Serial.println("Autopilot heading + 5");
 			model.setAutopilotTargetHeading(model.getAutopilotTargetHeading() + 5);
 		}
-		input = ' ';
-	}
-	// read from port 1, send to port 0:
-	while (Serial1.available() > 0) {
-		inByteSerial1 = Serial1.read();
-		//if(DEBUG)Serial.print(inByte);
-
-		if (gps.decode(inByteSerial1)) {
-			if (MUX) {
-				nmea.printNmea(gpsSource.sentence());
-			}
-			if (MUX && DEBUG)
-				Serial.println(gpsSource.sentence());
-			break; //every sentence
-		}
-
+		inputSerial="";
+		inputSerialComplete=false;
 	}
 
-	while (Serial2.available() > 0) {
-  	inByteSerial2=Serial2.read();
-		seatalk.processSeaTalkByte(inByteSerial2);
-	}
-
-	while (Serial3.available() > 0) {
-		inByteSerial3=Serial3.read();
-		// check if the character completes a valid NMEA sentence
-		if(DEBUG)Serial.print(inByteSerial3);
-		if (talker3.decode(inByteSerial3) && MUX) {
-			nmea.printNmea(talker3.sentence());
-		}
-		if(MUX && DEBUG)Serial.println(talker3.sentence());
-		break;//every sentence
-	}
 	if (execute) {
 		//timer ping
 		//do these every 100ms

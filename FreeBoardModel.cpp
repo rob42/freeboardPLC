@@ -99,6 +99,9 @@ FreeBoardModel::FreeBoardModel(){
 	version=1;
 }
 
+//void FreeBoardModel::serializeConfig(){
+//	Serial.pr
+//}
 /*
  * Returns -179 to +180 as the degrees off course
  */
