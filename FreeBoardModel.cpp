@@ -104,9 +104,12 @@ FreeBoardModel::FreeBoardModel(){
 int  FreeBoardModel::sendConfig(HardwareSerial ser) {
 	 unsigned char* p = ( unsigned char*) ( void*) &config;
 	unsigned int i;
+	ser.write('@');
 	for (i = 0; i < sizeof(config); i++)
 		ser.write(*p++);
+	ser.write('\n');
 	return i;
+
 }
 
 int FreeBoardModel::receiveConfig(HardwareSerial ser) {
