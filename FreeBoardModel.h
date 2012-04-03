@@ -10,6 +10,7 @@
 #ifndef FREEBOARDMODEL_H_
 #define FREEBOARDMODEL_H_
 
+#include "Arduino.h"
 #include <NMEA/nmea.h>
 #include <EEPROM/EEPROM.h>
 #include "FreeBoardConstants.h"
@@ -22,57 +23,58 @@ public:
 //alarms
 	FreeBoardModel();
 
-	bool isWindAlarmTriggered() const;
+	bool isWindAlarmTriggered() ;
 	void setWindAlarmTriggered(bool windAlarmTriggered);
-	unsigned long getAlarmLast() const;
-	unsigned long getAlarmSnooze() const;
-	float getAnchorDistance() const;
-	float getAnchorE() const;
-	float getAnchorLat() const;
-	float getAnchorLon() const;
-	float getAnchorMaxDistance() const;
-	float getAnchorN() const;
-	float getAnchorRadius() const;
-	float getAnchorRadiusDeg() const;
-	float getAnchorS() const;
-	float getAnchorW() const;
-	int getAutopilotReference() const;
+	unsigned long getAlarmLast() ;
+	unsigned long getAlarmSnooze() ;
+	float getAnchorDistance() ;
+	float getAnchorE() ;
+	float getAnchorLat() ;
+	float getAnchorLon() ;
+	float getAnchorMaxDistance() ;
+	float getAnchorN() ;
+	float getAnchorRadius() ;
+	float getAnchorRadiusDeg() ;
+	float getAnchorS() ;
+	float getAnchorW() ;
+	int getAutopilotReference() ;
 	double getAutopilotOffCourse();
-	double getAutopilotAlarmMaxCourseError() const;
-	double getAutopilotAlarmMaxWindError() const;
-	double getAutopilotAlarmMaxXtError() const;
+	double getAutopilotAlarmMaxCourseError() ;
+	double getAutopilotAlarmMaxWindError() ;
+	double getAutopilotAlarmMaxXtError() ;
 	double getAutopilotCurrentHeading();
 	double getAutopilotRudderCommand();
 	double getAutopilotTargetHeading();
-	long getGpsAlarmFixTime() const;
-	float getGpsCourse() const;
-	unsigned long getGpsLastFix() const;
-	float getGpsLatitude() const;
-	float getGpsLongitude() const;
-	float getGpsSpeed() const;
-	float getGpsSpeedUnit() const;
-	char getGpsStatus() const;
-	float getGpsUtc() const;
-	unsigned long getLcdLastUpdate() const;
-	volatile int getMenuLevel() const;
-	volatile int getMenuState() const;
-	volatile bool isMobAlarmTriggered() const;
-	volatile bool isRadarAlarmTriggered() const;
-	int getWindAlarmSpeed() const;
-	int getWindApparentDir() const;
-	int getWindAverage() const;
-	float getWindFactor() const;
-	unsigned long getWindLastUpdate() const;
-	int getWindMax() const;
-	//bool isAlarmBeepState() const;
-	bool isAnchorAlarmOn() const;
-	bool isAnchorAlarmTriggered() const;
-	bool isAutopilotAlarmOn() const;
-	bool isAutopilotAlarmTriggered() const;
-	bool isGpsAlarmOn() const;
-	bool isGpsAlarmTriggered() const;
-	bool isGpsDecode() const;
-	bool isWindAlarmOn() const;
+	long getGpsAlarmFixTime() ;
+	float getGpsCourse() ;
+	unsigned long getGpsLastFix() ;
+	float getGpsLatitude() ;
+	float getGpsLongitude() ;
+	float getGpsSpeed() ;
+	float getGpsSpeedUnit() ;
+	char getGpsStatus() ;
+	float getGpsUtc() ;
+	unsigned long getLcdLastUpdate() ;
+	volatile int getMenuLevel() ;
+	volatile int getMenuState() ;
+	volatile bool isMobAlarmTriggered() ;
+	volatile bool isRadarAlarmTriggered() ;
+	int getWindZeroOffset() ;
+	int getWindAlarmSpeed() ;
+	int getWindApparentDir() ;
+	int getWindAverage() ;
+	float getWindFactor() ;
+	unsigned long getWindLastUpdate() ;
+	int getWindMax() ;
+	//bool isAlarmBeepState() ;
+	bool isAnchorAlarmOn() ;
+	bool isAnchorAlarmTriggered() ;
+	bool isAutopilotAlarmOn() ;
+	bool isAutopilotAlarmTriggered() ;
+	bool isGpsAlarmOn() ;
+	bool isGpsAlarmTriggered() ;
+	bool isGpsDecode() ;
+	bool isWindAlarmOn() ;
 	// void setAlarmBeepState(bool alarmBeepState);
 	void setAlarmLast(unsigned long alarmLast);
 	void setAlarmSnooze(unsigned long alarmSnooze);
@@ -114,6 +116,7 @@ public:
 	void setMenuState(volatile int menuState);
 	void setMobAlarmTriggered(volatile bool mobAlarmTriggered);
 	void setRadarAlarmTriggered(volatile bool radarAlarmTriggered);
+	void setWindZeroOffset(int windZeroOffset);
 	void setWindAlarmOn(bool windAlarmOn);
 	void setWindAlarmSpeed(int windAlarmSpeed);
 	void setWindApparentDir(int windApparentDir);
@@ -121,15 +124,17 @@ public:
 	void setWindFactor(float windFactor);
 	void setWindLastUpdate(unsigned long windLastUpdate);
 	void setWindMax(int windMax);
-	volatile bool isAlarmTriggered() const;
-	volatile bool isMobAlarmOn() const;
-	volatile bool isRadarAlarmOn() const;
+	volatile bool isAlarmTriggered() ;
+	volatile bool isMobAlarmOn() ;
+	volatile bool isRadarAlarmOn() ;
 	void setMobAlarmOn(volatile bool mobAlarmOn);
 	void setRadarAlarmOn(volatile bool radarAlarmOn);
-    bool isAutopilotOn() const;
+    bool isAutopilotOn() ;
     void setAutopilotOn(bool autopilotOn);
     void saveConfig();
     void readConfig();
+    int sendConfig(HardwareSerial ser);
+    int receiveConfig(HardwareSerial ser);
 private:
 
 	unsigned long alarmLast; //toggle to make alarm beep - beep beep
@@ -222,8 +227,8 @@ private:
 		int windAlarmSpeed;
 		bool windAlarmOn;
 		float windFactor;
-	    int getAutopilotReference() const;
-	    void setAutopilotReference(int autopilotReference);
+		int windZeroOffset;
+
 	}config;
 
 	int version;

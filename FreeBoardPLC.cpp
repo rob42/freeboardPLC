@@ -96,8 +96,6 @@ boolean inputSerial2Complete = false;  // whether the string is complete
 boolean inputSerial3Complete = false;  // whether the string is complete
 
 
-//re-enable ISR2 in SoftwareSerial.cpp line 314 if you stop using ButtonCatcher
-
 void setup() {
 
 	model.readConfig();
@@ -139,9 +137,9 @@ void setup() {
 	if (DEBUG)
 		Serial.println("Start button interrupts..");
 
-	pinMode(button0, INPUT);
-	pinMode(button1, INPUT);
-	pinMode(button2, INPUT);
+	//pinMode(button0, INPUT);
+	//pinMode(button1, INPUT);
+	//pinMode(button2, INPUT);
 	//pinMode(button3, INPUT);
 
 
@@ -154,8 +152,9 @@ void setup() {
 
 	if (DEBUG)
 		Serial.println("Setup complete..");
-//	autopilot.enableAutoPilot();
-//	autopilot.setTargetHeading(50);
+	//print out the config
+	if (DEBUG)
+			model.sendConfig(Serial);
 }
 /*
  * Timer interrupt driven method to do time sensitive calculations
@@ -202,10 +201,8 @@ void serialEvent1() {
     inputSerial1Complete = gps.decode(Serial1.read());
     // read from port 1 (GPS), send to port 0:
 	if (inputSerial1Complete) {
-			if (MUX)
-				nmea.printNmea(gpsSource.sentence());
-			if (MUX && DEBUG)
-				Serial.println(gpsSource.sentence());
+			if (MUX)nmea.printNmea(gpsSource.sentence());
+			if (MUX && DEBUG)Serial.println(gpsSource.sentence());
 			//loop every sentence
 			break;
 	}
@@ -223,7 +220,7 @@ void serialEvent3() {
     	inputSerial3Complete = talker3.decode(Serial3.read());
     	if(inputSerial3Complete){
 			if (MUX) nmea.printNmea(talker3.sentence());
-			if( DEBUG)Serial.println(talker3.sentence());
+			if( MUX && DEBUG)Serial.println(talker3.sentence());
 			//loop every sentence
 			break;
     	}

@@ -85,9 +85,9 @@ class AverageList {
 			}
 			buffer /= currentSize;
 			if(sign>0)
-				return (datatype)buffer+180;
+				return (datatype)buffer;
 			else
-				return (datatype)180-buffer;
+				return (datatype)360-buffer;
 		}
 
 		//return the average of the entire AverageList, even though all values might not be initialized

@@ -93,29 +93,32 @@ FreeBoardModel::FreeBoardModel(){
 		config.mobAlarmOn=false;
 		config.windAlarmSpeed=99;
 		config.windAlarmOn=false;
-		config.windFactor=1000000;
+		config.windFactor=2200000;
+		config.windZeroOffset=50;
 	//}config;
+
 //we change this if we change the struct so we can tell before reloading incompatible versions
-	version=1;
+	version=2;
 }
 
-//void FreeBoardModel::serializeConfig(){
-//	Serial.pr
-//}
-/*
- * Returns -179 to +180 as the degrees off course
- */
-double FreeBoardModel::getAutopilotOffCourse(){
-	//get degrees between
-	autopilotOffCourse=(getAutopilotTargetHeading()+360)- (getAutopilotCurrentHeading()+360);
-	autopilotOffCourse=fmod(autopilotOffCourse,360.0);
-	//if its >abs(180), then we want to go the -ve (shorter) direction
-	if(fabs(autopilotOffCourse)>180)autopilotOffCourse=autopilotOffCourse-360;
-	return autopilotOffCourse;
+int  FreeBoardModel::sendConfig(HardwareSerial ser) {
+	 unsigned char* p = ( unsigned char*) ( void*) &config;
+	unsigned int i;
+	for (i = 0; i < sizeof(config); i++)
+		ser.write(*p++);
+	return i;
 }
 
-template<class T> int EEPROM_writeAnything(int ee, const T& value) {
-	const unsigned char* p = (const unsigned char*) (const void*) &value;
+int FreeBoardModel::receiveConfig(HardwareSerial ser) {
+	unsigned char* p = (unsigned char*) (void*) &config;
+	unsigned int i;
+	for (i = 0; i < sizeof(config); i++)
+		*p++ = ser.read();
+	return i;
+}
+
+template<class T> int EEPROM_writeAnything(int ee,  T& value) {
+	 unsigned char* p = ( unsigned char*) ( void*) &value;
 	unsigned int i;
 	for (i = 0; i < sizeof(value); i++)
 		EEPROM.write(ee++, *p++);
@@ -153,83 +156,100 @@ void FreeBoardModel::readConfig()
 
 }
 //accessors
-bool FreeBoardModel::isWindAlarmTriggered() const
+bool FreeBoardModel::isWindAlarmTriggered()
 {
     return windAlarmTriggered;
 }
 
-unsigned long FreeBoardModel::getAlarmLast() const
+unsigned long FreeBoardModel::getAlarmLast()
 {
     return alarmLast;
 }
 
-unsigned long FreeBoardModel::getAlarmSnooze() const
+unsigned long FreeBoardModel::getAlarmSnooze()
 {
     return alarmSnooze;
 }
 
-float FreeBoardModel::getAnchorDistance() const
+float FreeBoardModel::getAnchorDistance()
 {
     return anchorDistance;
 }
 
-float FreeBoardModel::getAnchorE() const
+float FreeBoardModel::getAnchorE()
 {
     return anchorE;
 }
 
-float FreeBoardModel::getAnchorLat() const
+float FreeBoardModel::getAnchorLat()
 {
     return config.anchorLat;
 }
 
-float FreeBoardModel::getAnchorLon() const
+float FreeBoardModel::getAnchorLon()
 {
     return config.anchorLon;
 }
 
-float FreeBoardModel::getAnchorMaxDistance() const
+float FreeBoardModel::getAnchorMaxDistance()
 {
     return anchorMaxDistance;
 }
 
-float FreeBoardModel::getAnchorN() const
+float FreeBoardModel::getAnchorN()
 {
     return anchorN;
 }
 
-float FreeBoardModel::getAnchorRadius() const
+float FreeBoardModel::getAnchorRadius()
 {
     return config.anchorRadius;
 }
 
-float FreeBoardModel::getAnchorRadiusDeg() const
+float FreeBoardModel::getAnchorRadiusDeg()
 {
     return anchorRadiusDeg;
 }
 
-float FreeBoardModel::getAnchorS() const
+float FreeBoardModel::getAnchorS()
 {
     return anchorS;
 }
 
-float FreeBoardModel::getAnchorW() const
+float FreeBoardModel::getAnchorW()
 {
     return anchorW;
 }
 
+/*
+ * Returns -179 to +180 as the degrees off course
+ */
+double FreeBoardModel::getAutopilotOffCourse(){
+	//get degrees between
+	autopilotOffCourse=(getAutopilotTargetHeading()+360)- (getAutopilotCurrentHeading()+360);
+	autopilotOffCourse=fmod(autopilotOffCourse,360.0);
+	//if its >abs(180), then we want to go the -ve (shorter) direction
+	if(fabs(autopilotOffCourse)>180)autopilotOffCourse=autopilotOffCourse-360;
+	return autopilotOffCourse;
+}
 
-double FreeBoardModel::getAutopilotAlarmMaxCourseError() const
+int FreeBoardModel::getAutopilotReference()
+{
+    return autopilotReference;
+}
+
+
+double FreeBoardModel::getAutopilotAlarmMaxCourseError()
 {
     return autopilotAlarmMaxCourseError;
 }
 
-double FreeBoardModel::getAutopilotAlarmMaxWindError() const
+double FreeBoardModel::getAutopilotAlarmMaxWindError()
 {
     return autopilotAlarmMaxWindError;
 }
 
-double FreeBoardModel::getAutopilotAlarmMaxXtError() const
+double FreeBoardModel::getAutopilotAlarmMaxXtError()
 {
     return autopilotAlarmMaxXTError;
 }
@@ -249,143 +269,148 @@ double FreeBoardModel::getAutopilotCurrentHeading()
     return autopilotCurrentHeading;
 }
 
-long FreeBoardModel::getGpsAlarmFixTime() const
+long FreeBoardModel::getGpsAlarmFixTime()
 {
     return config.gpsAlarmFixTime;
 }
 
-float FreeBoardModel::getGpsCourse() const
+float FreeBoardModel::getGpsCourse()
 {
     return gpsCourse;
 }
 
-unsigned long FreeBoardModel::getGpsLastFix() const
+unsigned long FreeBoardModel::getGpsLastFix()
 {
     return gpsLastFix;
 }
 
-float FreeBoardModel::getGpsLatitude() const
+float FreeBoardModel::getGpsLatitude()
 {
     return gpsLatitude;
 }
 
-float FreeBoardModel::getGpsLongitude() const
+float FreeBoardModel::getGpsLongitude()
 {
     return gpsLongitude;
 }
 
-float FreeBoardModel::getGpsSpeed() const
+float FreeBoardModel::getGpsSpeed()
 {
     return gpsSpeed;
 }
 
-float FreeBoardModel::getGpsSpeedUnit() const
+float FreeBoardModel::getGpsSpeedUnit()
 {
     return config.gpsSpeedUnit;
 }
 
-char FreeBoardModel::getGpsStatus() const
+char FreeBoardModel::getGpsStatus()
 {
     return gpsStatus;
 }
 
-float FreeBoardModel::getGpsUtc() const
+float FreeBoardModel::getGpsUtc()
 {
     return gpsUtc;
 }
 
-unsigned long FreeBoardModel::getLcdLastUpdate() const
+unsigned long FreeBoardModel::getLcdLastUpdate()
 {
     return lcdLastUpdate;
 }
 
-volatile int FreeBoardModel::getMenuLevel() const
+volatile int FreeBoardModel::getMenuLevel()
 {
     return menuLevel;
 }
 
-volatile int FreeBoardModel::getMenuState() const
+volatile int FreeBoardModel::getMenuState()
 {
     return menuState;
 }
 
-volatile bool FreeBoardModel::isMobAlarmTriggered() const
+volatile bool FreeBoardModel::isMobAlarmTriggered()
 {
     return mobAlarmTriggered;
 }
 
-volatile bool FreeBoardModel::isRadarAlarmTriggered() const
+volatile bool FreeBoardModel::isRadarAlarmTriggered()
 {
     return radarAlarmTriggered;
 }
 
-int FreeBoardModel::getWindAlarmSpeed() const
+int FreeBoardModel::getWindZeroOffset()
+{
+    return config.windZeroOffset;
+}
+
+int FreeBoardModel::getWindAlarmSpeed()
 {
     return config.windAlarmSpeed;
 }
 
-int FreeBoardModel::getWindApparentDir() const
+int FreeBoardModel::getWindApparentDir()
 {
     return windApparentDir;
 }
 
-int FreeBoardModel::getWindAverage() const
+int FreeBoardModel::getWindAverage()
 {
     return windAverage;
 }
 
-float FreeBoardModel::getWindFactor() const
+float FreeBoardModel::getWindFactor()
 {
     return config.windFactor;
 }
 
-unsigned long FreeBoardModel::getWindLastUpdate() const
+unsigned long FreeBoardModel::getWindLastUpdate()
 {
     return windLastUpdate;
 }
 
-int FreeBoardModel::getWindMax() const
+int FreeBoardModel::getWindMax()
 {
     return windMax;
 }
 
 
-bool FreeBoardModel::isAnchorAlarmOn() const
+bool FreeBoardModel::isAnchorAlarmOn()
 {
     return config.anchorAlarmOn;
 }
 
-bool FreeBoardModel::isAnchorAlarmTriggered() const
+bool FreeBoardModel::isAnchorAlarmTriggered()
 {
     return anchorAlarmTriggered;
 }
 
-bool FreeBoardModel::isAutopilotAlarmOn() const
+bool FreeBoardModel::isAutopilotAlarmOn()
 {
     return config.autopilotAlarmOn;
 }
 
-bool FreeBoardModel::isAutopilotAlarmTriggered() const
+bool FreeBoardModel::isAutopilotAlarmTriggered()
 {
     return autopilotAlarmTriggered;
 }
 
-bool FreeBoardModel::isGpsAlarmOn() const
+bool FreeBoardModel::isGpsAlarmOn()
 {
     return config.gpsAlarmOn;
 }
 
-bool FreeBoardModel::isGpsAlarmTriggered() const
+bool FreeBoardModel::isGpsAlarmTriggered()
 {
     return gpsAlarmTriggered;
 }
 
-bool FreeBoardModel::isGpsDecode() const
+bool FreeBoardModel::isGpsDecode()
 {
     return gpsDecode;
 }
 
-bool FreeBoardModel::isWindAlarmOn() const
+bool FreeBoardModel::isWindAlarmOn()
 {
     return config.windAlarmOn;
 }
@@ -461,6 +486,10 @@ void FreeBoardModel::setAnchorW(float anchorW)
     this->anchorW = anchorW;
 }
 
+void FreeBoardModel::setAutopilotReference(int autopilotReference)
+{
+    this->autopilotReference = autopilotReference;
+}
 
 void FreeBoardModel::setAutopilotAlarmMaxCourseError(double autopilotAlarmMaxCourseError)
 {
@@ -490,7 +519,9 @@ void FreeBoardModel::setAutopilotAlarmTriggered(bool autopilotAlarmTriggered)
 
 void FreeBoardModel::setAutopilotCurrentHeading(double autopilotCurrentHeading)
 {
-    this->autopilotCurrentHeading = autopilotCurrentHeading;
+	//make this 0-360 range only
+		if(autopilotCurrentHeading>=0 && autopilotCurrentHeading <=360)
+			this->autopilotCurrentHeading = autopilotCurrentHeading;
 }
 
 void FreeBoardModel::setAutopilotRudderCommand(double autopilotRudderCommand)
@@ -502,7 +533,9 @@ void FreeBoardModel::setAutopilotRudderCommand(double autopilotRudderCommand)
 
 void FreeBoardModel::setAutopilotTargetHeading(double autopilotTargetHeading)
 {
-    this->autopilotTargetHeading = autopilotTargetHeading;
+	//make this 0-360 range only
+	if(autopilotTargetHeading>=0 && autopilotTargetHeading <=360)
+		this->autopilotTargetHeading = autopilotTargetHeading;
 }
 
 
@@ -591,6 +624,12 @@ void FreeBoardModel::setRadarAlarmTriggered(volatile bool radarAlarmTriggered)
     this->radarAlarmTriggered = radarAlarmTriggered;
 }
 
+
+void FreeBoardModel::setWindZeroOffset(int windZeroOffset)
+{
+    this->config.windZeroOffset = windZeroOffset;
+}
+
 void FreeBoardModel::setWindAlarmOn(bool windAlarmOn)
 {
     this->config.windAlarmOn = windAlarmOn;
@@ -621,18 +660,18 @@ void FreeBoardModel::setWindLastUpdate(unsigned long  windLastUpdate)
     this->windLastUpdate = windLastUpdate;
 }
 
-volatile bool FreeBoardModel::isAlarmTriggered() const
+volatile bool FreeBoardModel::isAlarmTriggered()
 {
     return windAlarmTriggered && radarAlarmTriggered && gpsAlarmTriggered
     		&& anchorAlarmTriggered && autopilotAlarmTriggered && mobAlarmTriggered;
 }
 
-volatile bool FreeBoardModel::isMobAlarmOn() const
+volatile bool FreeBoardModel::isMobAlarmOn()
 {
     return config.mobAlarmOn;
 }
 
-volatile bool FreeBoardModel::isRadarAlarmOn() const
+volatile bool FreeBoardModel::isRadarAlarmOn()
 {
     return config.radarAlarmOn;
 }
@@ -642,7 +681,7 @@ void FreeBoardModel::setMobAlarmOn(volatile bool mobAlarmOn)
     this->config.mobAlarmOn = mobAlarmOn;
 }
 
-bool FreeBoardModel::isAutopilotOn() const
+bool FreeBoardModel::isAutopilotOn()
 {
     return config.autopilotOn;
 }
@@ -667,15 +706,12 @@ void FreeBoardModel::setWindAlarmTriggered(bool windAlarmTriggered)
     this->windAlarmTriggered = windAlarmTriggered;
 }
 
-int FreeBoardModel::getAutopilotReference() const
-{
-    return autopilotReference;
-}
 
-void FreeBoardModel::setAutopilotReference(int autopilotReference)
-{
-    this->autopilotReference = autopilotReference;
-}
+
+
+
+
+
 
 
 

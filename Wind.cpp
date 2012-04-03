@@ -144,7 +144,7 @@ void Wind::calcWindData() {
 
 	// calc direction, degrees clockwise
 	//should round to int, min 1
-		model->setWindApparentDir((int)dirList.getRotationalAverage());
+		model->setWindApparentDir((((int)dirList.getRotationalAverage())+model->getWindZeroOffset()) % 360);
 
 }
 
