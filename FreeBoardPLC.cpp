@@ -154,7 +154,7 @@ void setup() {
 		Serial.println("Setup complete..");
 	//print out the config
 	if (DEBUG)
-			model.sendConfig(Serial);
+			model.sendData(Serial, CONFIG_T);
 }
 /*
  * Timer interrupt driven method to do time sensitive calculations

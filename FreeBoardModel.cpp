@@ -101,23 +101,54 @@ FreeBoardModel::FreeBoardModel(){
 	version=2;
 }
 
-int  FreeBoardModel::sendConfig(HardwareSerial ser) {
-	 unsigned char* p = ( unsigned char*) ( void*) &config;
+template<class T> int  writeObject(HardwareSerial ser, T& value, char name ) {
+	unsigned char* p = ( unsigned char*) ( void*) &value;
 	unsigned int i;
+	char checksum = '0';
 	ser.write('@');
-	for (i = 0; i < sizeof(config); i++)
+	ser.write(name);
+	for (i = 0; i < sizeof(value); i++){
 		ser.write(*p++);
+		checksum=checksum ^ *p;
+	}
+	ser.write(checksum);
 	ser.write('\n');
 	return i;
 
 }
 
-int FreeBoardModel::receiveConfig(HardwareSerial ser) {
-	unsigned char* p = (unsigned char*) (void*) &config;
+int FreeBoardModel::sendData(HardwareSerial ser,  char name ) {
+	if(CONFIG_T== name){
+		return writeObject(ser, config, name);
+	}
+	return -1;
+}
+
+
+
+template<class T> int readObject(HardwareSerial ser,T& value, char name) {
+	unsigned char* p = (unsigned char*) (void*) &value;
 	unsigned int i;
-	for (i = 0; i < sizeof(config); i++)
+	char checksum = '0';
+	for (i = 0; i < sizeof(value); i++){
 		*p++ = ser.read();
+		checksum=checksum ^ *p;
+	}
+	//TODO: make sure this actually works
+	if(ser.read()==checksum){
+		Serial.print("Checksum valid");
+	}else{
+		Serial.print("Checksum invalid");
+	}
+
 	return i;
+}
+
+int FreeBoardModel::receiveData(HardwareSerial ser, char name){
+	if(CONFIG_T== name){
+		return readObject(ser, config, name);
+	}
+	return -1;
 }
 
 template<class T> int EEPROM_writeAnything(int ee,  T& value) {

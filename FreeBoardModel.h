@@ -133,8 +133,8 @@ public:
     void setAutopilotOn(bool autopilotOn);
     void saveConfig();
     void readConfig();
-    int sendConfig(HardwareSerial ser);
-    int receiveConfig(HardwareSerial ser);
+    int sendData(HardwareSerial ser, char name);
+    int receiveData(HardwareSerial ser, char name);
 private:
 
 	unsigned long alarmLast; //toggle to make alarm beep - beep beep
