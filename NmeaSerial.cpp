@@ -26,6 +26,24 @@ void NmeaSerial::printNmea(char* sentence){
 	  //if(DEBUG)Serial.println(sentence);
 }
 
+/*=== MWV - Wind Speed and Angle ===
+*
+* ------------------------------------------------------------------------------
+*        1   2 3   4 5
+*         |   | |   | |
+*  $--MWV,x.x,a,x.x,a*hh<CR><LF>
+* ------------------------------------------------------------------------------
+*
+* Field Number:
+*
+* 1. Wind Angle, 0 to 360 degrees
+* 2. Reference, R = Relative, T = True
+* 3. Wind Speed
+* 4. Wind Speed Units, K/M/N
+* 5. Status, A = Data Valid
+* 6. Checksum
+ *
+ */
 void NmeaSerial::printWindNmea() {
 		//Assemble a sentence of the various parts so that we can calculate the proper checksum
 

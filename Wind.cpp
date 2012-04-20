@@ -29,12 +29,13 @@ volatile bool windSpeedFlag;
 volatile bool windDirFlag;
 
 typedef volatile long val; //change float to the datatype you want to use
+typedef volatile float rval; //change float to the datatype you want to use
 const byte MAX_NUMBER_OF_READINGS = 5;
 val speedStorage[MAX_NUMBER_OF_READINGS] = {0};
-val dirStorage[MAX_NUMBER_OF_READINGS] = {0};
+rval dirStorage[MAX_NUMBER_OF_READINGS] = {0.0};
 
 AverageList<val> speedList = AverageList<val>( speedStorage, MAX_NUMBER_OF_READINGS );
-AverageList<val> dirList = AverageList<val>( dirStorage, MAX_NUMBER_OF_READINGS );
+AverageList<rval> dirList = AverageList<rval>( dirStorage, MAX_NUMBER_OF_READINGS );
 
 Wind::Wind( FreeBoardModel* model) {
 	this->model=model;
@@ -101,13 +102,16 @@ void Wind::readWindDataDir() {
 				//total time to rotate = windSpeedDur
 				//time to arrow = windDirDur
 				//so windDirDur/windSpeedDur gives the fraction of 360deg
-				//should round to int, min 1
-				dirList.addRotationalValue(360*((float)windDirDur/(float)windSpeedDur));
+
+				dirList.addValue(((float)windDirDur/(float)windSpeedDur));
 			}
 		}
 	}
 }
 
+/*
+ * Calculates wind data. Direction is apparent, 0-360 deg off the bow, clockwise, in degrees.
+ */
 void Wind::calcWindData() {
 //		Serial.print("Windspeed list:");
 //		Serial.print(speedList.getTotalAverage());

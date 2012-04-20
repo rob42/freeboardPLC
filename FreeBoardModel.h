@@ -143,51 +143,57 @@ private:
 
 
 	//anchor
-	//float anchorRadius; //anchor alarm radius in meters
-	float anchorRadiusDeg; //anchor alarm radius in decimal degrees, eg 1deg = 60NM.
+	struct AnchorState{
+		//float anchorRadius; //anchor alarm radius in meters
+		float anchorRadiusDeg; //anchor alarm radius in decimal degrees, eg 1deg = 60NM.
 
-	//anchor alarm data
-	//float anchorLat; // variable for reading the anchor latitude
-	//float anchorLon; // variable for reading the anchor longitude
-	float anchorDistance;
-	float anchorMaxDistance;
-	//bool anchorAlarmOn; //flag to turn anchor alarm on/off toggle
-	bool anchorAlarmTriggered; //set to true to trigger anchor alarm
+		//anchor alarm data
+		//float anchorLat; // variable for reading the anchor latitude
+		//float anchorLon; // variable for reading the anchor longitude
+		float anchorDistance;
+		float anchorMaxDistance;
+		//bool anchorAlarmOn; //flag to turn anchor alarm on/off toggle
+		bool anchorAlarmTriggered; //set to true to trigger anchor alarm
 
-	//a box around the anchor, shrinks with every GPS reading to home in on the anchor itself
-	float anchorN;
-	float anchorS;
-	float anchorE;
-	float anchorW;
+		//a box around the anchor, shrinks with every GPS reading to home in on the anchor itself
+		float anchorN;
+		float anchorS;
+		float anchorE;
+		float anchorW;
+	}anchorState;
 
 	//autopilot
-	//bool autopilotOn;
+	struct AutopilotState{
+		//bool autopilotOn;
 
-	double autopilotOffCourse; //-179 to +180
-	int autopilotReference; //WIND (1) or COMPASS(0)
-	//these need to always be positive for autopilot
-	double autopilotCurrentHeading; //Input 0-360
-	double autopilotTargetHeading; //Setpoint 0-360
-	double autopilotRudderCommand; //Output 0-66
-	//bool autopilotAlarmOn;
-	bool autopilotAlarmTriggered;
-	double autopilotAlarmMaxXTError; //cross track error
-	double autopilotAlarmMaxWindError; //wind angle change while on windpilot
-	double autopilotAlarmMaxCourseError; //course error
+		double autopilotOffCourse; //-179 to +180
+		int autopilotReference; //WIND (1) or COMPASS(0)
+		//these need to always be positive for autopilot
+		double autopilotCurrentHeading; //Input 0-360
+		double autopilotTargetHeading; //Setpoint 0-360
+		double autopilotRudderCommand; //Output 0-66
+		//bool autopilotAlarmOn;
+		bool autopilotAlarmTriggered;
+		double autopilotAlarmMaxXTError; //cross track error
+		double autopilotAlarmMaxWindError; //wind angle change while on windpilot
+		double autopilotAlarmMaxCourseError; //course error
+	}autopilotState;
 
 	//gps
-	bool gpsDecode; //flag to indicate a new sentence was decoded.
-	unsigned long gpsLastFix; //time of last good gps fix.
-	float gpsUtc; // decimal value of UTC term in last full GPRMC sentence
-	char gpsStatus; //  status character in last full GPRMC sentence ('A' or 'V')
-	float gpsLatitude; // signed degree-decimal value of latitude terms in last full GPRMC sentence
-	float gpsLongitude; // signed degree-decimal value of longitude terms in last full GPRMC sentence
-	//float gpsSpeedUnit; //unit multiplier for gpsSpeed. 1.0 = KNT,1.1507794	=MPH, see nmea.h
-	float gpsSpeed; // speed-on-ground term in last full GPRMC sentence
-	float gpsCourse; // track-angle-made-good term in last full GPRMC sentence
-	//bool gpsAlarmOn; //true to engage alarm
-	bool gpsAlarmTriggered; //set to true to trigger gps alarm
-	//double gpsAlarmFixTime; //max time in millis without fix
+	struct GpsState{
+		bool gpsDecode; //flag to indicate a new sentence was decoded.
+		unsigned long gpsLastFix; //time of last good gps fix.
+		float gpsUtc; // decimal value of UTC term in last full GPRMC sentence
+		char gpsStatus; //  status character in last full GPRMC sentence ('A' or 'V')
+		float gpsLatitude; // signed degree-decimal value of latitude terms in last full GPRMC sentence
+		float gpsLongitude; // signed degree-decimal value of longitude terms in last full GPRMC sentence
+		//float gpsSpeedUnit; //unit multiplier for gpsSpeed. 1.0 = KNT,1.1507794	=MPH, see nmea.h
+		float gpsSpeed; // speed-on-ground term in last full GPRMC sentence
+		float gpsCourse; // track-angle-made-good term in last full GPRMC sentence
+		//bool gpsAlarmOn; //true to engage alarm
+		bool gpsAlarmTriggered; //set to true to trigger gps alarm
+		//double gpsAlarmFixTime; //max time in millis without fix
+	}gpsState;
 
 	//lcd
 	unsigned long lcdLastUpdate;
@@ -203,14 +209,17 @@ private:
 	bool mobAlarmTriggered; //set to true to trigger MOB alarm
 
 	//wind
-	unsigned long windLastUpdate;
-	int windAverage;
-	//float windFactor;
-	int windMax;
-	int windApparentDir;
-	//int windAlarmSpeed;
-	//bool windAlarmOn;
-	bool windAlarmTriggered;
+	struct WindState{
+
+		unsigned long windLastUpdate;
+		int windAverage;
+		float windFactor;
+		int windMax;
+		int windApparentDir;
+		//int windAlarmSpeed;
+		//bool windAlarmOn;
+		bool windAlarmTriggered;
+	}windState;
 
 	struct Configuration{
 		float anchorLat;
@@ -233,5 +242,7 @@ private:
 
 	int version;
 };
+
+
 
 #endif /* FREEBOARDMODEL_H_ */

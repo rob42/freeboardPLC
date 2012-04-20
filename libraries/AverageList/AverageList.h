@@ -53,19 +53,6 @@ class AverageList {
 			}
 		}
 
-		//add a circular (0-360) value to the AverageList at the next index, if out of bounds, return false, else return true
-		void addRotationalValue(datatype value){
-			value=value%360;
-			value=value-180;
-			if (currentSize<size){
-				values[currentSize++] = value;
-				currentIndex = ++currentIndex % currentSize;
-			}else{
-				currentIndex = ++currentIndex % size;
-				values[currentIndex] = value;
-			}
-		}
-
 		//return the average of all values added with an addValue call
 		datatype getAverage(){
 			float buffer = 0;
@@ -75,19 +62,25 @@ class AverageList {
 		}
 
 
-		//return the average of all circular (0-360) values added with an addRotationalValue call
+		/*
+		 * return the average of all circular (0-360) values in DEGREES added with an addRotationalValue call
+		 * Range is 0-360 DEGREES
+		 */
 		datatype getRotationalAverage(){
-			float buffer = 0;
-			float sign = 0;
+			float x = 0;
+			float y = 0;
+			float angle=0;
 			for (byte i=0; i<currentSize; i++){
-				buffer += (float)abs(values[i]);
-				sign += (float)values[i];
+				angle=2*PI*values[i];
+			    x += cos(angle);
+			    y += sin(angle);
 			}
-			buffer /= currentSize;
-			if(sign>0)
-				return (datatype)buffer;
-			else
-				return (datatype)360-buffer;
+			//TODO:watch out for zeros
+			if(x==0.0f && y==0.0f){
+				return 0.0f;
+			}
+			return degrees(atan2(y, x))+180;
+
 		}
 
 		//return the average of the entire AverageList, even though all values might not be initialized

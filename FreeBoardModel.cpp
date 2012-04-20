@@ -14,46 +14,46 @@ FreeBoardModel::FreeBoardModel(){
 
 	//anchor
 	//float anchorRadius; //anchor alarm radius in meters
-	anchorRadiusDeg=0.0; //anchor alarm radius in decimal degrees, eg 1deg = 60NM.
+	anchorState.anchorRadiusDeg=0.0; //anchor alarm radius in decimal degrees, eg 1deg = 60NM.
 
 	//anchor alarm data
 	//float anchorLat; // variable for reading the anchor latitude
 	//float anchorLon; // variable for reading the anchor longitude
-	anchorDistance=0.0;
-	anchorMaxDistance=0.0;
+	anchorState.anchorDistance=0.0;
+	anchorState.anchorMaxDistance=0.0;
 	//bool anchorAlarmOn; //flag to turn anchor alarm on/off toggle
-	anchorAlarmTriggered=false; //set to true to trigger anchor alarm
+	anchorState.anchorAlarmTriggered=false; //set to true to trigger anchor alarm
 
 	//a box around the anchor, shrinks with every GPS reading to home in on the anchor itself
-	anchorN=90.0;
-	anchorS=-90.0;
-	anchorE=180.0;
-	anchorW=-180.0;
+	anchorState.anchorN=90.0;
+	anchorState.anchorS=-90.0;
+	anchorState.anchorE=180.0;
+	anchorState.anchorW=-180.0;
 
 	//autopilot
 	//bool autopilotOn;
-	autopilotReference=AUTOPILOT_COMPASS;
-	autopilotCurrentHeading=0; //Input
-	autopilotTargetHeading=0; //Setpoint
-	autopilotRudderCommand=33; //Output (rudder central)
+	autopilotState.autopilotReference=AUTOPILOT_COMPASS;
+	autopilotState.autopilotCurrentHeading=0; //Input
+	autopilotState.autopilotTargetHeading=0; //Setpoint
+	autopilotState.autopilotRudderCommand=33; //Output (rudder central)
 	//bool autopilotAlarmOn;
-	autopilotAlarmTriggered=false;
-	autopilotAlarmMaxXTError=100; // +/- meters cross track error
-	autopilotAlarmMaxWindError=10; // +/- wind angle change, for over 1 minute
-	autopilotAlarmMaxCourseError=10; // +/- course error, for over 1 minute
+	autopilotState.autopilotAlarmTriggered=false;
+	autopilotState.autopilotAlarmMaxXTError=100; // +/- meters cross track error
+	autopilotState.autopilotAlarmMaxWindError=10; // +/- wind angle change, for over 1 minute
+	autopilotState.autopilotAlarmMaxCourseError=10; // +/- course error, for over 1 minute
 
 	//gps
-	gpsDecode=false; //flag to indicate a new sentence was decoded.
-	gpsLastFix=0; //time of last good gps fix.
-	gpsUtc=0; // decimal value of UTC term in last full GPRMC sentence
-	gpsStatus='V'; //  status character in last full GPRMC sentence ('A' or 'V')
-	gpsLatitude=0.0; // signed degree-decimal value of latitude terms in last full GPRMC sentence
-	gpsLongitude=0.0; // signed degree-decimal value of longitude terms in last full GPRMC sentence
+	gpsState.gpsDecode=false; //flag to indicate a new sentence was decoded.
+	gpsState.gpsLastFix=0; //time of last good gps fix.
+	gpsState.gpsUtc=0; // decimal value of UTC term in last full GPRMC sentence
+	gpsState.gpsStatus='V'; //  status character in last full GPRMC sentence ('A' or 'V')
+	gpsState.gpsLatitude=0.0; // signed degree-decimal value of latitude terms in last full GPRMC sentence
+	gpsState.gpsLongitude=0.0; // signed degree-decimal value of longitude terms in last full GPRMC sentence
 	//float gpsSpeedUnit; //unit multiplier for gpsSpeed. 1.0 = KNT,1.1507794	=MPH, see nmea.h
-	gpsSpeed=0.0; // speed-on-ground term in last full GPRMC sentence
-	gpsCourse=0.0; // track-angle-made-good term in last full GPRMC sentence
+	gpsState.gpsSpeed=0.0; // speed-on-ground term in last full GPRMC sentence
+	gpsState.gpsCourse=0.0; // track-angle-made-good term in last full GPRMC sentence
 	//bool gpsAlarmOn; //true to engage alarm
-	gpsAlarmTriggered=false; //set to true to trigger gps alarm
+	gpsState.gpsAlarmTriggered=false; //set to true to trigger gps alarm
 	//double gpsAlarmFixTime; //max time in millis without fix
 
 	//lcd
@@ -70,14 +70,14 @@ FreeBoardModel::FreeBoardModel(){
 	mobAlarmTriggered=false; //set to true to trigger MOB alarm
 
 	//wind
-	windLastUpdate=0;
-	windAverage=0;
-	//float windFactor;
-	windMax=0;
-	windApparentDir=0;
+	windState.windLastUpdate=0;
+	windState.windAverage=0;
+	//windState.windFactor=2200000;
+	windState.windMax=0;
+	windState.windApparentDir=0;
 	//int windAlarmSpeed;
 	//bool windAlarmOn;
-	windAlarmTriggered=false;
+	windState.windAlarmTriggered=false;
 
 	//struct Configuration{
 		config.anchorLat=0.0;
@@ -93,8 +93,8 @@ FreeBoardModel::FreeBoardModel(){
 		config.mobAlarmOn=false;
 		config.windAlarmSpeed=99;
 		config.windAlarmOn=false;
-		config.windFactor=2200000;
-		config.windZeroOffset=50;
+		windState.windFactor=2200000;
+		config.windZeroOffset=0;
 	//}config;
 
 //we change this if we change the struct so we can tell before reloading incompatible versions
@@ -184,15 +184,18 @@ void FreeBoardModel::readConfig()
 		//save
 		saveConfig();
 	}
+
 	//now we know its compatible
 	EEPROM_readAnything(4,config);
+	//update
+	windState.windFactor=config.windFactor;
 
 
 }
 //accessors
 bool FreeBoardModel::isWindAlarmTriggered()
 {
-    return windAlarmTriggered;
+    return windState.windAlarmTriggered;
 }
 
 unsigned long FreeBoardModel::getAlarmLast()
@@ -207,12 +210,12 @@ unsigned long FreeBoardModel::getAlarmSnooze()
 
 float FreeBoardModel::getAnchorDistance()
 {
-    return anchorDistance;
+    return anchorState.anchorDistance;
 }
 
 float FreeBoardModel::getAnchorE()
 {
-    return anchorE;
+    return anchorState.anchorE;
 }
 
 float FreeBoardModel::getAnchorLat()
@@ -227,12 +230,12 @@ float FreeBoardModel::getAnchorLon()
 
 float FreeBoardModel::getAnchorMaxDistance()
 {
-    return anchorMaxDistance;
+    return anchorState.anchorMaxDistance;
 }
 
 float FreeBoardModel::getAnchorN()
 {
-    return anchorN;
+    return anchorState.anchorN;
 }
 
 float FreeBoardModel::getAnchorRadius()
@@ -242,17 +245,17 @@ float FreeBoardModel::getAnchorRadius()
 
 float FreeBoardModel::getAnchorRadiusDeg()
 {
-    return anchorRadiusDeg;
+    return anchorState.anchorRadiusDeg;
 }
 
 float FreeBoardModel::getAnchorS()
 {
-    return anchorS;
+    return anchorState.anchorS;
 }
 
 float FreeBoardModel::getAnchorW()
 {
-    return anchorW;
+    return anchorState.anchorW;
 }
 
 /*
@@ -260,47 +263,47 @@ float FreeBoardModel::getAnchorW()
  */
 double FreeBoardModel::getAutopilotOffCourse(){
 	//get degrees between
-	autopilotOffCourse=(getAutopilotTargetHeading()+360)- (getAutopilotCurrentHeading()+360);
-	autopilotOffCourse=fmod(autopilotOffCourse,360.0);
+	autopilotState.autopilotOffCourse=(getAutopilotTargetHeading()+360)- (getAutopilotCurrentHeading()+360);
+	autopilotState.autopilotOffCourse=fmod(autopilotState.autopilotOffCourse,360.0);
 	//if its >abs(180), then we want to go the -ve (shorter) direction
-	if(fabs(autopilotOffCourse)>180)autopilotOffCourse=autopilotOffCourse-360;
-	return autopilotOffCourse;
+	if(fabs(autopilotState.autopilotOffCourse)>180)autopilotState.autopilotOffCourse=autopilotState.autopilotOffCourse-360;
+	return autopilotState.autopilotOffCourse;
 }
 
 int FreeBoardModel::getAutopilotReference()
 {
-    return autopilotReference;
+    return autopilotState.autopilotReference;
 }
 
 
 double FreeBoardModel::getAutopilotAlarmMaxCourseError()
 {
-    return autopilotAlarmMaxCourseError;
+    return autopilotState.autopilotAlarmMaxCourseError;
 }
 
 double FreeBoardModel::getAutopilotAlarmMaxWindError()
 {
-    return autopilotAlarmMaxWindError;
+    return autopilotState.autopilotAlarmMaxWindError;
 }
 
 double FreeBoardModel::getAutopilotAlarmMaxXtError()
 {
-    return autopilotAlarmMaxXTError;
+    return autopilotState.autopilotAlarmMaxXTError;
 }
 
 
 double FreeBoardModel::getAutopilotRudderCommand()
 {
-    return autopilotRudderCommand;
+    return autopilotState.autopilotRudderCommand;
 }
 
 double FreeBoardModel::getAutopilotTargetHeading()
 {
-    return autopilotTargetHeading;
+    return autopilotState.autopilotTargetHeading;
 }
 double FreeBoardModel::getAutopilotCurrentHeading()
 {
-    return autopilotCurrentHeading;
+    return autopilotState.autopilotCurrentHeading;
 }
 
 long FreeBoardModel::getGpsAlarmFixTime()
@@ -310,27 +313,27 @@ long FreeBoardModel::getGpsAlarmFixTime()
 
 float FreeBoardModel::getGpsCourse()
 {
-    return gpsCourse;
+    return gpsState.gpsCourse;
 }
 
 unsigned long FreeBoardModel::getGpsLastFix()
 {
-    return gpsLastFix;
+    return gpsState.gpsLastFix;
 }
 
 float FreeBoardModel::getGpsLatitude()
 {
-    return gpsLatitude;
+    return gpsState.gpsLatitude;
 }
 
 float FreeBoardModel::getGpsLongitude()
 {
-    return gpsLongitude;
+    return gpsState.gpsLongitude;
 }
 
 float FreeBoardModel::getGpsSpeed()
 {
-    return gpsSpeed;
+    return gpsState.gpsSpeed;
 }
 
 float FreeBoardModel::getGpsSpeedUnit()
@@ -340,12 +343,12 @@ float FreeBoardModel::getGpsSpeedUnit()
 
 char FreeBoardModel::getGpsStatus()
 {
-    return gpsStatus;
+    return gpsState.gpsStatus;
 }
 
 float FreeBoardModel::getGpsUtc()
 {
-    return gpsUtc;
+    return gpsState.gpsUtc;
 }
 
 unsigned long FreeBoardModel::getLcdLastUpdate()
@@ -385,27 +388,27 @@ int FreeBoardModel::getWindAlarmSpeed()
 
 int FreeBoardModel::getWindApparentDir()
 {
-    return windApparentDir;
+    return windState.windApparentDir;
 }
 
 int FreeBoardModel::getWindAverage()
 {
-    return windAverage;
+    return windState.windAverage;
 }
 
 float FreeBoardModel::getWindFactor()
 {
-    return config.windFactor;
+    return windState.windFactor;
 }
 
 unsigned long FreeBoardModel::getWindLastUpdate()
 {
-    return windLastUpdate;
+    return windState.windLastUpdate;
 }
 
 int FreeBoardModel::getWindMax()
 {
-    return windMax;
+    return windState.windMax;
 }
 
 
@@ -416,7 +419,7 @@ bool FreeBoardModel::isAnchorAlarmOn()
 
 bool FreeBoardModel::isAnchorAlarmTriggered()
 {
-    return anchorAlarmTriggered;
+    return anchorState.anchorAlarmTriggered;
 }
 
 bool FreeBoardModel::isAutopilotAlarmOn()
@@ -426,7 +429,7 @@ bool FreeBoardModel::isAutopilotAlarmOn()
 
 bool FreeBoardModel::isAutopilotAlarmTriggered()
 {
-    return autopilotAlarmTriggered;
+    return autopilotState.autopilotAlarmTriggered;
 }
 
 bool FreeBoardModel::isGpsAlarmOn()
@@ -436,12 +439,12 @@ bool FreeBoardModel::isGpsAlarmOn()
 
 bool FreeBoardModel::isGpsAlarmTriggered()
 {
-    return gpsAlarmTriggered;
+    return gpsState.gpsAlarmTriggered;
 }
 
 bool FreeBoardModel::isGpsDecode()
 {
-    return gpsDecode;
+    return gpsState.gpsDecode;
 }
 
 bool FreeBoardModel::isWindAlarmOn()
@@ -467,17 +470,17 @@ void FreeBoardModel::setAnchorAlarmOn(bool anchorAlarmOn)
 
 void FreeBoardModel::setAnchorAlarmTriggered(bool anchorAlarmTriggered)
 {
-    this->anchorAlarmTriggered = anchorAlarmTriggered;
+    this->anchorState.anchorAlarmTriggered = anchorAlarmTriggered;
 }
 
 void FreeBoardModel::setAnchorDistance(float anchorDistance)
 {
-    this->anchorDistance = anchorDistance;
+    this->anchorState.anchorDistance = anchorDistance;
 }
 
 void FreeBoardModel::setAnchorE(float anchorE)
 {
-    this->anchorE = anchorE;
+    this->anchorState.anchorE = anchorE;
 }
 
 void FreeBoardModel::setAnchorLat(float anchorLat)
@@ -492,12 +495,12 @@ void FreeBoardModel::setAnchorLon(float anchorLon)
 
 void FreeBoardModel::setAnchorMaxDistance(float anchorMaxDistance)
 {
-    this->anchorMaxDistance = anchorMaxDistance;
+    this->anchorState.anchorMaxDistance = anchorMaxDistance;
 }
 
 void FreeBoardModel::setAnchorN(float anchorN)
 {
-    this->anchorN = anchorN;
+    this->anchorState.anchorN = anchorN;
 }
 
 void FreeBoardModel::setAnchorRadius(float anchorRadius)
@@ -507,37 +510,37 @@ void FreeBoardModel::setAnchorRadius(float anchorRadius)
 
 void FreeBoardModel::setAnchorRadiusDeg(float anchorRadiusDeg)
 {
-    this->anchorRadiusDeg = anchorRadiusDeg;
+    this->anchorState.anchorRadiusDeg = anchorRadiusDeg;
 }
 
 void FreeBoardModel::setAnchorS(float anchorS)
 {
-    this->anchorS = anchorS;
+    this->anchorState.anchorS = anchorS;
 }
 
 void FreeBoardModel::setAnchorW(float anchorW)
 {
-    this->anchorW = anchorW;
+    this->anchorState.anchorW = anchorW;
 }
 
 void FreeBoardModel::setAutopilotReference(int autopilotReference)
 {
-    this->autopilotReference = autopilotReference;
+    this->autopilotState.autopilotReference = autopilotReference;
 }
 
 void FreeBoardModel::setAutopilotAlarmMaxCourseError(double autopilotAlarmMaxCourseError)
 {
-    this->autopilotAlarmMaxCourseError = autopilotAlarmMaxCourseError;
+    this->autopilotState.autopilotAlarmMaxCourseError = autopilotAlarmMaxCourseError;
 }
 
 void FreeBoardModel::setAutopilotAlarmMaxWindError(double autopilotAlarmMaxWindError)
 {
-    this->autopilotAlarmMaxWindError = autopilotAlarmMaxWindError;
+    this->autopilotState.autopilotAlarmMaxWindError = autopilotAlarmMaxWindError;
 }
 
 void FreeBoardModel::setAutopilotAlarmMaxXtError(double autopilotAlarmMaxXtError)
 {
-    autopilotAlarmMaxXTError = autopilotAlarmMaxXtError;
+	autopilotState.autopilotAlarmMaxXTError = autopilotAlarmMaxXtError;
 }
 
 void FreeBoardModel::setAutopilotAlarmOn(bool autopilotAlarmOn)
@@ -547,7 +550,7 @@ void FreeBoardModel::setAutopilotAlarmOn(bool autopilotAlarmOn)
 
 void FreeBoardModel::setAutopilotAlarmTriggered(bool autopilotAlarmTriggered)
 {
-    this->autopilotAlarmTriggered = autopilotAlarmTriggered;
+    this->autopilotState.autopilotAlarmTriggered = autopilotAlarmTriggered;
 }
 
 
@@ -555,12 +558,12 @@ void FreeBoardModel::setAutopilotCurrentHeading(double autopilotCurrentHeading)
 {
 	//make this 0-360 range only
 		if(autopilotCurrentHeading>=0 && autopilotCurrentHeading <=360)
-			this->autopilotCurrentHeading = autopilotCurrentHeading;
+			this->autopilotState.autopilotCurrentHeading = autopilotCurrentHeading;
 }
 
 void FreeBoardModel::setAutopilotRudderCommand(double autopilotRudderCommand)
 {
-    this->autopilotRudderCommand = autopilotRudderCommand;
+    this->autopilotState.autopilotRudderCommand = autopilotRudderCommand;
 }
 
 
@@ -569,7 +572,7 @@ void FreeBoardModel::setAutopilotTargetHeading(double autopilotTargetHeading)
 {
 	//make this 0-360 range only
 	if(autopilotTargetHeading>=0 && autopilotTargetHeading <=360)
-		this->autopilotTargetHeading = autopilotTargetHeading;
+		this->autopilotState.autopilotTargetHeading = autopilotTargetHeading;
 }
 
 
@@ -585,37 +588,37 @@ void FreeBoardModel::setGpsAlarmOn(bool gpsAlarmOn)
 
 void FreeBoardModel::setGpsAlarmTriggered(bool gpsAlarmTriggered)
 {
-    this->gpsAlarmTriggered = gpsAlarmTriggered;
+    this->gpsState.gpsAlarmTriggered = gpsAlarmTriggered;
 }
 
 void FreeBoardModel::setGpsCourse(float gpsCourse)
 {
-    this->gpsCourse = gpsCourse;
+    this->gpsState.gpsCourse = gpsCourse;
 }
 
 void FreeBoardModel::setGpsDecode(bool gpsDecode)
 {
-    this->gpsDecode = gpsDecode;
+    this->gpsState.gpsDecode = gpsDecode;
 }
 
 void FreeBoardModel::setGpsLastFix(unsigned long  gpsLastFix)
 {
-    this->gpsLastFix = gpsLastFix;
+    this->gpsState.gpsLastFix = gpsLastFix;
 }
 
 void FreeBoardModel::setGpsLatitude(float gpsLatitude)
 {
-    this->gpsLatitude = gpsLatitude;
+    this->gpsState.gpsLatitude = gpsLatitude;
 }
 
 void FreeBoardModel::setGpsLongitude(float gpsLongitude)
 {
-    this->gpsLongitude = gpsLongitude;
+    this->gpsState.gpsLongitude = gpsLongitude;
 }
 
 void FreeBoardModel::setGpsSpeed(float gpsSpeed)
 {
-    this->gpsSpeed = gpsSpeed;
+    this->gpsState.gpsSpeed = gpsSpeed;
 }
 
 void FreeBoardModel::setGpsSpeedUnit(float gpsSpeedUnit)
@@ -625,12 +628,12 @@ void FreeBoardModel::setGpsSpeedUnit(float gpsSpeedUnit)
 
 void FreeBoardModel::setGpsStatus(char gpsStatus)
 {
-    this->gpsStatus = gpsStatus;
+    this->gpsState.gpsStatus = gpsStatus;
 }
 
 void FreeBoardModel::setGpsUtc(float gpsUtc)
 {
-    this->gpsUtc = gpsUtc;
+    this->gpsState.gpsUtc = gpsUtc;
 }
 
 void FreeBoardModel::setLcdLastUpdate(unsigned long  lcdLastUpdate)
@@ -676,28 +679,28 @@ void FreeBoardModel::setWindAlarmSpeed(int windAlarmSpeed)
 
 void FreeBoardModel::setWindApparentDir(int windApparentDir)
 {
-    this->windApparentDir = windApparentDir;
+    this->windState.windApparentDir = windApparentDir;
 }
 
 void FreeBoardModel::setWindAverage(int windAverage)
 {
-    this->windAverage = windAverage;
+    this->windState.windAverage = windAverage;
 }
 
 void FreeBoardModel::setWindFactor(float windFactor)
 {
-    this->config.windFactor = windFactor;
+    this->windState.windFactor = windFactor;
 }
 
 void FreeBoardModel::setWindLastUpdate(unsigned long  windLastUpdate)
 {
-    this->windLastUpdate = windLastUpdate;
+    this->windState.windLastUpdate = windLastUpdate;
 }
 
 volatile bool FreeBoardModel::isAlarmTriggered()
 {
-    return windAlarmTriggered && radarAlarmTriggered && gpsAlarmTriggered
-    		&& anchorAlarmTriggered && autopilotAlarmTriggered && mobAlarmTriggered;
+    return windState.windAlarmTriggered && radarAlarmTriggered && gpsState.gpsAlarmTriggered
+    		&& anchorState.anchorAlarmTriggered && autopilotState.autopilotAlarmTriggered && mobAlarmTriggered;
 }
 
 volatile bool FreeBoardModel::isMobAlarmOn()
@@ -732,12 +735,12 @@ void FreeBoardModel::setRadarAlarmOn(volatile bool radarAlarmOn)
 
 void FreeBoardModel::setWindMax(int windMax)
 {
-    this->windMax = windMax;
+    this->windState.windMax = windMax;
 }
 
 void FreeBoardModel::setWindAlarmTriggered(bool windAlarmTriggered)
 {
-    this->windAlarmTriggered = windAlarmTriggered;
+    this->windState.windAlarmTriggered = windAlarmTriggered;
 }
 
 
