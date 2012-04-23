@@ -72,7 +72,7 @@ FreeBoardModel::FreeBoardModel(){
 	//wind
 	windState.windLastUpdate=0;
 	windState.windAverage=0;
-	//windState.windFactor=2200000;
+	//windState.windFactor=0;
 	windState.windMax=0;
 	windState.windApparentDir=0;
 	//int windAlarmSpeed;
@@ -93,12 +93,12 @@ FreeBoardModel::FreeBoardModel(){
 		config.mobAlarmOn=false;
 		config.windAlarmSpeed=99;
 		config.windAlarmOn=false;
-		windState.windFactor=2200000;
+		windState.windFactor=0;
 		config.windZeroOffset=0;
 	//}config;
 
 //we change this if we change the struct so we can tell before reloading incompatible versions
-	version=2;
+	version=3;
 }
 
 template<class T> int  writeObject(HardwareSerial ser, T& value, char name ) {

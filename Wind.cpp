@@ -16,6 +16,29 @@
  6. Checksum
  */
 
+/*
+ * In ULTIMETER Weather Stations, speed is determined by measuring the time interval between
+ * two successive closures of the speed reed. Calibration is done as follows (RPS = revolutions
+ * per second):
+ * 0.010 < RPS < 3.229 (approximately 0.2 < MPH < 8.2):
+ * windSpeedDur<309693
+ * MPH = -0.1095(RPS2) + 2.9318(RPS) – 0.1412
+ * KNTS = -0.09515(RPS2) + 2.5476(RPS) – 0.1226
+ *
+ * 3.230 < RPS < 54.362 (approximately 8.2 < MPH < 136.0):
+ * windSpeedDur < 18395
+ * MPH = 0.0052(RPS2) + 2.1980(RPS) + 1.1091
+ * KNTS = 0.0045(RPS2) + 1.9099(RPS) + 0.9638
+ *
+ * 54.363 < RPS < 66.332 (approximately 136.0 < MPH < 181.5):
+ *
+ * MPH = 0.1104(RPS2) – 9.5685(RPS) + 329.87
+ * KNTS = 0.09593(RPS2) – 8.3147(RPS) + 286.65
+ *
+ * Conversions used are: mph * 0.86897 = knots; mph * 1.6094 = kmph; mph * 0.48037 = m/s
+ *
+ */
+
 #include "Wind.h"
 
 //lots out here because they are accessed by interrupts
@@ -23,6 +46,7 @@ const unsigned int SPEED_DEBOUNCE = 0;
 const unsigned int DIR_DEBOUNCE = 0;
 volatile unsigned long lastPulse;
 volatile unsigned long windSpeedDur;
+volatile unsigned long windSpeedRpm;
 volatile unsigned long windSpeedMicros;
 volatile unsigned long windDirDur;
 volatile bool windSpeedFlag;
@@ -30,7 +54,7 @@ volatile bool windDirFlag;
 
 typedef volatile long val; //change float to the datatype you want to use
 typedef volatile float rval; //change float to the datatype you want to use
-const byte MAX_NUMBER_OF_READINGS = 5;
+const byte MAX_NUMBER_OF_READINGS = 3;
 val speedStorage[MAX_NUMBER_OF_READINGS] = {0};
 rval dirStorage[MAX_NUMBER_OF_READINGS] = {0.0};
 
@@ -63,49 +87,34 @@ Wind::Wind( FreeBoardModel* model) {
 void Wind::readWindDataSpeed() {
 	if(windSpeedFlag){
 		windSpeedFlag=false;
-		windDirFlag=true;
+		//windDirFlag=true;
 		//called by speed pin interrupt
 		//micros resets every 50 min, reset if that happens
 		//counts clicks, one per rotation, about 2-3 rotations/s =1m/s = 1.94knts
-		//therefore about 50/ms = 100knts = 150 rpm = 1000000/150 = 6500 us per pulse
+		//therefore about 50/ms = 100knts = 150 rps = 1000000/150 = 6500 us per pulse
 		//at 100 knts about 20us per degree of rotation
+		//ULTIMETER:
+		// 66RPS = 136MPH == 118 KNTS
+		// so 1000000/66=15151/360=42us/degree at 118knts
 		lastPulse=millis();
 		windSpeedDur=micros()-windSpeedMicros;
-		//debounce 5ms
-		if(windSpeedDur>0){
-			//average a bit
+		if(windSpeedDur>0)
 			speedList.addValue(windSpeedDur);
-			windSpeedMicros=micros();
-		}else {
-			windDirDur=0;
-			windSpeedDur=0;
-			windSpeedMicros=micros();
-		}
+		windSpeedMicros=micros();
 	}
 
 }
 void Wind::readWindDataDir() {
-	if(windDirFlag){
+	if(!windSpeedFlag){
 		windSpeedFlag=true;
-		windDirFlag=false;
+		//windDirFlag=false;
 		//called by dir pin interrupt
 		//micros resets every 50 min, reset if that happens
 		//debounce 5ms
 		windDirDur=micros()-windSpeedMicros;
-		// calc direction, degrees clockwise
-		//check for 0's and no wind.
-		if(windDirDur<1){
-			windDirDur=0;
-			windSpeedDur=0;
-		}else{
-			if(windSpeedDur>windDirDur && windSpeedDur< (3*1000000)){
-				//total time to rotate = windSpeedDur
-				//time to arrow = windDirDur
-				//so windDirDur/windSpeedDur gives the fraction of 360deg
+		if(windDirDur>0 && windSpeedDur>windDirDur)
+			dirList.addValue(((float)windDirDur/(float)windSpeedDur));
 
-				dirList.addValue(((float)windDirDur/(float)windSpeedDur));
-			}
-		}
 	}
 }
 
@@ -121,6 +130,8 @@ void Wind::calcWindData() {
 //		Serial.print(dirList.getTotalAverage());
 //		Serial.print(", WindDirDur:");
 //		Serial.println(windDirDur);
+
+
 		model->setWindLastUpdate(millis());
 		/*if(DEBUG){
 			Serial.print("Wind dir:");
@@ -135,21 +146,27 @@ void Wind::calcWindData() {
 			//Serial.println("Wind speed reset");
 			speedList.reset();
 		}else{
-			/*if(DEBUG){
-				Serial.print("Wind speed:");
-				Serial.println(speedList.getTotalAverage());
-			}*/
-			model->setWindAverage(model->getWindFactor() / speedList.getTotalAverage()) ;
+			if(speedList.getTotalAverage()>0){
+				windSpeedRpm=1000000/speedList.getTotalAverage();
+				//convert to KNTS
+				if(windSpeedRpm<3.229){
+					model->setWindAverage(model->getWindFactor() /( -0.09515*(windSpeedRpm*windSpeedRpm) + 2.5476*(windSpeedRpm) - 0.1226));
+				}else if(windSpeedRpm < 54.362){
+					model->setWindAverage(model->getWindFactor() /(0.0045*(windSpeedRpm*windSpeedRpm) + 1.9099*(windSpeedRpm) + 0.9638));
+				}else{
+					model->setWindAverage(model->getWindFactor() /(0.09593*(windSpeedRpm*windSpeedRpm) - 8.3147*(windSpeedRpm) + 286.65));
+				}
 
+			}
 			//update gusts
 			if (model->getWindAverage() > model->getWindMax())
 				model->setWindMax(model->getWindAverage());
+
+
+			// calc direction, degrees clockwise
+			//should round to int, min 1
+			model->setWindApparentDir((((int)dirList.getRotationalAverage())+model->getWindZeroOffset()) % 360);
 		}
-
-	// calc direction, degrees clockwise
-	//should round to int, min 1
-		model->setWindApparentDir((((int)dirList.getRotationalAverage())+model->getWindZeroOffset()) % 360);
-
 }
 
 

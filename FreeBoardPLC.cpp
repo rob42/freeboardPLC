@@ -264,6 +264,7 @@ void loop() {
 
 //		if (interval % 2 == 0) {
 //			//do every 200ms
+			wind.calcWindData();
 //		}
 		if (interval % 5 == 0) {
 			//do every 500ms
@@ -274,7 +275,7 @@ void loop() {
 		}
 		if (interval % 10 == 0) {
 			//do every 1000ms
-			wind.calcWindData();
+
 			if (DEBUG && model.isAutopilotOn()) {
 					Serial.print("From model: Target deg = ");
 					Serial.print(model.getAutopilotTargetHeading());
