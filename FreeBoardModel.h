@@ -62,7 +62,7 @@ public:
 	int getWindZeroOffset() ;
 	int getWindAlarmSpeed() ;
 	int getWindApparentDir() ;
-	int getWindAverage() ;
+	float getWindAverage() ;
 	float getWindFactor() ;
 	unsigned long getWindLastUpdate() ;
 	int getWindMax() ;
@@ -120,7 +120,7 @@ public:
 	void setWindAlarmOn(bool windAlarmOn);
 	void setWindAlarmSpeed(int windAlarmSpeed);
 	void setWindApparentDir(int windApparentDir);
-	void setWindAverage(int windAverage);
+	void setWindAverage(float windAverage);
 	void setWindFactor(float windFactor);
 	void setWindLastUpdate(unsigned long windLastUpdate);
 	void setWindMax(int windMax);
@@ -180,18 +180,19 @@ private:
 	}autopilotState;
 
 	//gps
-	struct GpsState{
-		bool gpsDecode; //flag to indicate a new sentence was decoded.
-		unsigned long gpsLastFix; //time of last good gps fix.
-		float gpsUtc; // decimal value of UTC term in last full GPRMC sentence
-		char gpsStatus; //  status character in last full GPRMC sentence ('A' or 'V')
-		float gpsLatitude; // signed degree-decimal value of latitude terms in last full GPRMC sentence
-		float gpsLongitude; // signed degree-decimal value of longitude terms in last full GPRMC sentence
+	//eg1. $GPRMC,081836,A,3751.65,S,14507.36,E,000.0,360.0,130998,011.3,E*62  //64 bytes
+	struct GpsState{												//27 bytes
+		bool gpsDecode; //flag to indicate a new sentence was decoded.  					1byte
+		unsigned long gpsLastFix; //time of last good gps fix.							32 bits (4 bytes). non neg
+		float gpsUtc; // decimal value of UTC term in last full GPRMC sentence					32 bits (4 bytes)
+		char gpsStatus; //  status character in last full GPRMC sentence ('A' or 'V')				1byte
+		float gpsLatitude; // signed degree-decimal value of latitude terms in last full GPRMC sentence		32 bits (4 bytes)
+		float gpsLongitude; // signed degree-decimal value of longitude terms in last full GPRMC sentence	32 bits (4 bytes)
 		//float gpsSpeedUnit; //unit multiplier for gpsSpeed. 1.0 = KNT,1.1507794	=MPH, see nmea.h
-		float gpsSpeed; // speed-on-ground term in last full GPRMC sentence
-		float gpsCourse; // track-angle-made-good term in last full GPRMC sentence
+		float gpsSpeed; // speed-on-ground term in last full GPRMC sentence					32 bits (4 bytes)
+		float gpsCourse; // track-angle-made-good term in last full GPRMC sentence				32 bits (4 bytes)
 		//bool gpsAlarmOn; //true to engage alarm
-		bool gpsAlarmTriggered; //set to true to trigger gps alarm
+		bool gpsAlarmTriggered; //set to true to trigger gps alarm						1byte
 		//double gpsAlarmFixTime; //max time in millis without fix
 	}gpsState;
 
@@ -209,34 +210,36 @@ private:
 	bool mobAlarmTriggered; //set to true to trigger MOB alarm
 
 	//wind
-	struct WindState{
+	struct WindState{			//15 bytes
 
-		unsigned long windLastUpdate;
-		int windAverage;
-		float windFactor;
-		int windMax;
-		int windApparentDir;
+		unsigned long windLastUpdate;	//32 bits (4 bytes). non neg
+		float windAverage;		//16 bits (2 bytes)
+		//float windFactor;		//32 bits (4 bytes). 
+		int windMax;			//16 bits (2 bytes). 
+		int windApparentDir;		//16 bits (2 bytes)
 		//int windAlarmSpeed;
 		//bool windAlarmOn;
-		bool windAlarmTriggered;
+		bool windAlarmTriggered;	//1 byte
 	}windState;
 
-	struct Configuration{
-		float anchorLat;
-		float anchorLon;
-		float anchorRadius;
-		bool anchorAlarmOn;
-		bool autopilotOn;
-		bool autopilotAlarmOn;
-		float gpsSpeedUnit;
-		bool gpsAlarmOn;
-		long gpsAlarmFixTime;
-		bool radarAlarmOn;
-		bool mobAlarmOn;
-		int windAlarmSpeed;
-		bool windAlarmOn;
-		float windFactor;
-		int windZeroOffset;
+	//CONFIG_T
+	struct Configuration{		// 35 bytes
+	
+		float anchorLat;	//32 bits (4 bytes). 
+		float anchorLon;	//32 bits (4 bytes). 
+		float anchorRadius;	//32 bits (4 bytes). 
+		bool anchorAlarmOn;	//1 byte
+		bool autopilotOn;	//1 byte
+		bool autopilotAlarmOn;	//1 byte
+		float gpsSpeedUnit;	//32 bits (4 bytes). 
+		bool gpsAlarmOn;	//1 byte
+		long gpsAlarmFixTime; 	//32 bits (4 bytes). 
+		bool radarAlarmOn;	//1 byte
+		bool mobAlarmOn;	//1 byte
+		int windAlarmSpeed;	//16 bits (2 bytes)
+		bool windAlarmOn;	//1 byte
+		float windFactor;	//32 bits (4 bytes). 
+		int windZeroOffset;	//16 bits (2 bytes)
 
 	}config;
 

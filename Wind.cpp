@@ -46,7 +46,7 @@ const unsigned int SPEED_DEBOUNCE = 0;
 const unsigned int DIR_DEBOUNCE = 0;
 volatile unsigned long lastPulse;
 volatile unsigned long windSpeedDur;
-volatile unsigned long windSpeedRpm;
+volatile  float windSpeedRpm;
 volatile unsigned long windSpeedMicros;
 volatile unsigned long windDirDur;
 volatile bool windSpeedFlag;
@@ -87,7 +87,6 @@ Wind::Wind( FreeBoardModel* model) {
 void Wind::readWindDataSpeed() {
 	if(windSpeedFlag){
 		windSpeedFlag=false;
-		//windDirFlag=true;
 		//called by speed pin interrupt
 		//micros resets every 50 min, reset if that happens
 		//counts clicks, one per rotation, about 2-3 rotations/s =1m/s = 1.94knts
@@ -107,7 +106,6 @@ void Wind::readWindDataSpeed() {
 void Wind::readWindDataDir() {
 	if(!windSpeedFlag){
 		windSpeedFlag=true;
-		//windDirFlag=false;
 		//called by dir pin interrupt
 		//micros resets every 50 min, reset if that happens
 		//debounce 5ms
@@ -122,14 +120,14 @@ void Wind::readWindDataDir() {
  * Calculates wind data. Direction is apparent, 0-360 deg off the bow, clockwise, in degrees.
  */
 void Wind::calcWindData() {
-//		Serial.print("Windspeed list:");
-//		Serial.print(speedList.getTotalAverage());
-//		Serial.print(", WindSpeedDur:");
-//		Serial.println(windSpeedDur);
-//		Serial.print("WindDir list:");
-//		Serial.print(dirList.getTotalAverage());
-//		Serial.print(", WindDirDur:");
-//		Serial.println(windDirDur);
+		//Serial.print("Windspeed list:");
+		//Serial.print(speedList.getTotalAverage());
+		//Serial.print(", WindSpeedDur:");
+		//Serial.println(lastPulse);
+		//Serial.print("WindDir list:");
+		//Serial.print(dirList.getTotalAverage());
+		//Serial.print(", WindDirDur:");
+		//Serial.println(windSpeedMicros);
 
 
 		model->setWindLastUpdate(millis());
@@ -147,16 +145,17 @@ void Wind::calcWindData() {
 			speedList.reset();
 		}else{
 			if(speedList.getTotalAverage()>0){
-				windSpeedRpm=1000000/speedList.getTotalAverage();
+				windSpeedRpm=1000000.0/speedList.getTotalAverage();
 				//convert to KNTS
 				if(windSpeedRpm<3.229){
-					model->setWindAverage(model->getWindFactor() /( -0.09515*(windSpeedRpm*windSpeedRpm) + 2.5476*(windSpeedRpm) - 0.1226));
+					model->setWindAverage(model->getWindFactor() *( -0.09515*(windSpeedRpm*windSpeedRpm) + 2.5476*(windSpeedRpm) - 0.1226));
 				}else if(windSpeedRpm < 54.362){
-					model->setWindAverage(model->getWindFactor() /(0.0045*(windSpeedRpm*windSpeedRpm) + 1.9099*(windSpeedRpm) + 0.9638));
+					model->setWindAverage(model->getWindFactor() *(0.0045*(windSpeedRpm*windSpeedRpm) + 1.9099*(windSpeedRpm) + 0.9638));
 				}else{
-					model->setWindAverage(model->getWindFactor() /(0.09593*(windSpeedRpm*windSpeedRpm) - 8.3147*(windSpeedRpm) + 286.65));
+					model->setWindAverage(model->getWindFactor() *(0.09593*(windSpeedRpm*windSpeedRpm) - 8.3147*(windSpeedRpm) + 286.65));
 				}
-
+				//Serial.print(", WindAvg:");
+				//		Serial.println(( -0.09515*(windSpeedRpm*windSpeedRpm) + 2.5476*(windSpeedRpm) - 0.1226));
 			}
 			//update gusts
 			if (model->getWindAverage() > model->getWindMax())

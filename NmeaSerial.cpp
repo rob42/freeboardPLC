@@ -52,7 +52,7 @@ void NmeaSerial::printWindNmea() {
 		str.print(model->getWindApparentDir());
 		str.print(".0,R,");
 		str.print(model->getWindAverage());
-		str.print(".0,N,A*");
+		str.print(",N,A*");
 		//calculate the checksum
 
 		cs = 0; //clear any old checksum

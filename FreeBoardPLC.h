@@ -19,7 +19,7 @@ typedef unsigned char byte;
 //#include <PinChangeInt/PinChangeIntConfig.h>
 #include <PinCatcher/PinCatcher.h>
 #include <FlexiTimer2/FlexiTimer2.h>
-#include "Lcd.h"
+//#include "Lcd.h"
 #include "Menu.h"
 #include "Seatalk.h"
 #include "Wind.h"
@@ -46,9 +46,9 @@ void setup();
 void check_mem();
 void readWDS();
 void readWDD();
-void checkPress0();
-void checkPress1();
-void checkPress2();
+//void checkPress0();
+//void checkPress1();
+//void checkPress2();
 void calculate();
 
 

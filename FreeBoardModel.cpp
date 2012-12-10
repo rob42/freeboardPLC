@@ -71,7 +71,7 @@ FreeBoardModel::FreeBoardModel(){
 
 	//wind
 	windState.windLastUpdate=0;
-	windState.windAverage=0;
+	windState.windAverage=0.0;
 	//windState.windFactor=0;
 	windState.windMax=0;
 	windState.windApparentDir=0;
@@ -93,12 +93,12 @@ FreeBoardModel::FreeBoardModel(){
 		config.mobAlarmOn=false;
 		config.windAlarmSpeed=99;
 		config.windAlarmOn=false;
-		windState.windFactor=0;
+		config.windFactor=1.0;
 		config.windZeroOffset=0;
 	//}config;
 
 //we change this if we change the struct so we can tell before reloading incompatible versions
-	version=3;
+	version=4;
 }
 
 template<class T> int  writeObject(HardwareSerial ser, T& value, char name ) {
@@ -120,6 +120,9 @@ template<class T> int  writeObject(HardwareSerial ser, T& value, char name ) {
 int FreeBoardModel::sendData(HardwareSerial ser,  char name ) {
 	if(CONFIG_T== name){
 		return writeObject(ser, config, name);
+	}
+	if(DYNAMIC_T== name){
+		return writeObject(ser, gpsState, name);
 	}
 	return -1;
 }
@@ -187,8 +190,7 @@ void FreeBoardModel::readConfig()
 
 	//now we know its compatible
 	EEPROM_readAnything(4,config);
-	//update
-	windState.windFactor=config.windFactor;
+	
 
 
 }
@@ -391,14 +393,14 @@ int FreeBoardModel::getWindApparentDir()
     return windState.windApparentDir;
 }
 
-int FreeBoardModel::getWindAverage()
+float FreeBoardModel::getWindAverage()
 {
     return windState.windAverage;
 }
 
 float FreeBoardModel::getWindFactor()
 {
-    return windState.windFactor;
+    return config.windFactor;
 }
 
 unsigned long FreeBoardModel::getWindLastUpdate()
@@ -682,14 +684,14 @@ void FreeBoardModel::setWindApparentDir(int windApparentDir)
     this->windState.windApparentDir = windApparentDir;
 }
 
-void FreeBoardModel::setWindAverage(int windAverage)
+void FreeBoardModel::setWindAverage(float windAverage)
 {
     this->windState.windAverage = windAverage;
 }
 
 void FreeBoardModel::setWindFactor(float windFactor)
 {
-    this->windState.windFactor = windFactor;
+    this->config.windFactor = windFactor;
 }
 
 void FreeBoardModel::setWindLastUpdate(unsigned long  windLastUpdate)

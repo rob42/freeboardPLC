@@ -72,13 +72,13 @@ sizedummy \
 all: FreeBoardPLC.elf secondary-outputs
 
 dependents:
-	-cd /home/robert/arduinoWorkspace/Arduino_Mega_ATmega1280/Release && $(MAKE) all
+	-cd /home/robert/devSpace/arduinoWorkspace/Arduino_Mega_ATmega1280/Release && $(MAKE) all
 
 # Tool invocations
-FreeBoardPLC.elf: $(OBJS) $(USER_OBJS) /home/robert/arduinoWorkspace/Arduino_Mega_ATmega1280/Release/libArduino_Mega_ATmega1280.a
+FreeBoardPLC.elf: $(OBJS) $(USER_OBJS) /home/robert/devSpace/arduinoWorkspace/Arduino_Mega_ATmega1280/Release/libArduino_Mega_ATmega1280.a
 	@echo 'Building target: $@'
 	@echo 'Invoking: AVR C++ Linker'
-	avr-gcc -Os -Wl,--gc-sections  -L"/home/robert/arduinoWorkspace/Arduino_Mega_ATmega1280/Release" -mmcu=atmega1280 -o"FreeBoardPLC.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lm
+	avr-gcc -Os -Wl,--gc-sections  -L"/home/robert/devSpace/arduinoWorkspace/Arduino_Mega_ATmega1280/Release" -mmcu=atmega1280 -o"FreeBoardPLC.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lm
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -108,13 +108,13 @@ sizedummy: FreeBoardPLC.elf
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EEPROM_IMAGE)$(ELFS)$(FLASH_IMAGE)$(LSS)$(S_DEPS)$(CXX_DEPS)$(S_UPPER_DEPS)$(C++_DEPS)$(ASM_DEPS)$(CC_DEPS)$(CPP_DEPS)$(C_UPPER_DEPS)$(SIZEDUMMY) FreeBoardPLC.elf
+	-$(RM) $(OBJS)$(C_DEPS)$(EEPROM_IMAGE)$(FLASH_IMAGE)$(ELFS)$(LSS)$(S_DEPS)$(CXX_DEPS)$(S_UPPER_DEPS)$(C++_DEPS)$(ASM_DEPS)$(CC_DEPS)$(CPP_DEPS)$(C_UPPER_DEPS)$(SIZEDUMMY) FreeBoardPLC.elf
 	-@echo ' '
 
 secondary-outputs: $(LSS) $(FLASH_IMAGE) $(EEPROM_IMAGE) $(SIZEDUMMY)
 
 .PHONY: all clean dependents
 .SECONDARY:
-/home/robert/arduinoWorkspace/Arduino_Mega_ATmega1280/Release/libArduino_Mega_ATmega1280.a:
+/home/robert/devSpace/arduinoWorkspace/Arduino_Mega_ATmega1280/Release/libArduino_Mega_ATmega1280.a:
 
 -include ../makefile.targets

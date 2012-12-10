@@ -32,13 +32,13 @@
  Other NMEA talkers attached to Serial2, Serial3, etc
  All NMEA recv devices should listen on Serial0 Tx or nmea repeater on 52/53
  All at 4800 default
- GPS at 38400
+ GPS at 38400, pins Rx19 - yellow, Tx20 - orange
  Lcd at 19200
  Lcd disabled,  on 50,51 (lcd)
  AltSoftSerial Tx46,Rx48 (NMEA)
  Alarm devices on pin 22,23,24,25
- Wind speed on pin 21 - INT3 - yellow
- Wind dir on pin 20 - INT2
+ Wind speed on pin 3 - INT1 - yellow
+ Wind dir on pin 2 - INT0
  */
 
 #include "FreeBoardPLC.h"
@@ -49,6 +49,7 @@ int inByteSerial1;
 int inByteSerial2;
 int inByteSerial3;
 char input;
+//volatile int intCnt = 0;
 
 //freeboard model
 FreeBoardModel model;
@@ -86,8 +87,6 @@ Anchor anchor(&model);
 
 Seatalk seatalk( &Serial2, &model);
 
-//Menu
-//Menu menu(&lcd, &model);
 
 String inputSerial = "";         // a string to hold incoming data
 boolean inputSerialComplete = false;  // whether the string is complete
@@ -105,12 +104,11 @@ void setup() {
 	if (DEBUG)
 		Serial.println("Initializing..");
 
-	//lcd.setupLcd();
-
 	//start gps on serial1, autobaud
 	if (DEBUG)
 		Serial.println("Start gps..");
 	gps.setupGps();
+	Serial1.begin(38400);
 
 	if (DEBUG)
 		Serial.println("Start seatalk - serial2..");
@@ -133,15 +131,6 @@ void setup() {
 	attachInterrupt(windSpeedInterrupt, readWDS, FALLING);
 	pinMode(windDirPin, INPUT);
 	attachInterrupt(windDirInterrupt, readWDD, FALLING);
-
-	if (DEBUG)
-		Serial.println("Start button interrupts..");
-
-	//pinMode(button0, INPUT);
-	//pinMode(button1, INPUT);
-	//pinMode(button2, INPUT);
-	//pinMode(button3, INPUT);
-
 
 //	//setup timers
 	if (DEBUG)
@@ -169,10 +158,12 @@ void calculate() {
 }
 
 void readWDS() {
+	//intCnt++;
 	wind.readWindDataSpeed();
 }
 
 void readWDD() {
+	//intCnt++;
 	wind.readWindDataDir();
 }
 
@@ -196,6 +187,7 @@ void serialEvent() {
   }
 }
 
+
 void serialEvent1() {
   while (Serial1.available()) {
     inputSerial1Complete = gps.decode(Serial1.read());
@@ -208,6 +200,7 @@ void serialEvent1() {
 	}
   }
 }
+
 
 void serialEvent2() {
   while (Serial2.available()) {
@@ -260,7 +253,7 @@ void loop() {
 	if (execute) {
 		//timer ping
 		//do these every 100ms
-		autopilot.calcAutoPilot();
+		//autopilot.calcAutoPilot();
 
 //		if (interval % 2 == 0) {
 //			//do every 200ms
@@ -270,7 +263,7 @@ void loop() {
 			//do every 500ms
 
 			//fire any alarms
-			alarm.checkAlarms();
+			//alarm.checkAlarms();
 
 		}
 		if (interval % 10 == 0) {
@@ -285,9 +278,11 @@ void loop() {
 					Serial.println(model.getAutopilotRudderCommand());
 					//model.setAutopilotCurrentHeading(model.getAutopilotCurrentHeading()+(0.2*(model.getAutopilotRudderCommand()-33)));
 				}
-			anchor.checkAnchor();
+			//anchor.checkAnchor();
 			alarm.checkWindAlarm();
 			nmea.printWindNmea();
+			//Serial.print("Interrupts:");
+			//Serial.println(intCnt);
 		}
 		//if (interval % 20 == 0) {
 			//do every 2000ms
@@ -296,11 +291,6 @@ void loop() {
 		execute = false;
 	}
 
-	//show data, these are internally timed
-	//lcd.showData();
-
-//	//check buttons
-	//menu.checkButtons();
 
 //DEBUG
 //printf("Looping\n");
