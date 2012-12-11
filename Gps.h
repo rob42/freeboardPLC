@@ -14,7 +14,7 @@
 #include <PString/PString.h>
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
-#include "Lcd.h"
+
 
 class Gps {
 public:

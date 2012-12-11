@@ -16,8 +16,8 @@
 #include "FreeBoardConstants.h"
 #include "math.h"
 
-#define AUTOPILOT_WIND 1;
-#define AUTOPILOT_COMPASS 0;
+#define AUTOPILOT_WIND 'W';
+#define AUTOPILOT_COMPASS 'C';
 class FreeBoardModel {
 public:
 //alarms
@@ -37,7 +37,7 @@ public:
 	float getAnchorRadiusDeg() ;
 	float getAnchorS() ;
 	float getAnchorW() ;
-	int getAutopilotReference() ;
+	char getAutopilotReference() ;
 	double getAutopilotOffCourse();
 	double getAutopilotAlarmMaxCourseError() ;
 	double getAutopilotAlarmMaxWindError() ;
@@ -54,18 +54,18 @@ public:
 	float getGpsSpeedUnit() ;
 	char getGpsStatus() ;
 	float getGpsUtc() ;
-	unsigned long getLcdLastUpdate() ;
-	volatile int getMenuLevel() ;
-	volatile int getMenuState() ;
+	float getMagneticHeading();
 	volatile bool isMobAlarmTriggered() ;
 	volatile bool isRadarAlarmTriggered() ;
 	int getWindZeroOffset() ;
 	int getWindAlarmSpeed() ;
 	int getWindApparentDir() ;
+	int getWindTrueDir();
 	float getWindAverage() ;
 	float getWindFactor() ;
 	unsigned long getWindLastUpdate() ;
 	int getWindMax() ;
+
 	//bool isAlarmBeepState() ;
 	bool isAnchorAlarmOn() ;
 	bool isAnchorAlarmTriggered() ;
@@ -90,7 +90,7 @@ public:
 	void setAnchorRadiusDeg(float anchorRadiusDeg);
 	void setAnchorS(float anchorS);
 	void setAnchorW(float anchorW);
-	void setAutopilotReference(int ref);
+	void setAutopilotReference(char ref);
 	void setAutopilotAlarmMaxCourseError(double autopilotAlarmMaxCourseError);
 	void setAutopilotAlarmMaxWindError(double autopilotAlarmMaxWindError);
 	void setAutopilotAlarmMaxXtError(double autopilotAlarmMaxXtError);
@@ -124,6 +124,8 @@ public:
 	void setWindFactor(float windFactor);
 	void setWindLastUpdate(unsigned long windLastUpdate);
 	void setWindMax(int windMax);
+	void setWindTrueDir(int windTrueDir);
+	void setMagneticHeading(float magneticHeading);
 	volatile bool isAlarmTriggered() ;
 	volatile bool isMobAlarmOn() ;
 	volatile bool isRadarAlarmOn() ;
@@ -133,6 +135,7 @@ public:
     void setAutopilotOn(bool autopilotOn);
     void saveConfig();
     void readConfig();
+    int writeSimple(HardwareSerial ser);
     int sendData(HardwareSerial ser, char name);
     int receiveData(HardwareSerial ser, char name);
 private:
@@ -140,7 +143,7 @@ private:
 	unsigned long alarmLast; //toggle to make alarm beep - beep beep
 	unsigned long alarmSnooze; //5 minute alarm snooze
 	//unsigned long alarmTriggered ; //true if any alarm is triggered - derived
-
+	float magneticHeading;
 
 	//anchor
 	struct AnchorState{
@@ -167,7 +170,7 @@ private:
 		//bool autopilotOn;
 
 		double autopilotOffCourse; //-179 to +180
-		int autopilotReference; //WIND (1) or COMPASS(0)
+		char autopilotReference; //WIND (W) or COMPASS(C)
 		//these need to always be positive for autopilot
 		double autopilotCurrentHeading; //Input 0-360
 		double autopilotTargetHeading; //Setpoint 0-360
@@ -196,13 +199,6 @@ private:
 		//double gpsAlarmFixTime; //max time in millis without fix
 	}gpsState;
 
-	//lcd
-	unsigned long lcdLastUpdate;
-
-	//menu
-	volatile int menuState; //default, show gps data
-	volatile int menuLevel;
-
 	//seatalk
 	//volatile bool radarAlarmOn; //set to true to enable radar alarm
 	bool radarAlarmTriggered; //set to true to trigger radar alarm
@@ -217,6 +213,7 @@ private:
 		//float windFactor;		//32 bits (4 bytes). 
 		int windMax;			//16 bits (2 bytes). 
 		int windApparentDir;		//16 bits (2 bytes)
+		int windTrueDir;			//16 bits (2 bytes)
 		//int windAlarmSpeed;
 		//bool windAlarmOn;
 		bool windAlarmTriggered;	//1 byte

@@ -41,80 +41,80 @@
 //freeboard model structs
 #define CONFIG_T 'C'
 #define DYNAMIC_T 'D' //all dynamically changing params, gps ,speed, wind, compass, etc
-
+#define SIMPLE_T 'S' //basic string format
 //nav values
 	/** version */
-#define VER = "VER"
+#define VER  "VER"
 	/** Roll degrees */
-#define RLL = "RLL"
+#define RLL  "RLL"
 	/** Pitch degrees */
-#define PCH = "PCH"
+#define PCH  "PCH"
 	/** Yaw degrees*/
-#define YAW = "YAW"
+#define YAW  "YAW"
 	/** IMU Health?*/
-#define IMUH = "IMUH"
+#define IMUH  "IMUH"
 	/** Mag X - roll*/
-#define MGX = "MGX"
+#define MGX  "MGX"
 	/** Mag Y - pitch*/
-#define MGY = "MGY"
+#define MGY  "MGY"
 	/** Mag Z - heading */
-#define MGZ = "MGZ"
+#define MGZ  "MGZ"
 	/** Mag Heading */
-#define MGH = "MGH"
+#define MGH  "MGH"
 	/** Latitude*/
-#define LAT = "LAT"
+#define LAT  "LAT"
 	/** Longitude*/
-#define LON = "LON"
+#define LON  "LON"
 	/**Altitude */
-#define ALT = "ALT"
+#define ALT  "ALT"
 	/**CourseOverGround - true*/
-#define COG = "COG"
+#define COG  "COG"
 	
 	/** Speed over ground */
-#define SOG = "SOG"
+#define SOG  "SOG"
 	/** GPS fix true/false*/
-#define FIX = "FIX" 
+#define FIX  "FIX"
 	/** satellites*/
-#define SAT = "SAT" 
+#define SAT  "SAT"
 	/** Time of week*/
-#define TOW = "TOW" 
+#define TOW  "TOW"
 	/**mag declination*/
-#define DEC = "DEC"
+//#define DEC  "DEC"
 	/**Wind speed apparent*/
-#define WSA = "WSA"
+#define WSA  "WSA"
 	/**Wind speed true*/
-#define WST = "WST"
+#define WST  "WST"
 	/**Wind dir apparent*/
-#define WDA = "WDA"
+#define WDA  "WDA"
 	/**Wind dir true*/
-#define WDT = "WDT"
+#define WDT  "WDT"
 	/**Wind speed units*/
-#define WSU = "WSU"
+#define WSU  "WSU"
 /**Wind alarm speed (knots) */
-#define WSK = "WSK"
+#define WSK  "WSK"
 	/**Wind speed alarm state */
-#define WSX = "WSX"
+#define WSX  "WSX"
 	
 	/** Autopilot state (on/off)*/
-#define APX = "APX" //0=off, 1=on
+#define APX  "APX" //0off, 1on
 	/** Autopilot offset from source*/
-#define APT = "APT" //offset from source +/- deg
+#define APT  "APT" //offset from source +/- deg
 	/** Autopilot source*/
-#define APS = "APS" //W wind or C compass	
+#define APS  "APS" //W wind or C compass
 	
 	/**Anchor alarm state*/
-#define AAX = "AAX"
+#define AAX  "AAX"
 	/**Anchor alarm radius*/
-#define AAR = "AAR"
+#define AAR  "AAR"
 	/**Anchor alarm Lat*/
-#define AAN = "AAN"
+#define AAN  "AAN"
 	/**Anchor alarm Lon*/
-#define AAE = "AAE"
+#define AAE  "AAE"
 
 //attached device types
-#define UID = "UID"
-#define IMU = "IMU"
-#define MEGA = "MEGA"
+#define UID  "UID"
+#define IMU  "IMU"
+#define MEGA  "MEGA"
 
 //Commands
 #define VERSION "#VER"

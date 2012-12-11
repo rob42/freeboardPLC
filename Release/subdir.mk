@@ -10,8 +10,6 @@ CPP_SRCS += \
 ../FreeBoardModel.cpp \
 ../FreeBoardPLC.cpp \
 ../Gps.cpp \
-../Lcd.cpp \
-../Menu.cpp \
 ../NmeaSerial.cpp \
 ../Seatalk.cpp \
 ../Wind.cpp \
@@ -24,8 +22,6 @@ OBJS += \
 ./FreeBoardModel.o \
 ./FreeBoardPLC.o \
 ./Gps.o \
-./Lcd.o \
-./Menu.o \
 ./NmeaSerial.o \
 ./Seatalk.o \
 ./Wind.o \
@@ -38,8 +34,6 @@ CPP_DEPS += \
 ./FreeBoardModel.d \
 ./FreeBoardPLC.d \
 ./Gps.d \
-./Lcd.d \
-./Menu.d \
 ./NmeaSerial.d \
 ./Seatalk.d \
 ./Wind.d \

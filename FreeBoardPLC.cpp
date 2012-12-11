@@ -69,12 +69,11 @@ NMEA talker0(ALL);
 NMEA talker2(ALL);
 NMEA talker3(ALL);
 
-
 //alarm
 Alarm alarm(&model);
 
 //wind
-Wind wind( &model);
+Wind wind(&model);
 
 //Gps
 Gps gps(&gpsSource, &model);
@@ -85,15 +84,13 @@ Autopilot autopilot(&model);
 //Anchor
 Anchor anchor(&model);
 
-Seatalk seatalk( &Serial2, &model);
+Seatalk seatalk(&Serial2, &model);
 
-
-String inputSerial = "";         // a string to hold incoming data
-boolean inputSerialComplete = false;  // whether the string is complete
-boolean inputSerial1Complete = false;  // whether the GPS string is complete
-boolean inputSerial2Complete = false;  // whether the string is complete
-boolean inputSerial3Complete = false;  // whether the string is complete
-
+String inputSerial = ""; // a string to hold incoming data
+boolean inputSerialComplete = false; // whether the string is complete
+boolean inputSerial1Complete = false; // whether the GPS string is complete
+boolean inputSerial2Complete = false; // whether the string is complete
+boolean inputSerial3Complete = false; // whether the string is complete
 
 void setup() {
 
@@ -143,7 +140,7 @@ void setup() {
 		Serial.println("Setup complete..");
 	//print out the config
 	if (DEBUG)
-			model.sendData(Serial, CONFIG_T);
+		model.sendData(Serial, CONFIG_T);
 }
 /*
  * Timer interrupt driven method to do time sensitive calculations
@@ -168,86 +165,80 @@ void readWDD() {
 }
 
 /*
-  SerialEvent occurs whenever a new data comes in the
+ SerialEvent occurs whenever a new data comes in the
  hardware serial RX.  This routine is run between each
  time loop() runs, so using delay inside loop can delay
  response.  Multiple bytes of data may be available.
  */
 void serialEvent() {
-  while (Serial.available()) {
-    // get the new byte:
-    char inChar = (char)Serial.read();
-    // add it to the inputString:
-    inputSerial += inChar;
-    // if the incoming character is a newline, set a flag
-    // so the main loop can do something about it:
-    if (inChar == '\n') {
-    	inputSerialComplete = true;
-    }
-  }
-}
+	while (Serial.available()) {
+		// get the new byte:
+		char inChar = (char) Serial.read();
+		// add it to the inputString:
+		inputSerial += inChar;
+		// if the incoming character is a newline, set a flag
+		// so the main loop can do something about it:
+		if (inChar == '\n') {
+			//inputSerialComplete = true;
+			char carray[inputSerial.length()+1]; //determine size of the array
+			inputSerial.toCharArray(carray, sizeof(carray));
+			process(carray, ',');
+			inputSerial = "";
+			//inputSerialComplete = false;
+		}
 
+
+	}
+}
 
 void serialEvent1() {
-  while (Serial1.available()) {
-    inputSerial1Complete = gps.decode(Serial1.read());
-    // read from port 1 (GPS), send to port 0:
-	if (inputSerial1Complete) {
-			if (MUX)nmea.printNmea(gpsSource.sentence());
-			if (MUX && DEBUG)Serial.println(gpsSource.sentence());
+	while (Serial1.available()) {
+		inputSerial1Complete = gps.decode(Serial1.read());
+		// read from port 1 (GPS), send to port 0:
+		if (inputSerial1Complete) {
+			if (MUX)
+				nmea.printNmea(gpsSource.sentence());
+			if (MUX && DEBUG)
+				Serial.println(gpsSource.sentence());
 			//loop every sentence
 			break;
+		}
 	}
-  }
 }
 
-
 void serialEvent2() {
-  while (Serial2.available()) {
-	  seatalk.processSeaTalkByte(Serial2.read());
-  }
+	while (Serial2.available()) {
+		seatalk.processSeaTalkByte(Serial2.read());
+	}
 }
 
 void serialEvent3() {
-  while (Serial3.available()) {
-    	inputSerial3Complete = talker3.decode(Serial3.read());
-    	if(inputSerial3Complete){
-			if (MUX) nmea.printNmea(talker3.sentence());
-			if( MUX && DEBUG)Serial.println(talker3.sentence());
+	while (Serial3.available()) {
+		inputSerial3Complete = talker3.decode(Serial3.read());
+		if (inputSerial3Complete) {
+			if (MUX)
+				nmea.printNmea(talker3.sentence());
+			if (MUX && DEBUG)
+				Serial.println(talker3.sentence());
 			//loop every sentence
 			break;
-    	}
-  }
+		}
+	}
 }
 
 void loop() {
 
 	//if (DEBUG)
-		//Serial.println("Looping..");
+	//Serial.println("Looping..");
 	//dont get caught endlessly reading/writing
 	//allow single character commands
 	if (inputSerialComplete) {
+		//split and process
+		//Serial.println(inputSerial);
+		//splitString(inputSerial, ',');
 
-		if (inputSerial.charAt(0) ==  'a') {
-			if (DEBUG)Serial.println("Enable autopilot..");
-			model.setAutopilotTargetHeading(model.getAutopilotCurrentHeading());
-			model.setAutopilotOn(true);
-		}
-		if (inputSerial.charAt(0) ==  'd') {
-			if (DEBUG)Serial.println("Disable autopilot..");
-			model.setAutopilotOn(false);
-		}
-		if (inputSerial.charAt(0) == '-') {
-			if (DEBUG)Serial.println("Autopilot heading - 5");
-			//TODO: consider the 0-360 circle, cant be neg
-			model.setAutopilotTargetHeading(model.getAutopilotTargetHeading() - 5);
-		}
-		if (inputSerial.charAt(0) ==  '+') {
-			if (DEBUG)Serial.println("Autopilot heading + 5");
-			model.setAutopilotTargetHeading(model.getAutopilotTargetHeading() + 5);
-		}
-		inputSerial="";
-		inputSerialComplete=false;
+		//inputSerial = "";
+		//inputSerialComplete = false;
 	}
 
 	if (execute) {
@@ -257,27 +248,27 @@ void loop() {
 
 //		if (interval % 2 == 0) {
 //			//do every 200ms
-			wind.calcWindData();
+		wind.calcWindData();
 //		}
 		if (interval % 5 == 0) {
 			//do every 500ms
 
 			//fire any alarms
 			//alarm.checkAlarms();
-
+			model.writeSimple(Serial);
 		}
 		if (interval % 10 == 0) {
 			//do every 1000ms
 
 			if (DEBUG && model.isAutopilotOn()) {
-					Serial.print("From model: Target deg = ");
-					Serial.print(model.getAutopilotTargetHeading());
-					Serial.print("Heading deg = ");
-					Serial.print(model.getAutopilotCurrentHeading());
-					Serial.print(", Rudder = ");
-					Serial.println(model.getAutopilotRudderCommand());
-					//model.setAutopilotCurrentHeading(model.getAutopilotCurrentHeading()+(0.2*(model.getAutopilotRudderCommand()-33)));
-				}
+				Serial.print("From model: Target deg = ");
+				Serial.print(model.getAutopilotTargetHeading());
+				Serial.print("Heading deg = ");
+				Serial.print(model.getAutopilotCurrentHeading());
+				Serial.print(", Rudder = ");
+				Serial.println(model.getAutopilotRudderCommand());
+				//model.setAutopilotCurrentHeading(model.getAutopilotCurrentHeading()+(0.2*(model.getAutopilotRudderCommand()-33)));
+			}
 			//anchor.checkAnchor();
 			alarm.checkWindAlarm();
 			nmea.printWindNmea();
@@ -285,12 +276,11 @@ void loop() {
 			//Serial.println(intCnt);
 		}
 		//if (interval % 20 == 0) {
-			//do every 2000ms
+		//do every 2000ms
 		//}
 
 		execute = false;
 	}
-
 
 //DEBUG
 //printf("Looping\n");
@@ -307,4 +297,75 @@ void loop() {
 	 */
 
 }
+
+void process(char * s, char parser) {
+	if(DEBUG)Serial.print("Process str:");
+	if(DEBUG)Serial.println(s);
+	char *cmd = strtok(s, ",");
+	while(cmd != NULL){
+		//starts with # its a command
+		if(DEBUG)Serial.print("Process incoming..l=");
+		if(DEBUG)Serial.print(strlen(cmd));
+		if(DEBUG)Serial.print(", ");
+		if(DEBUG)Serial.println(cmd);
+
+		char key[5];
+		strncpy(key, cmd,4);
+		key[4]='\0';
+		int l = strlen(cmd);
+		char val[l-4];
+		memcpy( val, &cmd[5], l-5 );
+		val[l-5] = '\0';
+		if(DEBUG)Serial.print(key);
+		if(DEBUG)Serial.print(" = ");
+		if(DEBUG)Serial.println(val);
+		if (cmd[0] == '#') {
+			//
+			//anchor
+			if (strcmp( key, ANCHOR_ALARM_STATE)==0){
+				Serial.print("AA Entered..");
+				model.setAnchorAlarmOn(atoi(val));
+				if (atoi(val) == 1) {
+					anchor.setAnchorPoint();
+				}
+			} else	if (strcmp(key, ANCHOR_ALARM_RADIUS)==0) {
+				model.setAnchorRadius(atof(val));
+			} else 	if (strcmp(key,ANCHOR_ALARM_LAT)==0) {
+				model.setAnchorLat(atof(val));
+			}else if (strcmp(key,ANCHOR_ALARM_LON)==0) {
+				model.setAnchorLon(atof(val));
+			}
+			//autopliot
+			else 	if (strcmp(key,AUTOPILOT_STATE)==0) {
+				if(DEBUG)Serial.print("AP Entered..");
+				if(DEBUG)Serial.println(val);
+				model.setAutopilotOn(atoi(val));
+			} else if (strcmp(key,AUTOPILOT_ADJUST)==0) {
+				model.setAutopilotTargetHeading(
+						model.getAutopilotTargetHeading() + atol(val));
+			} else	if (strcmp(key,AUTOPILOT_SOURCE)==0) {
+				model.setAutopilotReference(val[0]);
+
+			}
+			//wind
+			else if (strcmp(key,WIND_SPEED_ALARM_STATE)==0) {
+				model.setWindAlarmOn(atoi(val));
+			}else if (strcpy(key,WIND_ALARM_KNOTS)==0) {
+				model.setWindAlarmSpeed(atoi(val));
+			}
+		} else {
+			// incoming data = WST,WSA,WDT,WDA,WSU,LAT,LON,COG,MGH,SOG,YAW
+				if (strcmp(key, MGX)==0) {
+					model.setMagneticHeading(atof(val));
+				}
+				if (strcmp(key,WDT)==0) {
+					model.setWindTrueDir(atoi(val));
+				}
+		}
+		//next token
+		cmd = strtok(NULL, ",");
+	}
+	if(DEBUG)Serial.println("Process str exit");
+}
+
 

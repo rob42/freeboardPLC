@@ -13,14 +13,11 @@ typedef unsigned char byte;
 //add your includes for the project  here
 #include "FreeBoardConstants.h"
 #include <EEPROM/EEPROM.h>
-#include <PString/PString.h>
-//#include <SoftwareSerial/SoftwareSerial.h>
-//#include <PinChangeInt/PinChangeInt.h>
-//#include <PinChangeInt/PinChangeIntConfig.h>
-#include <PinCatcher/PinCatcher.h>
+//#include <PString/PString.h>
+
+//#include <PinCatcher/PinCatcher.h>
 #include <FlexiTimer2/FlexiTimer2.h>
-//#include "Lcd.h"
-#include "Menu.h"
+#include "Alarm.h"
 #include "Seatalk.h"
 #include "Wind.h"
 #include "Gps.h"
@@ -46,10 +43,9 @@ void setup();
 void check_mem();
 void readWDS();
 void readWDD();
-//void checkPress0();
-//void checkPress1();
-//void checkPress2();
+
 void calculate();
+void process(char * s, char parser);
 
 
 //Do not add code below this line

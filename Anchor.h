@@ -10,10 +10,8 @@
 
 #include "Arduino.h"
 
-//#include <NewSoftSerial/NewSoftSerial.h>
 #include <PString/PString.h>
 #include "Gps.h"
-#include "Lcd.h"
 #include "FreeBoardModel.h"
 
 extern void saveAnchorAlarmState(bool anchorAlarmOn) ;
