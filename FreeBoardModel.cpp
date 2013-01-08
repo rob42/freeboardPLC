@@ -1,4 +1,22 @@
 /*
+ * Copyright 2010,2011,2012,2013 Robert Huitema robert@42.co.nz
+ *
+ * This file is part of FreeBoard. (http://www.42.co.nz/freeboard)
+ *
+ *  FreeBoard is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+
+ *  FreeBoard is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+
+ *  You should have received a copy of the GNU General Public License
+ *  along with FreeBoard.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/*
  * FreeBoardModel.cpp
  *
  *  Created on: Mar 28, 2012
@@ -31,9 +49,10 @@ FreeBoardModel::FreeBoardModel() {
 	anchorState.anchorW = -180.0;
 
 	//autopilot
-	//bool autopilotOn;
+	autopilotState.autopilotOn=false;
+	//disengage the autopilot if we reboot!!
+	//Dont want to go screaming off on wrong course.
 	autopilotState.autopilotReference = AUTOPILOT_COMPASS;
-	autopilotState.autopilotCurrentHeading = 0; //Input
 	autopilotState.autopilotTargetHeading = 0; //Setpoint
 	autopilotState.autopilotRudderCommand = 33; //Output (rudder central)
 	//bool autopilotAlarmOn;
@@ -80,8 +99,9 @@ FreeBoardModel::FreeBoardModel() {
 	config.anchorLon = 0.0;
 	config.anchorRadius = 40.0;
 	config.anchorAlarmOn = false;
-	config.autopilotOn = false;
 	config.autopilotAlarmOn = false;
+	config.autopilotDeadZone = 0;
+	config.autopilotSlack = 0;
 	config.gpsSpeedUnit = KTS;
 	config.gpsAlarmOn = false;
 	config.gpsAlarmFixTime = 1000l * 60 * 5; //5 min
@@ -94,7 +114,7 @@ FreeBoardModel::FreeBoardModel() {
 	//}config;
 
 //we change this if we change the struct so we can tell before reloading incompatible versions
-	version = 4;
+	version = EEPROM_VER;
 }
 
 template<class T> int writeObject(HardwareSerial ser, T& value, char name) {
@@ -123,13 +143,17 @@ int FreeBoardModel::writeSimple(HardwareSerial ser) {
 
 	//if autopilot on, send autopilot data
 	ser.print("APX:");
-	ser.print(config.autopilotOn);
+	ser.print(autopilotState.autopilotOn);
 	ser.print(",");
-	if (config.autopilotOn) {
+	if (autopilotState.autopilotOn) {
 		ser.print("APS:");
 		ser.print(autopilotState.autopilotReference);
 		ser.print(",APT:");
 		ser.print(autopilotState.autopilotTargetHeading);
+		ser.print(",APC:");
+		ser.print(getAutopilotCurrentHeading());
+		ser.print(",APR:");
+		ser.print(autopilotState.autopilotRudderCommand-33);// 0-66 in model
 		ser.print(",");
 	}
 	//if anchor alarm on, send data
@@ -214,7 +238,7 @@ void FreeBoardModel::saveConfig() {
 	//write out a current version
 	EEPROM_writeAnything(0, version);
 	//write data
-	EEPROM_writeAnything(4, config);
+	EEPROM_writeAnything(EEPROM_VER, config);
 }
 
 void FreeBoardModel::readConfig() {
@@ -228,7 +252,7 @@ void FreeBoardModel::readConfig() {
 	}
 
 	//now we know its compatible
-	EEPROM_readAnything(4, config);
+	EEPROM_readAnything(EEPROM_VER, config);
 
 }
 //accessors
@@ -289,14 +313,9 @@ float FreeBoardModel::getAnchorW() {
  */
 double FreeBoardModel::getAutopilotOffCourse() {
 	//get degrees between
-	autopilotState.autopilotOffCourse = (getAutopilotTargetHeading() + 360)
-			- (getAutopilotCurrentHeading() + 360);
-	autopilotState.autopilotOffCourse = fmod(autopilotState.autopilotOffCourse,
-			360.0);
-	//if its >abs(180), then we want to go the -ve (shorter) direction
-	if (fabs(autopilotState.autopilotOffCourse) > 180)
-		autopilotState.autopilotOffCourse = autopilotState.autopilotOffCourse
-				- 360;
+	autopilotState.autopilotOffCourse = getAutopilotTargetHeading()	- getAutopilotCurrentHeading();
+	autopilotState.autopilotOffCourse += (autopilotState.autopilotOffCourse>180) ? -360 : (autopilotState.autopilotOffCourse<-180) ? 360 : 0;
+
 	return autopilotState.autopilotOffCourse;
 }
 
@@ -324,7 +343,18 @@ double FreeBoardModel::getAutopilotTargetHeading() {
 	return autopilotState.autopilotTargetHeading;
 }
 double FreeBoardModel::getAutopilotCurrentHeading() {
-	return autopilotState.autopilotCurrentHeading;
+	if(autopilotState.autopilotReference == 'W'){
+		return windState.windApparentDir;
+	}
+	//default option - compass
+	return magneticHeading;
+}
+
+int FreeBoardModel::getAutopilotDeadZone(){
+	return this->config.autopilotDeadZone;
+}
+int FreeBoardModel::getAutopilotSlack(){
+	return this->config.autopilotSlack;
 }
 
 long FreeBoardModel::getGpsAlarmFixTime() {
@@ -496,7 +526,16 @@ void FreeBoardModel::setAnchorW(float anchorW) {
 }
 
 void FreeBoardModel::setAutopilotReference(char autopilotReference) {
+	if(autopilotReference != 'W' || autopilotReference != 'C') return;
 	this->autopilotState.autopilotReference = autopilotReference;
+	if(autopilotState.autopilotReference =='W'){
+			autopilotState.autopilotTargetHeading=windState.windApparentDir;
+	}
+	if(autopilotState.autopilotReference =='C'){
+			autopilotState.autopilotTargetHeading=magneticHeading;
+	}
+	//and netralise the rudder position too.
+	this->autopilotState.autopilotRudderCommand=33;
 }
 
 void FreeBoardModel::setAutopilotAlarmMaxCourseError(
@@ -524,21 +563,19 @@ void FreeBoardModel::setAutopilotAlarmTriggered(bool autopilotAlarmTriggered) {
 	this->autopilotState.autopilotAlarmTriggered = autopilotAlarmTriggered;
 }
 
-void FreeBoardModel::setAutopilotCurrentHeading(
-		double autopilotCurrentHeading) {
-	//make this 0-360 range only
-	if (autopilotCurrentHeading >= 0 && autopilotCurrentHeading <= 360)
-		this->autopilotState.autopilotCurrentHeading = autopilotCurrentHeading;
-}
 
 void FreeBoardModel::setAutopilotRudderCommand(double autopilotRudderCommand) {
 	this->autopilotState.autopilotRudderCommand = autopilotRudderCommand;
 }
 
+/**
+ * For magnetic it will be 0-360degM
+ * For wind it will be -180 to +180 from bow.
+ * Since this matches with target heading, and we convert in autopilot to 0-360, alls good?
+ */
 void FreeBoardModel::setAutopilotTargetHeading(double autopilotTargetHeading) {
 	//make this 0-360 range only
-	if (autopilotTargetHeading >= 0 && autopilotTargetHeading <= 360)
-		this->autopilotState.autopilotTargetHeading = autopilotTargetHeading;
+		this->autopilotState.autopilotTargetHeading = (double)(((int)autopilotTargetHeading+360) % 360);
 }
 
 void FreeBoardModel::setGpsAlarmFixTime(long gpsAlarmFixTime) {
@@ -651,12 +688,25 @@ void FreeBoardModel::setMobAlarmOn(volatile bool mobAlarmOn) {
 }
 
 bool FreeBoardModel::isAutopilotOn() {
-	return config.autopilotOn;
+	return autopilotState.autopilotOn;
 }
 
 void FreeBoardModel::setAutopilotOn(bool autopilotOn) {
-	this->config.autopilotOn = autopilotOn;
+	//this is potentailly dangerous, since we dont want the boat diving off on an old target heading.
+	//ALWAYS reset target heading to current magnetic or wind dir here
+	setAutopilotReference(getAutopilotReference());
+	this->autopilotState.autopilotOn = autopilotOn;
 }
+
+void FreeBoardModel::setAutopilotDeadZone(int deadZone) {
+	this->config.autopilotDeadZone = deadZone;
+}
+
+void FreeBoardModel::setAutopilotSlack(int slack) {
+	this->config.autopilotSlack = slack;
+}
+
+
 
 void FreeBoardModel::setRadarAlarmOn(volatile bool radarAlarmOn) {
 	this->config.radarAlarmOn = radarAlarmOn;

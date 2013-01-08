@@ -1,4 +1,22 @@
 /*
+ * Copyright 2010,2011,2012,2013 Robert Huitema robert@42.co.nz
+ *
+ * This file is part of FreeBoard. (http://www.42.co.nz/freeboard)
+ *
+ *  FreeBoard is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+
+ *  FreeBoard is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+
+ *  You should have received a copy of the GNU General Public License
+ *  along with FreeBoard.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/*
  * FreeBoardModel.h
  *
  *Holds all the global model vars
@@ -16,8 +34,9 @@
 #include "FreeBoardConstants.h"
 #include "math.h"
 
-#define AUTOPILOT_WIND 'W';
-#define AUTOPILOT_COMPASS 'C';
+#define AUTOPILOT_WIND 'W'
+#define AUTOPILOT_COMPASS 'C'
+#define EEPROM_VER 5
 class FreeBoardModel {
 public:
 //alarms
@@ -45,6 +64,8 @@ public:
 	double getAutopilotCurrentHeading();
 	double getAutopilotRudderCommand();
 	double getAutopilotTargetHeading();
+	int getAutopilotDeadZone();
+	int getAutopilotSlack();
 	long getGpsAlarmFixTime() ;
 	float getGpsCourse() ;
 	unsigned long getGpsLastFix() ;
@@ -96,9 +117,11 @@ public:
 	void setAutopilotAlarmMaxXtError(double autopilotAlarmMaxXtError);
 	void setAutopilotAlarmOn(bool autopilotAlarmOn);
 	void setAutopilotAlarmTriggered(bool autopilotAlarmTriggered);
-	void setAutopilotCurrentHeading(double autopilotCurrentHeading);
+	//void setAutopilotCurrentHeading(double autopilotCurrentHeading);
 	void setAutopilotRudderCommand(double autopilotRudderCommand);
 	void setAutopilotTargetHeading(double autopilotTargetHeading);
+	void setAutopilotDeadZone(int deadZone);
+	void setAutopilotSlack(int slack);
 	void setGpsAlarmFixTime(long gpsAlarmFixTime);
 	void setGpsAlarmOn(bool gpsAlarmOn);
 	void setGpsAlarmTriggered(bool gpsAlarmTriggered);
@@ -167,12 +190,11 @@ private:
 
 	//autopilot
 	struct AutopilotState{
-		//bool autopilotOn;
-
+		bool autopilotOn;
 		double autopilotOffCourse; //-179 to +180
 		char autopilotReference; //WIND (W) or COMPASS(C)
 		//these need to always be positive for autopilot
-		double autopilotCurrentHeading; //Input 0-360
+		//double autopilotCurrentHeading; //Input 0-360
 		double autopilotTargetHeading; //Setpoint 0-360
 		double autopilotRudderCommand; //Output 0-66
 		//bool autopilotAlarmOn;
@@ -226,8 +248,9 @@ private:
 		float anchorLon;	//32 bits (4 bytes). 
 		float anchorRadius;	//32 bits (4 bytes). 
 		bool anchorAlarmOn;	//1 byte
-		bool autopilotOn;	//1 byte
 		bool autopilotAlarmOn;	//1 byte
+		int autopilotDeadZone; //16 bits (2 bytes)
+		int autopilotSlack; //16 bits (2 bytes)
 		float gpsSpeedUnit;	//32 bits (4 bytes). 
 		bool gpsAlarmOn;	//1 byte
 		long gpsAlarmFixTime; 	//32 bits (4 bytes). 

@@ -1,39 +1,57 @@
+/*
+ * Copyright 2010,2011,2012,2013 Robert Huitema robert@42.co.nz
+ *
+ * This file is part of FreeBoard. (http://www.42.co.nz/freeboard)
+ *
+ *  FreeBoard is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+
+ *  FreeBoard is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+
+ *  You should have received a copy of the GNU General Public License
+ *  along with FreeBoard.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include "Gps.h"
 char gpsBuffer[40];
 PString gpsStr(gpsBuffer, sizeof(gpsBuffer));
 
 Gps::~Gps() {
 }
-Gps::Gps(NMEA* gpsSource,FreeBoardModel* model) {
+Gps::Gps(NMEA* gpsSource, FreeBoardModel* model) {
 
-	this->model=model;
+	this->model = model;
 	this->gpsSource = gpsSource;
 	//setupGps();
 }
 
-bool Gps::testMsg(){
+bool Gps::testMsg() {
 	//clear buffer of rubbish
-	int x =0;
-	while( x<100){
-		if(Serial1.available()){
+	int x = 0;
+	while (x < 100) {
+		if (Serial1.available()) {
 			Serial1.read();
 			x++;
 		}
 	}
 	//5 secs
 	unsigned long now = millis();
-	bool valid=true;
-	while(now+5000>millis() && valid){
-		if(Serial1.available()){
+	bool valid = true;
+	while (now + 5000 > millis() && valid) {
+		if (Serial1.available()) {
 			int c = Serial1.read();
 			//Serial.print(c);
 			//Serial.print(",");
 			//not Cntrl-n or printable so invalid
-			if( c>128)valid=false;
+			if (c > 128) valid = false;
 		}
 	}
-	if(DEBUG){
-		if(valid)
+	if (DEBUG) {
+		if (valid)
 			Serial.println("OK");
 		else
 			Serial.println("FAIL");
@@ -41,32 +59,31 @@ bool Gps::testMsg(){
 	return valid;
 }
 
-int Gps::autoBaud(){
+int Gps::autoBaud() {
 	//try the various baud rates until one makes sense
 	//should only output simple NMEA [$A-Z0-9*\r\c]
 
-
-	if(DEBUG)Serial.println("   try autobaud 4800..");
+	if (DEBUG) Serial.println("   try autobaud 4800..");
 	Serial1.begin(4800);
-	if(testMsg())return 4800;
+	if (testMsg()) return 4800;
 	Serial1.end();
-	if(DEBUG)Serial.println("   try autobaud 9600..");
+	if (DEBUG) Serial.println("   try autobaud 9600..");
 	Serial1.begin(9600);
-	if(testMsg())return 9600;
+	if (testMsg()) return 9600;
 	Serial1.end();
-	if(DEBUG)Serial.println("   try autobaud 19200..");
+	if (DEBUG) Serial.println("   try autobaud 19200..");
 	Serial1.begin(19200);
-	if(testMsg())return 19200;
+	if (testMsg()) return 19200;
 	Serial1.end();
-	if(DEBUG)Serial.println("   try autobaud 38400..");
-		Serial1.begin(38400);
-		if(testMsg())return 38400;
+	if (DEBUG) Serial.println("   try autobaud 38400..");
+	Serial1.begin(38400);
+	if (testMsg()) return 38400;
 	Serial1.end();
-	if(DEBUG)Serial.println("   try autobaud 57600..");
+	if (DEBUG) Serial.println("   try autobaud 57600..");
 	Serial1.begin(57600);
-	if(testMsg())return 57600;
+	if (testMsg()) return 57600;
 	Serial1.end();
-	if(DEBUG)Serial.println("   default to 4800..");
+	if (DEBUG) Serial.println("   default to 4800..");
 	return 4800;
 }
 
@@ -133,30 +150,28 @@ void Gps::setupGps() {
 
 }
 
-
-float Gps::getMetersTo(float targetLat, float targetLon, float currentLat, float currentLon){
-		// returns distance in meters between two positions, both specified
-		// as signed decimal-degrees latitude and longitude. Uses great-circle
-		// distance computation for hypothised sphere of radius 6372795 meters.
-		// Because Earth is no exact sphere, rounding errors may be upto 0.5%.
-	  float delta = radians(targetLon-currentLon);
-	  float sdlong = sin(delta);
-	  float cdlong = cos(delta);
-	  targetLat = radians(targetLat);
-	  currentLat = radians(currentLat);
-	  float slat1 = sin(targetLat);
-	  float clat1 = cos(targetLat);
-	  float slat2 = sin(currentLat);
-	  float clat2 = cos(currentLat);
-	  delta = (clat1 * slat2) - (slat1 * clat2 * cdlong);
-	  delta = sq(delta);
-	  delta += sq(clat2 * sdlong);
-	  delta = sqrt(delta);
-	  float denom = (slat1 * slat2) + (clat1 * clat2 * cdlong);
-	  delta = atan2(delta, denom);
-	  return delta * 6372795 * MTR;
+float Gps::getMetersTo(float targetLat, float targetLon, float currentLat, float currentLon) {
+	// returns distance in meters between two positions, both specified
+	// as signed decimal-degrees latitude and longitude. Uses great-circle
+	// distance computation for hypothised sphere of radius 6372795 meters.
+	// Because Earth is no exact sphere, rounding errors may be upto 0.5%.
+	float delta = radians(targetLon - currentLon);
+	float sdlong = sin(delta);
+	float cdlong = cos(delta);
+	targetLat = radians(targetLat);
+	currentLat = radians(currentLat);
+	float slat1 = sin(targetLat);
+	float clat1 = cos(targetLat);
+	float slat2 = sin(currentLat);
+	float clat2 = cos(currentLat);
+	delta = (clat1 * slat2) - (slat1 * clat2 * cdlong);
+	delta = sq(delta);
+	delta += sq(clat2 * sdlong);
+	delta = sqrt(delta);
+	float denom = (slat1 * slat2) + (clat1 * clat2 * cdlong);
+	delta = atan2(delta, denom);
+	return delta * 6372795 * MTR;
 }
-
 
 bool Gps::decode(byte inByte) {
 	// check if the character completes a valid GPS sentence
@@ -164,9 +179,7 @@ bool Gps::decode(byte inByte) {
 	//if(DEBUG)Serial.print(inByte,BYTE);
 	if (model->isGpsDecode()) {
 		model->setGpsStatus(gpsSource->gprmc_status());
-		if (gpsSource->gprmc_status() == 'A'
-				&& gpsSource->term(0)[2] != 'R' && gpsSource->term(0)[3] != 'M'
-				&& gpsSource->term(0)[4] != 'C') {
+		if (gpsSource->gprmc_status() == 'A' && gpsSource->term(0)[2] != 'R' && gpsSource->term(0)[3] != 'M' && gpsSource->term(0)[4] != 'C') {
 			model->setGpsLastFix(millis());
 			model->setGpsCourse(gpsSource->gprmc_course());
 			model->setGpsLatitude(gpsSource->gprmc_latitude());
@@ -196,18 +209,17 @@ void Gps::resetGPS() {
 	Serial1.println("$PSRF105,0*3F");
 }
 
-
 PString Gps::getLatString(float lat, int decimals, int padding, PString str) {
 
 	str.begin();
 	if (lat >= 0.0) {
 		str.print("N");
-		str.print(lat,4);
+		str.print(lat, 4);
 		str.print("    ");
 	} else {
 		str.print("S");
 		float plusLat = 0 - lat;
-		str.print(plusLat,4);
+		str.print(plusLat, 4);
 		str.print("    ");
 	}
 	//float absLat = abs(lat);
@@ -221,12 +233,12 @@ PString Gps::getLonString(float lon, int decimals, int padding, PString str) {
 	str.begin();
 	if (lon >= 0) {
 		str.print("E");
-		str.print(lon,4);
+		str.print(lon, 4);
 		str.print("    ");
 	} else {
 		str.print("W");
 		float plusLon = 0 - lon;
-		str.print(plusLon,4);
+		str.print(plusLon, 4);
 		str.print("    ");
 	}
 	// float absLon = abs(lon);

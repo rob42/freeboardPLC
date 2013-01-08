@@ -1,5 +1,20 @@
-/* FreeBoard
- * Copyright R T Huitema, All rights reserved
+/*
+ * Copyright 2010, 2011,2012,2013 Robert Huitema robert@42.co.nz
+ *
+ * This file is part of FreeBoard. (http://www.42.co.nz/freeboard)
+ *
+ *  FreeBoard is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+
+ *  FreeBoard is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+
+ *  You should have received a copy of the GNU General Public License
+ *  along with FreeBoard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 // AltSoftSerial always uses these pins:
@@ -87,7 +102,7 @@ Anchor anchor(&model);
 Seatalk seatalk(&Serial2, &model);
 
 String inputSerial = ""; // a string to hold incoming data
-boolean inputSerialComplete = false; // whether the string is complete
+//boolean inputSerialComplete = false; // whether the string is complete
 boolean inputSerial1Complete = false; // whether the GPS string is complete
 boolean inputSerial2Complete = false; // whether the string is complete
 boolean inputSerial3Complete = false; // whether the string is complete
@@ -98,49 +113,40 @@ void setup() {
 	inputSerial.reserve(40);
 	// initialize  serial ports:
 	Serial.begin(38400, 8, 1, 0);
-	if (DEBUG)
-		Serial.println("Initializing..");
+	if (DEBUG) Serial.println("Initializing..");
 
 	//start gps on serial1, autobaud
-	if (DEBUG)
-		Serial.println("Start gps..");
+	if (DEBUG) Serial.println("Start gps..");
 	gps.setupGps();
 	Serial1.begin(38400);
 
-	if (DEBUG)
-		Serial.println("Start seatalk - serial2..");
+	if (DEBUG) Serial.println("Start seatalk - serial2..");
 	Serial2.begin(4800, 9, 1, 0); //Seatalk interface
 
-	if (DEBUG)
-		Serial.println("Start nmea Rx - serial3..");
+	if (DEBUG) Serial.println("Start nmea Rx - serial3..");
 	Serial3.begin(4800, 8, 1, 0); //talker2
 
-	if (DEBUG)
-		Serial.println("Start nmea Tx..");
+	if (DEBUG) Serial.println("Start nmea Tx..");
 	pinMode(nmeaRxPin, INPUT);
 	pinMode(nmeaTxPin, OUTPUT);
 	nmea.begin(4800);
 
 	//setup interrupts to windPins
-	if (DEBUG)
-		Serial.println("Start wind..");
+	if (DEBUG) Serial.println("Start wind..");
 	pinMode(windSpeedPin, INPUT);
 	attachInterrupt(windSpeedInterrupt, readWDS, FALLING);
 	pinMode(windDirPin, INPUT);
 	attachInterrupt(windDirInterrupt, readWDD, FALLING);
 
 //	//setup timers
-	if (DEBUG)
-		Serial.println("Start timer..");
+	if (DEBUG) Serial.println("Start timer..");
 	FlexiTimer2::set(100, calculate); // 100ms period
 	FlexiTimer2::start();
 	//lcd.clearLcd();
 
-	if (DEBUG)
-		Serial.println("Setup complete..");
+	if (DEBUG) Serial.println("Setup complete..");
 	//print out the config
-	if (DEBUG)
-		model.sendData(Serial, CONFIG_T);
+	model.sendData(Serial, CONFIG_T);
 }
 /*
  * Timer interrupt driven method to do time sensitive calculations
@@ -176,17 +182,14 @@ void serialEvent() {
 		char inChar = (char) Serial.read();
 		// add it to the inputString:
 		inputSerial += inChar;
-		// if the incoming character is a newline, set a flag
-		// so the main loop can do something about it:
 		if (inChar == '\n') {
 			//inputSerialComplete = true;
-			char carray[inputSerial.length()+1]; //determine size of the array
+			char carray[inputSerial.length() + 1]; //determine size of the array
 			inputSerial.toCharArray(carray, sizeof(carray));
 			process(carray, ',');
 			inputSerial = "";
 			//inputSerialComplete = false;
 		}
-
 
 	}
 }
@@ -196,10 +199,8 @@ void serialEvent1() {
 		inputSerial1Complete = gps.decode(Serial1.read());
 		// read from port 1 (GPS), send to port 0:
 		if (inputSerial1Complete) {
-			if (MUX)
-				nmea.printNmea(gpsSource.sentence());
-			if (MUX && DEBUG)
-				Serial.println(gpsSource.sentence());
+			if (MUX) nmea.printNmea(gpsSource.sentence());
+			Serial.println(gpsSource.sentence());
 			//loop every sentence
 			break;
 		}
@@ -216,10 +217,8 @@ void serialEvent3() {
 	while (Serial3.available()) {
 		inputSerial3Complete = talker3.decode(Serial3.read());
 		if (inputSerial3Complete) {
-			if (MUX)
-				nmea.printNmea(talker3.sentence());
-			if (MUX && DEBUG)
-				Serial.println(talker3.sentence());
+			if (MUX) nmea.printNmea(talker3.sentence());
+			Serial.println(talker3.sentence());
 			//loop every sentence
 			break;
 		}
@@ -230,21 +229,11 @@ void loop() {
 
 	//if (DEBUG)
 	//Serial.println("Looping..");
-	//dont get caught endlessly reading/writing
-	//allow single character commands
-	if (inputSerialComplete) {
-		//split and process
-		//Serial.println(inputSerial);
-		//splitString(inputSerial, ',');
-
-		//inputSerial = "";
-		//inputSerialComplete = false;
-	}
 
 	if (execute) {
 		//timer ping
 		//do these every 100ms
-		//autopilot.calcAutoPilot();
+		autopilot.calcAutoPilot();
 
 //		if (interval % 2 == 0) {
 //			//do every 200ms
@@ -259,17 +248,7 @@ void loop() {
 		}
 		if (interval % 10 == 0) {
 			//do every 1000ms
-
-			if (DEBUG && model.isAutopilotOn()) {
-				Serial.print("From model: Target deg = ");
-				Serial.print(model.getAutopilotTargetHeading());
-				Serial.print("Heading deg = ");
-				Serial.print(model.getAutopilotCurrentHeading());
-				Serial.print(", Rudder = ");
-				Serial.println(model.getAutopilotRudderCommand());
-				//model.setAutopilotCurrentHeading(model.getAutopilotCurrentHeading()+(0.2*(model.getAutopilotRudderCommand()-33)));
-			}
-			//anchor.checkAnchor();
+			anchor.checkAnchor();
 			alarm.checkWindAlarm();
 			nmea.printWindNmea();
 			//Serial.print("Interrupts:");
@@ -299,73 +278,83 @@ void loop() {
 }
 
 void process(char * s, char parser) {
-	if(DEBUG)Serial.print("Process str:");
-	if(DEBUG)Serial.println(s);
+	//if (DEBUG) Serial.print("Process str:");
+	//if (DEBUG) Serial.println(s);
 	char *cmd = strtok(s, ",");
-	while(cmd != NULL){
+	while (cmd != NULL && strlen(cmd) > 3) {
 		//starts with # its a command
-		if(DEBUG)Serial.print("Process incoming..l=");
-		if(DEBUG)Serial.print(strlen(cmd));
-		if(DEBUG)Serial.print(", ");
-		if(DEBUG)Serial.println(cmd);
+		//if (DEBUG) Serial.print("Process incoming..l=");
+		//if (DEBUG) Serial.print(strlen(cmd));
+		//if (DEBUG) Serial.print(", ");
+		//if (DEBUG) Serial.println(cmd);
 
 		char key[5];
-		strncpy(key, cmd,4);
-		key[4]='\0';
 		int l = strlen(cmd);
-		char val[l-4];
-		memcpy( val, &cmd[5], l-5 );
-		val[l-5] = '\0';
-		if(DEBUG)Serial.print(key);
-		if(DEBUG)Serial.print(" = ");
-		if(DEBUG)Serial.println(val);
+
 		if (cmd[0] == '#') {
 			//
+			strncpy(key, cmd, 4);
+			key[4] = '\0';
+			char val[l - 4];
+			memcpy(val, &cmd[5], l - 5);
+			val[l - 5] = '\0';
+			//if (DEBUG) Serial.print(key);
+			//if (DEBUG) Serial.print(" = ");
+			//if (DEBUG) Serial.println(val);
+
 			//anchor
-			if (strcmp( key, ANCHOR_ALARM_STATE)==0){
-				Serial.print("AA Entered..");
+			if (strcmp(key, ANCHOR_ALARM_STATE) == 0) {
+				//if (DEBUG) Serial.print("AA Entered..");
 				model.setAnchorAlarmOn(atoi(val));
 				if (atoi(val) == 1) {
 					anchor.setAnchorPoint();
 				}
-			} else	if (strcmp(key, ANCHOR_ALARM_RADIUS)==0) {
+			} else if (strcmp(key, ANCHOR_ALARM_RADIUS) == 0) {
 				model.setAnchorRadius(atof(val));
-			} else 	if (strcmp(key,ANCHOR_ALARM_LAT)==0) {
+			} else if (strcmp(key, ANCHOR_ALARM_LAT) == 0) {
 				model.setAnchorLat(atof(val));
-			}else if (strcmp(key,ANCHOR_ALARM_LON)==0) {
+			} else if (strcmp(key, ANCHOR_ALARM_LON) == 0) {
 				model.setAnchorLon(atof(val));
 			}
 			//autopliot
-			else 	if (strcmp(key,AUTOPILOT_STATE)==0) {
-				if(DEBUG)Serial.print("AP Entered..");
-				if(DEBUG)Serial.println(val);
+			else if (strcmp(key, AUTOPILOT_STATE) == 0) {
+				//if (DEBUG) Serial.print("AP Entered..");
+				//if (DEBUG) Serial.println(val);
+				//this is potentailly dangerous, since we dont want the boat diving off on an old target heading.
+				//in model we ALWAYS reset to current magnetic or wind heading at this point
 				model.setAutopilotOn(atoi(val));
-			} else if (strcmp(key,AUTOPILOT_ADJUST)==0) {
-				model.setAutopilotTargetHeading(
-						model.getAutopilotTargetHeading() + atol(val));
-			} else	if (strcmp(key,AUTOPILOT_SOURCE)==0) {
+			} else if (strcmp(key, AUTOPILOT_ADJUST) == 0) {
+				model.setAutopilotTargetHeading(model.getAutopilotTargetHeading() + atol(val));
+			} else if (strcmp(key, AUTOPILOT_SOURCE) == 0) {
 				model.setAutopilotReference(val[0]);
 
 			}
 			//wind
-			else if (strcmp(key,WIND_SPEED_ALARM_STATE)==0) {
+			else if (strcmp(key, WIND_SPEED_ALARM_STATE) == 0) {
 				model.setWindAlarmOn(atoi(val));
-			}else if (strcpy(key,WIND_ALARM_KNOTS)==0) {
+			} else if (strcpy(key, WIND_ALARM_KNOTS) == 0) {
 				model.setWindAlarmSpeed(atoi(val));
 			}
 		} else {
+			strncpy(key, cmd, 3);
+			key[3] = '\0';
+			char val[l - 3];
+			memcpy(val, &cmd[4], l - 4);
+			val[l - 4] = '\0';
+			//if (DEBUG) Serial.print(key);
+			//if (DEBUG) Serial.print(" = ");
+			//if (DEBUG) Serial.println(val);
 			// incoming data = WST,WSA,WDT,WDA,WSU,LAT,LON,COG,MGH,SOG,YAW
-				if (strcmp(key, MGX)==0) {
-					model.setMagneticHeading(atof(val));
-				}
-				if (strcmp(key,WDT)==0) {
-					model.setWindTrueDir(atoi(val));
-				}
+			if (strcmp(key, MGH) == 0) {
+				model.setMagneticHeading(atof(val));
+			}
+			if (strcmp(key, WDT) == 0) {
+				model.setWindTrueDir(atoi(val));
+			}
 		}
 		//next token
 		cmd = strtok(NULL, ",");
 	}
-	if(DEBUG)Serial.println("Process str exit");
+	//if (DEBUG) Serial.println("Process str exit");
 }
-
 
