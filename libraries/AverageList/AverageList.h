@@ -79,7 +79,7 @@ class AverageList {
 			if(x==0.0f && y==0.0f){
 				return 0.0f;
 			}
-			return degrees(atan2(y, x))+180;
+			return degrees(atan2(y, x));
 
 		}
 
