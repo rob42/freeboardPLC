@@ -66,7 +66,7 @@ void NmeaSerial::printWindNmea() {
 		//Assemble a sentence of the various parts so that we can calculate the proper checksum
 
 		PString str(windSentence, sizeof(windSentence));
-		str.print("$IIMWV,");
+		str.print("$WIMWV,");
 		str.print(model->getWindApparentDir());
 		str.print(".0,R,");
 		str.print(model->getWindAverage());
@@ -77,6 +77,8 @@ void NmeaSerial::printWindNmea() {
 		for (unsigned int n = 1; n < strlen(windSentence) - 1; n++) {
 			cs ^= windSentence[n]; //calculates the checksum
 		}
+		//bug - arduino prints 0x007 as 7, 0x02B as 2B, so we add it now
+		if (cs < 0x10) str.print('0');
 		str.print(cs, HEX); // Assemble the final message and send it out the serial port
 		Serial.println(windSentence);
 		printNmea(windSentence);

@@ -120,9 +120,9 @@
 	/** Autopilot source*/
 #define APS  "APS" //W wind or C compass
 	/** Autopilot current Heading*/
-#define APS  "APC" //0-360
+#define APC  "APC" //0-360
 	/** Autopilot rudder angle*/
-#define APS  "APR" // +/- deg, +ve is rudder to starboard, vessel turns to starboard
+#define APR  "APR" // +/- deg, +ve is rudder to starboard, vessel turns to starboard
 	
 	/**Anchor alarm state*/
 #define AAX  "AAX"

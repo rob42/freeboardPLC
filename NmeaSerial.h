@@ -26,7 +26,7 @@
 #ifndef NMEASERIAL_H_
 #define NMEASERIAL_H_
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <PString/PString.h>
 #include <AltSoftSerial/AltSoftSerial.h>
 #include "FreeBoardConstants.h"
@@ -42,7 +42,7 @@ public:
 private:
 	FreeBoardModel* model;
 	char windSentence [30];
-	int cs;
+	byte cs;
 };
 
 
