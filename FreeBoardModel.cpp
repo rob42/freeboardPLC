@@ -149,11 +149,11 @@ int FreeBoardModel::writeSimple(HardwareSerial ser) {
 		ser.print("APS:");
 		ser.print(autopilotState.autopilotReference);
 		ser.print(",APT:");
-		ser.print(autopilotState.autopilotTargetHeading);
+		ser.print(getAutopilotTargetHeading());
 		ser.print(",APC:");
 		ser.print(getAutopilotCurrentHeading());
 		ser.print(",APR:");
-		ser.print(autopilotState.autopilotRudderCommand-33);// 0-66 in model
+		ser.print(autopilotState.autopilotRudderCommand-33.0);// 0-66 in model
 		ser.print(",");
 	}
 	//if anchor alarm on, send data
@@ -343,7 +343,7 @@ double FreeBoardModel::getAutopilotTargetHeading() {
 	return autopilotState.autopilotTargetHeading;
 }
 double FreeBoardModel::getAutopilotCurrentHeading() {
-	if(autopilotState.autopilotReference == 'W'){
+	if(autopilotState.autopilotReference == AUTOPILOT_WIND){
 		return windState.windApparentDir;
 	}
 	//default option - compass
@@ -526,13 +526,14 @@ void FreeBoardModel::setAnchorW(float anchorW) {
 }
 
 void FreeBoardModel::setAutopilotReference(char autopilotReference) {
-	if(autopilotReference != 'W' || autopilotReference != 'C') return;
+
+	if(autopilotReference != AUTOPILOT_WIND && autopilotReference != AUTOPILOT_COMPASS) return;
 	this->autopilotState.autopilotReference = autopilotReference;
-	if(autopilotState.autopilotReference =='W'){
+	if(autopilotState.autopilotReference ==AUTOPILOT_WIND){
 			autopilotState.autopilotTargetHeading=windState.windApparentDir;
 	}
-	if(autopilotState.autopilotReference =='C'){
-			autopilotState.autopilotTargetHeading=magneticHeading;
+	if(autopilotState.autopilotReference == AUTOPILOT_COMPASS){
+		autopilotState.autopilotTargetHeading=magneticHeading;
 	}
 	//and netralise the rudder position too.
 	this->autopilotState.autopilotRudderCommand=33;
@@ -692,7 +693,7 @@ bool FreeBoardModel::isAutopilotOn() {
 }
 
 void FreeBoardModel::setAutopilotOn(bool autopilotOn) {
-	//this is potentailly dangerous, since we dont want the boat diving off on an old target heading.
+	//this is potentally dangerous, since we dont want the boat diving off on an old target heading.
 	//ALWAYS reset target heading to current magnetic or wind dir here
 	setAutopilotReference(getAutopilotReference());
 	this->autopilotState.autopilotOn = autopilotOn;
