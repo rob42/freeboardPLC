@@ -139,44 +139,36 @@ int FreeBoardModel::writeSimple(HardwareSerial ser) {
 	//!!!VER:1.9,RLL:-0.52,PCH:0.06,YAW:80.24,IMUH:253,MGX:44,MGY:-254,MGZ:-257,MGH:80.11,LAT:-412937350,LON:1732472000,ALT:14,COG:116,SOG:0,FIX:1,SAT:5,TOW:22504700***
 
 	ser.print("!!!VER:1.9,");
-	ser.print("UID:MEGA,");
-
-	//if autopilot on, send autopilot data
-	ser.print("APX:");
+	ser.print("UID:MEGA,APX:");
 	ser.print(autopilotState.autopilotOn);
-	ser.print(",");
+	ser.print(",APS:");
+	ser.print(autopilotState.autopilotReference);
+	//if autopilot on, send autopilot data
 	if (autopilotState.autopilotOn) {
-		ser.print("APS:");
-		ser.print(autopilotState.autopilotReference);
 		ser.print(",APT:");
 		ser.print(getAutopilotTargetHeading());
 		ser.print(",APC:");
 		ser.print(getAutopilotCurrentHeading());
 		ser.print(",APR:");
 		ser.print(autopilotState.autopilotRudderCommand-33.0);// 0-66 in model
-		ser.print(",");
 	}
 	//if anchor alarm on, send data
-	ser.print("AAX:");
+	ser.print(",AAX:");
 	ser.print(config.anchorAlarmOn);
-	ser.print(",");
 	if (config.anchorAlarmOn) {
-		ser.print("AAR:");
+		ser.print(",AAR:");
 		ser.print(config.anchorRadius);
 		ser.print(",AAN:");
 		ser.print(config.anchorLat);
 		ser.print(",AAE:");
 		ser.print(config.anchorLon);
-		ser.print(",");
 	}
 	//if wind alarm on, send data
-	ser.print("WSX:");
+	ser.print(",WSX:");
 	ser.print(config.windAlarmOn);
-	ser.print(",");
 	if (config.windAlarmOn) {
-		ser.print("WSK:");
+		ser.print(",WSK:");
 		ser.print(config.windAlarmSpeed);
-		ser.print(",");
 	}
 	ser.println("***");
 	return 0;
