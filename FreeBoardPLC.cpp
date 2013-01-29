@@ -340,9 +340,9 @@ void process(char * s, char parser) {
 			char val[l - 3];
 			memcpy(val, &cmd[4], l - 4);
 			val[l - 4] = '\0';
-			if (DEBUG) Serial.print(key);
-			if (DEBUG) Serial.print(" = ");
-			if (DEBUG) Serial.println(val);
+			//if (DEBUG) Serial.print(key);
+			//if (DEBUG) Serial.print(" = ");
+			//if (DEBUG) Serial.println(val);
 			// incoming data = WST,WSA,WDT,WDA,WSU,LAT,LON,COG,MGH,SOG,YAW
 			if (strcmp(key, MGH) == 0) {
 				model.setMagneticHeading(atof(val));
