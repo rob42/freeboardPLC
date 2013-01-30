@@ -155,9 +155,9 @@ int FreeBoardModel::writeSimple(HardwareSerial ser) {
 	//if anchor alarm on, send data
 	ser.print(",AAX:");
 	ser.print(config.anchorAlarmOn);
+	ser.print(",AAR:");
+	ser.print(config.anchorRadius);
 	if (config.anchorAlarmOn) {
-		ser.print(",AAR:");
-		ser.print(config.anchorRadius);
 		ser.print(",AAN:");
 		ser.print(config.anchorLat);
 		ser.print(",AAE:");

@@ -309,8 +309,8 @@ void process(char * s, char parser) {
 				if (atoi(val) == 1) {
 					anchor.setAnchorPoint();
 				}
-			} else if (strcmp(key, ANCHOR_ALARM_RADIUS) == 0) {
-				model.setAnchorRadius(atof(val));
+			} else if (strcmp(key, ANCHOR_ALARM_ADJUST) == 0) {
+				model.setAnchorRadius(model.getAnchorRadius() + atof(val));
 			} else if (strcmp(key, ANCHOR_ALARM_LAT) == 0) {
 				model.setAnchorLat(atof(val));
 			} else if (strcmp(key, ANCHOR_ALARM_LON) == 0) {
