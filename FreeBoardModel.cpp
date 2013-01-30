@@ -162,14 +162,15 @@ int FreeBoardModel::writeSimple(HardwareSerial ser) {
 		ser.print(config.anchorLat);
 		ser.print(",AAE:");
 		ser.print(config.anchorLon);
+		ser.print(",AAD:");
+		ser.print(getAnchorDistance());
 	}
 	//if wind alarm on, send data
 	ser.print(",WSX:");
 	ser.print(config.windAlarmOn);
-	if (config.windAlarmOn) {
-		ser.print(",WSK:");
-		ser.print(config.windAlarmSpeed);
-	}
+	ser.print(",WSK:");
+	ser.print(config.windAlarmSpeed);
+
 	ser.println("***");
 	return 0;
 }

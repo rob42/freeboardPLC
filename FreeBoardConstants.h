@@ -128,6 +128,8 @@
 #define AAX  "AAX"
 	/**Anchor alarm radius*/
 #define AAR  "AAR"
+	/**Anchor distance*/
+#define AAR  "AAD"
 	/**Anchor alarm Lat*/
 #define AAN  "AAN"
 	/**Anchor alarm Lon*/
