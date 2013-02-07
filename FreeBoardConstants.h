@@ -155,6 +155,7 @@
 
 #define WIND_SPEED_ALARM_STATE "#WSX"
 #define WIND_ALARM_KNOTS "#WSK"
+#define WIND_ZERO_ADJUST "#WZJ"
 
 
 #endif

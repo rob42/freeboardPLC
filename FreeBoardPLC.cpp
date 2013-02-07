@@ -333,6 +333,8 @@ void process(char * s, char parser) {
 				model.setWindAlarmOn(atoi(val));
 			} else if (strcpy(key, WIND_ALARM_KNOTS) == 0) {
 				model.setWindAlarmSpeed(atoi(val));
+			} else if (strcpy(key, WIND_ZERO_ADJUST) == 0) {
+				model.setWindZeroOffset(atoi(val));
 			}
 		} else {
 			strncpy(key, cmd, 3);
