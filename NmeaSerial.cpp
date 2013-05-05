@@ -25,62 +25,94 @@
 
 #include "NmeaSerial.h"
 
-NmeaSerial::~NmeaSerial(){
+NmeaSerial::~NmeaSerial() {
 
 }
-void NmeaSerial::begin(long speed){
+void NmeaSerial::begin(long speed) {
 	//initialise the nmea output
-		//pinMode(nmeaRxPin, INPUT);
-		//pinMode(nmeaTxPin, OUTPUT);
-		AltSoftSerial::begin(speed);
+	//pinMode(nmeaRxPin, INPUT);
+	//pinMode(nmeaTxPin, OUTPUT);
+	AltSoftSerial::begin(speed);
 }
 
-void NmeaSerial::printNmea(char* sentence){
+void NmeaSerial::printNmea(char* sentence) {
 	//sentence can be up to 80 chars
-	  //make it as perfect as possible, as the Raymarine C70 is very touchy
-	 // noInterrupts();
-	  println(sentence);
-	 // interrupts();
-	  //if(DEBUG)Serial.println(sentence);
+	//make it as perfect as possible, as the Raymarine C70 is very touchy
+	// noInterrupts();
+	println(sentence);
+	// interrupts();
+	//if(DEBUG)Serial.println(sentence);
 }
 
 /*=== MWV - Wind Speed and Angle ===
-*
-* ------------------------------------------------------------------------------
-*        1   2 3   4 5
-*         |   | |   | |
-*  $--MWV,x.x,a,x.x,a*hh<CR><LF>
-* ------------------------------------------------------------------------------
-*
-* Field Number:
-*
-* 1. Wind Angle, 0 to 360 degrees
-* 2. Reference, R = Relative, T = True
-* 3. Wind Speed
-* 4. Wind Speed Units, K/M/N
-* 5. Status, A = Data Valid
-* 6. Checksum
+ *
+ * ------------------------------------------------------------------------------
+ *        1   2 3   4 5
+ *         |   | |   | |
+ *  $--MWV,x.x,a,x.x,a*hh<CR><LF>
+ * ------------------------------------------------------------------------------
+ *
+ * Field Number:
+ *
+ * 1. Wind Angle, 0 to 360 degrees
+ * 2. Reference, R = Relative, T = True
+ * 3. Wind Speed
+ * 4. Wind Speed Units, K/M/N
+ * 5. Status, A = Data Valid
+ * 6. Checksum
  *
  */
 void NmeaSerial::printWindNmea() {
-		//Assemble a sentence of the various parts so that we can calculate the proper checksum
+	//Assemble a sentence of the various parts so that we can calculate the proper checksum
 
-		PString str(windSentence, sizeof(windSentence));
-		str.print("$WIMWV,");
-		str.print(model->getWindApparentDir());
-		str.print(".0,R,");
-		str.print(model->getWindAverage());
-		str.print(",N,A*");
-		//calculate the checksum
+	PString str(windSentence, sizeof(windSentence));
+	str.print("$FBMWV,");
+	str.print(model->getWindApparentDir());
+	str.print(".0,R,");
+	str.print(model->getWindAverage());
+	str.print(",N,A*");
+	//calculate the checksum
 
-		cs = 0; //clear any old checksum
-		for (unsigned int n = 1; n < strlen(windSentence) - 1; n++) {
-			cs ^= windSentence[n]; //calculates the checksum
-		}
-		//bug - arduino prints 0x007 as 7, 0x02B as 2B, so we add it now
-		if (cs < 0x10) str.print('0');
-		str.print(cs, HEX); // Assemble the final message and send it out the serial port
-		Serial.println(windSentence);
-		printNmea(windSentence);
+	cs = 0; //clear any old checksum
+	for (unsigned int n = 1; n < strlen(windSentence) - 1; n++) {
+		cs ^= windSentence[n]; //calculates the checksum
+	}
+	//bug - arduino prints 0x007 as 7, 0x02B as 2B, so we add it now
+	if (cs < 0x10) str.print('0');
+	str.print(cs, HEX); // Assemble the final message and send it out the serial port
+	Serial.println(windSentence);
+	printNmea(windSentence);
+
+}
+
+/*
+ * Heading, True.
+ *
+ *Actual vessel heading in degrees Ture produced by any device or system producing true heading.
+ *
+ *$--HDT,x.x,T
+ *x.x = Heading, degrees True
+ */
+void NmeaSerial::printTrueHeading() {
+	//Assemble a sentence of the various parts so that we can calculate the proper checksum
+	// declination is positive when true N is west of MagN, eg subtract the declination
+	if(model->getDeclination()==0.0)return;
+
+	PString str(trueHeadingSentence, sizeof(trueHeadingSentence));
+	str.print("$FBHDT,");
+	float trueHeading = model->getMagneticHeading()-model->getDeclination();
+	str.print(trueHeading);
+	str.print(",T*");
+	//calculate the checksum
+
+	cs = 0; //clear any old checksum
+	for (unsigned int n = 1; n < strlen(trueHeadingSentence) - 1; n++) {
+		cs ^= trueHeadingSentence[n]; //calculates the checksum
+	}
+	//bug - arduino prints 0x007 as 7, 0x02B as 2B, so we add it now
+	if (cs < 0x10) str.print('0');
+	str.print(cs, HEX); // Assemble the final message and send it out the serial port
+	Serial.println(trueHeadingSentence);
+	printNmea(trueHeadingSentence);
 
 }

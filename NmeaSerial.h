@@ -38,10 +38,12 @@ public:
 	virtual ~NmeaSerial();
 	void printNmea(char* sentence);
 	void printWindNmea();
+	void printTrueHeading();
 	void begin(long speed);
 private:
 	FreeBoardModel* model;
 	char windSentence [30];
+	char trueHeadingSentence [20];
 	byte cs;
 };
 

@@ -251,6 +251,7 @@ void loop() {
 			anchor.checkAnchor();
 			alarm.checkWindAlarm();
 			nmea.printWindNmea();
+			nmea.printTrueHeading();
 			//Serial.print("Interrupts:");
 			//Serial.println(intCnt);
 		}
@@ -348,6 +349,9 @@ void process(char * s, char parser) {
 			// incoming data = WST,WSA,WDT,WDA,WSU,LAT,LON,COG,MGH,SOG,YAW
 			if (strcmp(key, MGH) == 0) {
 				model.setMagneticHeading(atof(val));
+			}
+			if (strcmp(key, DECL) == 0) {
+				model.setDeclination(atof(val));
 			}
 			if (strcmp(key, WDT) == 0) {
 				model.setWindTrueDir(atoi(val));

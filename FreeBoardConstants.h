@@ -97,7 +97,7 @@
 	/** Time of week*/
 #define TOW  "TOW"
 	/**mag declination*/
-//#define DEC  "DEC"
+#define DECL  "DEC"
 	/**Wind speed apparent*/
 #define WSA  "WSA"
 	/**Wind speed true*/
@@ -129,7 +129,7 @@
 	/**Anchor alarm radius*/
 #define AAR  "AAR"
 	/**Anchor distance*/
-#define AAR  "AAD"
+#define AAD  "AAD"
 	/**Anchor alarm Lat*/
 #define AAN  "AAN"
 	/**Anchor alarm Lon*/

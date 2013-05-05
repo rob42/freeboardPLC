@@ -63,6 +63,7 @@ FreeBoardModel::FreeBoardModel() {
 
 	//compass
 	magneticHeading=0;
+	declination=0;
 	//gps
 	gpsState.gpsDecode = false; //flag to indicate a new sentence was decoded.
 	gpsState.gpsLastFix = 0; //time of last good gps fix.
@@ -389,6 +390,9 @@ float FreeBoardModel::getGpsUtc() {
 float FreeBoardModel::getMagneticHeading(){
 	return this->magneticHeading;
 }
+float FreeBoardModel::getDeclination(){
+	return declination;
+}
 
 volatile bool FreeBoardModel::isMobAlarmTriggered() {
 	return mobAlarmTriggered;
@@ -622,6 +626,10 @@ void FreeBoardModel::setGpsUtc(float gpsUtc) {
 
 void FreeBoardModel::setMagneticHeading(float magneticHeading){
 	this->magneticHeading=magneticHeading;
+}
+
+void FreeBoardModel::setDeclination(float declination){
+	this->declination=declination;
 }
 
 void FreeBoardModel::setMobAlarmTriggered(volatile bool mobAlarmTriggered) {

@@ -76,6 +76,7 @@ public:
 	char getGpsStatus() ;
 	float getGpsUtc() ;
 	float getMagneticHeading();
+	float getDeclination();
 	volatile bool isMobAlarmTriggered() ;
 	volatile bool isRadarAlarmTriggered() ;
 	int getWindZeroOffset() ;
@@ -149,6 +150,7 @@ public:
 	void setWindMax(int windMax);
 	void setWindTrueDir(int windTrueDir);
 	void setMagneticHeading(float magneticHeading);
+	void setDeclination(float declination);
 	volatile bool isAlarmTriggered() ;
 	volatile bool isMobAlarmOn() ;
 	volatile bool isRadarAlarmOn() ;
@@ -167,7 +169,7 @@ private:
 	unsigned long alarmSnooze; //5 minute alarm snooze
 	//unsigned long alarmTriggered ; //true if any alarm is triggered - derived
 	float magneticHeading;
-
+	float declination;
 	//anchor
 	struct AnchorState{
 		//float anchorRadius; //anchor alarm radius in meters
