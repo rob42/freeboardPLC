@@ -251,7 +251,7 @@ void loop() {
 			anchor.checkAnchor();
 			alarm.checkWindAlarm();
 			nmea.printWindNmea();
-			nmea.printTrueHeading();
+			//nmea.printTrueHeading();
 			//Serial.print("Interrupts:");
 			//Serial.println(intCnt);
 		}

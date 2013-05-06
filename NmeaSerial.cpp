@@ -99,7 +99,7 @@ void NmeaSerial::printTrueHeading() {
 	if(model->getDeclination()==0.0)return;
 
 	PString str(trueHeadingSentence, sizeof(trueHeadingSentence));
-	str.print("$FBHDT,");
+	str.print("$HCHDT,");
 	float trueHeading = model->getMagneticHeading()-model->getDeclination();
 	str.print(trueHeading);
 	str.print(",T*");
