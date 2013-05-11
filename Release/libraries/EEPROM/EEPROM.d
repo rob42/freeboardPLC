@@ -1,5 +1,4 @@
-libraries/EEPROM/EEPROM.d libraries/EEPROM/EEPROM.o: \
- ../libraries/EEPROM/EEPROM.cpp \
+libraries/EEPROM/EEPROM.d: ../libraries/EEPROM/EEPROM.cpp \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/Arduino.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/binary.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/WCharacter.h \

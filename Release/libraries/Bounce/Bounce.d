@@ -1,5 +1,4 @@
-libraries/Bounce/Bounce.d libraries/Bounce/Bounce.o: \
- ../libraries/Bounce/Bounce.cpp \
+libraries/Bounce/Bounce.d: ../libraries/Bounce/Bounce.cpp \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/Arduino.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/binary.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/WCharacter.h \

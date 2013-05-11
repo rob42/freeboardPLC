@@ -1,4 +1,4 @@
-libraries/SPI/SPI.d libraries/SPI/SPI.o: ../libraries/SPI/SPI.cpp \
+libraries/SPI/SPI.d: ../libraries/SPI/SPI.cpp \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/pins_arduino.h \
  ../libraries/SPI/SPI.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/Arduino.h \

@@ -1,5 +1,4 @@
-libraries/PinCatcher/PinCatcher_impl.d \
- libraries/PinCatcher/PinCatcher_impl.o: \
+libraries/PinCatcher/PinCatcher_impl.d: \
  ../libraries/PinCatcher/PinCatcher_impl.cpp \
  ../libraries/PinCatcher/PinCatcher_impl.h \
  ../libraries/PinCatcher/PinCatcher.h \

@@ -1,6 +1,5 @@
-libraries/Firmata/Firmata.d libraries/Firmata/Firmata.o: \
- ../libraries/Firmata/Firmata.cpp ../libraries/Firmata/Firmata.h \
- ../libraries/Firmata/Boards.h \
+libraries/Firmata/Firmata.d: ../libraries/Firmata/Firmata.cpp \
+ ../libraries/Firmata/Firmata.h ../libraries/Firmata/Boards.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/Arduino.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/binary.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/WCharacter.h \

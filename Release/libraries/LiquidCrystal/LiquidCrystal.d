@@ -1,5 +1,4 @@
-libraries/LiquidCrystal/LiquidCrystal.d \
- libraries/LiquidCrystal/LiquidCrystal.o: \
+libraries/LiquidCrystal/LiquidCrystal.d: \
  ../libraries/LiquidCrystal/LiquidCrystal.cpp \
  ../libraries/LiquidCrystal/LiquidCrystal.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/Print.h \

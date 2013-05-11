@@ -1,4 +1,4 @@
-libraries/NMEA/nmea.d libraries/NMEA/nmea.o: ../libraries/NMEA/nmea.cpp \
+libraries/NMEA/nmea.d: ../libraries/NMEA/nmea.cpp \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/Arduino.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/binary.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/WCharacter.h \

@@ -1,5 +1,4 @@
-libraries/PID_v1/PID_v1.d libraries/PID_v1/PID_v1.o: \
- ../libraries/PID_v1/PID_v1.cpp \
+libraries/PID_v1/PID_v1.d: ../libraries/PID_v1/PID_v1.cpp \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/Arduino.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/binary.h \
  /home/robert/gitrep/Arduino_Mega_ATmega1280/arduino/WCharacter.h \
