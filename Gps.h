@@ -26,6 +26,10 @@
 #ifndef GPS_H_
 #define GPS_H_
 
+//uncomment to support different GPS
+#define GPS_EM_406A
+//#define GPS_MTEK_3329
+
 #include "Arduino.h"
 
 #include <NMEA/nmea.h>
@@ -63,6 +67,7 @@ private:
 	int autoBaud();
 	bool testMsg();
 	void resetGPS();
+	void setupGpsImpl();
 	//bool gpsDecode;
 	//unsigned long gpsLastFix;
 

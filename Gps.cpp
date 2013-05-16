@@ -59,6 +59,7 @@ bool Gps::testMsg() {
 	return valid;
 }
 
+
 int Gps::autoBaud() {
 	//try the various baud rates until one makes sense
 	//should only output simple NMEA [$A-Z0-9*\r\c]
@@ -109,45 +110,12 @@ void Gps::setupGps() {
 	 9 Not defined
 	 */
 	autoBaud();
-	//Serial1.begin(38400, 8, 1, 0); //gps
-	//set debug on
-	Serial1.println("$PSRF105,1*3E");
 
-	//set VTG off -  Vector track an Speed over the Ground
-	Serial1.println("$PSRF103,05,00,00,01*21");
-	//set GLL off -  Lat/Lon data
-	Serial1.println("$PSRF103,01,00,00,01*25");
-	//set GGA on, 5sec, constant -  Fix information
-	Serial1.println("$PSRF103,00,00,05,01*21");
-	//set GSA on, 5 sec, constant - Overall Satellite data
-	Serial1.println("$PSRF103,02,00,05,01*23");
-	//set GSV on, 20sec, constant -Detailed Satellite data
-	Serial1.println("$PSRF103,03,00,20,01*25");
-	//set RMC on, 1sec, constant, Recommended minimum info
-	Serial1.println("$PSRF103,04,00,01,01*21");
-
-	//get debug
-	//delay(1000);
-//	while (Serial1.available() > 0) {
-//		Serial.print(Serial1.read());
-//	}
-	//debug off
-	Serial1.println("$PSRF105,0*3F");
-
-	//set baud faster ?
-	//GPS SIRF configuration strings...
-	//#define SIRF_BAUD_RATE_4800    "$PSRF100,1,4800,8,1,0*0E\r\n"
-	//#define SIRF_BAUD_RATE_9600    "$PSRF100,1,9600,8,1,0*0D\r\n"
-	//#define SIRF_BAUD_RATE_19200    "$PSRF100,1,19200,8,1,0*38\r\n"
-	//#define SIRF_BAUD_RATE_38400    "$PSRF100,1,38400,8,1,0*3D\r\n"
-	//#define SIRF_BAUD_RATE_57600    "$PSRF100,1,57600,8,1,0*36\r\n"
-
-	//$PSRF100,1,38400,8,1,0*3D\r\n
-	Serial1.print("$PSRF100,1,38400,8,1,0*3D\r\n");
+	setupGpsImpl();
+	//now flush and restart
 	Serial1.flush();
 	Serial1.end();
 	Serial1.begin(38400);
-
 }
 
 float Gps::getMetersTo(float targetLat, float targetLon, float currentLat, float currentLon) {
@@ -247,4 +215,63 @@ PString Gps::getLonString(float lon, int decimals, int padding, PString str) {
 
 	return str;
 }
+/*
+ * setup implementations for various models of GPS.
+ * Define the GPS in GPS.h
+ */
+void Gps::setupGpsImpl(){
+	//setup based on GPS type - probably wants a more modular way if many GPS types appear
+	#ifdef GPS_EM_406A
+		//Serial1.begin(38400, 8, 1, 0); //gps
+		//set debug on
+		Serial1.println("$PSRF105,1*3E");
 
+		//set VTG off -  Vector track an Speed over the Ground
+		Serial1.println("$PSRF103,05,00,00,01*21");
+		//set GLL off -  Lat/Lon data
+		Serial1.println("$PSRF103,01,00,00,01*25");
+		//set GGA on, 5sec, constant -  Fix information
+		Serial1.println("$PSRF103,00,00,05,01*21");
+		//set GSA on, 5 sec, constant - Overall Satellite data
+		Serial1.println("$PSRF103,02,00,05,01*23");
+		//set GSV on, 20sec, constant -Detailed Satellite data
+		Serial1.println("$PSRF103,03,00,20,01*25");
+		//set RMC on, 1sec, constant, Recommended minimum info
+		Serial1.println("$PSRF103,04,00,01,01*21");
+
+		//debug off
+		Serial1.println("$PSRF105,0*3F");
+
+		//set baud faster ?
+		//GPS SIRF configuration strings...
+		//#define SIRF_BAUD_RATE_4800    "$PSRF100,1,4800,8,1,0*0E\r\n"
+		//#define SIRF_BAUD_RATE_9600    "$PSRF100,1,9600,8,1,0*0D\r\n"
+		//#define SIRF_BAUD_RATE_19200    "$PSRF100,1,19200,8,1,0*38\r\n"
+		//#define SIRF_BAUD_RATE_38400    "$PSRF100,1,38400,8,1,0*3D\r\n"
+		//#define SIRF_BAUD_RATE_57600    "$PSRF100,1,57600,8,1,0*36\r\n"
+
+		//$PSRF100,1,38400,8,1,0*3D\r\n
+		Serial1.print("$PSRF100,1,38400,8,1,0*3D\r\n");
+	#endif
+	#ifdef GPS_MTEK_3329
+		/*
+		  -Change unit refresh rate:
+		$PMTK220,100*2F       //Will set the GPS to 10hz (or updates every 100 milliseconds)
+		$PMTK220,250*29       //Will set the GPS to 4hz (or updates every 250 milliseconds)
+		$PMTK220,1000*1F     //Will set the GPS to 1hz (updates every 1000 milliseconds)
+		You can set the GPS to any desired refresh rate, you change the value inside the string and generate a new check sum here: http://www.hhhh.org/wiml/proj/nmeaxor.html
+		-To change the baud rates:
+		$PMTK251,4800*14
+		$PMTK251,9600*17
+		$PMTK251,19200*22
+		$PMTK251,38400*27
+		You can also set the GPS to any desired baud rate speed by changing the value inside the string and generate a new checksum here: http://www.hhhh.org/wiml/proj/nmeaxor.html
+		 */
+		//set to 38400
+		Serial1.println("$PMTK251,38400*27");
+		//setting update rate to 1Hz
+		Serial1.println("$PMTK220,1000*1F");
+		//setting the NMEA Output to get RMC, GGA, GSA & GSV.
+		Serial1.println("$PMTK314,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28");
+	#endif
+}
