@@ -72,7 +72,7 @@ sizedummy \
 all: FreeBoardPLC.elf secondary-outputs
 
 dependents:
-	-cd /home/robert/gitrep/Arduino_Mega_ATmega1280/Release && $(MAKE) all
+	-cd /home/robert/gitrep/Arduino_Mega_ATmega1280/Release && $(MAKE) clean all
 
 # Tool invocations
 FreeBoardPLC.elf: $(OBJS) $(USER_OBJS) /home/robert/gitrep/Arduino_Mega_ATmega1280/Release/libArduino_Mega_ATmega1280.a

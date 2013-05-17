@@ -38,7 +38,7 @@ try to keep the boat on this target heading.
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
 #include "Gps.h"
-#include <PID_v1/PID_v1.h>
+#include "PID_v1.h"
 /**
  * Parameters and what they do (sort of)
  * P_Param:  the bigger the number the harder the controller pushes.

@@ -29,8 +29,8 @@
 #define FREEBOARDMODEL_H_
 
 #include "Arduino.h"
-#include <NMEA/nmea.h>
-#include <EEPROM/EEPROM.h>
+#include "nmea.h"
+#include "EEPROM.h"
 #include "FreeBoardConstants.h"
 #include "math.h"
 

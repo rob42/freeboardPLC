@@ -32,8 +32,8 @@
 
 #include "Arduino.h"
 
-#include <NMEA/nmea.h>
-#include <PString/PString.h>
+#include "nmea.h"
+#include "PString.h"
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
 

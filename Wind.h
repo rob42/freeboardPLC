@@ -28,11 +28,11 @@
 
 #include "Arduino.h"
 
-#include <PString/PString.h>
+#include "PString.h"
 
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
-#include <AverageList/AverageList.h>
+#include "AverageList.h"
 
 extern void saveWindAlarmState(bool windAlarmOn);
 extern void saveWindAlarmSpeed(int windAlarmSpeed);

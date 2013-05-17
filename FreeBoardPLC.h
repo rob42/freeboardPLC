@@ -28,14 +28,12 @@
 
 typedef unsigned char byte;
 
-#include <Arduino.h>
+#include "Arduino.h"
 //add your includes for the project  here
 #include "FreeBoardConstants.h"
-#include <EEPROM/EEPROM.h>
-//#include <PString/PString.h>
+#include "EEPROM.h"
 
-//#include <PinCatcher/PinCatcher.h>
-#include <FlexiTimer2/FlexiTimer2.h>
+#include "FlexiTimer2.h"
 #include "Alarm.h"
 #include "Seatalk.h"
 #include "Wind.h"

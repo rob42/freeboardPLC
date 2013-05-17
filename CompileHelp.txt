@@ -1,0 +1,101 @@
+Technical Help and FAQ
+
+Build errors
++++++++
+Cant upload a binary? - check you have the right board in ARDUINOBOARDNAME = Arduino_Mega_ATmega1280
+Its in Properties>C/C++ Build>Environment
+
+In Properties/C/C++ Build/Settings
+Tool Settings tab
+  AVR Assembler>Paths>
+    PreProcessor
+      "${workspace_loc:/Arduino_Mega_ATmega1280/arduino}"
+      "${workspace_loc:/Arduino_Mega_ATmega1280}"
+    Assembler
+      "${workspace_loc:/Arduino_Mega_ATmega1280}"
+      "${workspace_loc:/Arduino_Mega_ATmega1280/Release/arduino}"
+  AVR Compiler
+    Directories
+      "${workspace_loc:/Arduino_Mega_ATmega1280/arduino}"
+    Symbols
+      __IN_ECLIPSE__=1
+      ARDUINO=100
+  AVR C++ Compiler
+    Directories
+      "${workspace_loc:/${ProjName}/libraries/PString}"
+      "${workspace_loc:/${ProjName}/libraries/AverageList}"
+      "${workspace_loc:/${ProjName}/libraries/PID_v1}"
+      "${workspace_loc:/${ProjName}/libraries/FlexiTimer2}"
+      "${workspace_loc:/${ProjName}/libraries/EEPROM}"
+      "${workspace_loc:/${ProjName}/libraries/NMEA}"
+      "${workspace_loc:/${ProjName}/libraries/AltSoftSerial}"
+      "${workspace_loc:/Arduino_Mega_ATmega1280/arduino}"
+      "${workspace_loc:/${ProjName}/libraries}"
+    Symbols
+      As above
+  AVR C++ Linker
+    Libraries
+      "Arduino_Mega_ATmega1280"
+    Library paths	
+      "${workspace_loc:/Arduino_Mega_ATmega1280}/${ConfigName}"
+
+
+Also In Project References I have ticked 
+  "${workspace_loc:/Arduino_Mega_ATmega1280}/${ConfigName}"
+
++++++++ PString error
+In file included from ../libraries/PString/PString.cpp:20:
+../libraries/PString/PString.h:40: error: conflicting return type specified for 'virtual void PString::write(uint8_t)'
+C:\Users\Hans\Eclipse\Arduino_Mega\arduino/Print.h:48: error:   overriding 'virtual size_t Print::write(uint8_t)'
+make: *** [libraries/PString/PString.o] Error 1
+
+You will get that error if you have not set ARDUINO=100 in the compile line.
+
+
+Right click the project (do both) >Properties>C/C Build>Settings.
+Choose tab Tool Settings, Open tree to AVR Compiler>Symbols. There should be one with ARDUINO=100, if not eneter it.
+Same for the AVR C Compiler
+
+
++++++++
+
+ Building target: FreeBoardPLC.elf
+Invoking: AVR C++ Linker
+avr-g++ –-cref -s -Os -o"FreeBoardPLC.elf"  ./libraries/SPI/SPI.o  ./libraries/PinCatcher/PinCatcher.o ./libraries/PinCatcher/PinCatcher_impl.o  ./libraries/PString/PString.o  ./libraries/PID_v1/PID_v1.o  ./libraries/NMEA/nmea.o  ./libraries/LiquidCrystal/LiquidCrystal.o  ./libraries/FlexiTimer2/FlexiTimer2.o  ./libraries/Firmata/Firmata.o  ./libraries/EEPROM/EEPROM.o  ./libraries/Bounce/Bounce.o  ./libraries/AltSoftSerial/AltSoftSerial.o  ./Alarm.o ./Anchor.o ./Autopilot.o ./FreeBoardModel.o ./FreeBoardPLC.o ./Gps.o ./NmeaSerial.o ./Seatalk.o ./Wind.o ./util.o   -lArduino_Mega_ATMega1280 -lFreeBoardPLC -lm -Wl,-Map,FreeBoardPLC.map,--cref -Wl,--gc-sections -L"C:\Users\Hans\Eclipse\FreeBoardPLC" -L"C:\Users\Hans\Eclipse\FreeBoardPLC\libraries" -L"C:\Users\Hans\Eclipse\FreeBoardPLC\Release" -L"C:\Users\Hans\Eclipse\Arduino_Mega_ATmega1280\Release" -mmcu=atmega1280
+avr-g++.exe: –-cref: No such file or directory
+make: *** [FreeBoardPLC.elf] Error 1
+
+If you're using C++ then the hex file can get really big. In the linker menu, change the command to avr-gcc and the command line pattern to the following: ${COMMAND} --cref -s -Os ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS} -lm ${FLAGS}
+
+
++++++++TODO list++++++++
+
+Got the infamous Mega 2560  stk500v2_ReceiveMessage():  timeout when trying to upload /-: It would hang in the middle of writing. Did lots of digging & looks like there's an obscure bug in the Mega 2560 where !!! in the code causes a timeout?! I found !!! in FreeBoardModel.cpp 
+
+
+> - libs and src .cpp and .h tweaked to remove specific folder
+> indications (#include "NmeaSerial.h" instead of #include
+> "NMEA/NmeaSerial.h"
+>
+> - HardwareSerial.* modified for 9 bits serial for Seatalk had to
+> copied into /usr/share/arduino/hardware/arduino/cores
+>
+> - I have replaced only HardwareSerial.* from the files available from
+> Git as I experienced linking error such as
+> - /usr/share/arduino/hardware/arduino/cores/arduino/Print.cpp:
+> In member function ‘size_t Print::print(const
+> __FlashStringHelper*)’:
+> - /usr/share/arduino/hardware/arduino/cores/arduino/Print.cpp:44:9:
+> error: ‘prog_char’ does not name a type
+> - /usr/share/arduino/hardware/arduino/cores/arduino/Print.cpp:47:23:
+> error: ‘p’ was not declared in this scope
+> - make: *** [.build/mega/arduino/Print.o] Erreur 1
+>
+> - '#define __AVR_LIBC_DEPRECATED_ENABLE__ 1' had to be inserted
+> into /usr/share/arduino/hardware/arduino/cores/Arduino.h to avoid
+> this kind of warnings :
+> '/usr/share/arduino/hardware/arduino/cores/arduino/HardwareSerial.cpp:92:41:
+> error: attempt to use poisoned "SIG_USART0_RECV"'
+>
+> - I use Wheezy from testing (I know, 7 just been released) and the
+> Arduino libs may be slightly out of date (1.0.1). 

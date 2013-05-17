@@ -63,7 +63,7 @@
 #include "Arduino.h"
 
 
-#include <HardwareSerial.h>
+#include "HardwareSerial.h"
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
 

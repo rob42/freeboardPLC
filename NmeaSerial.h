@@ -26,9 +26,9 @@
 #ifndef NMEASERIAL_H_
 #define NMEASERIAL_H_
 
-#include <Arduino.h>
-#include <PString/PString.h>
-#include <AltSoftSerial/AltSoftSerial.h>
+#include "Arduino.h"
+#include "PString.h"
+#include "AltSoftSerial.h"
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
 
