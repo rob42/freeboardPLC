@@ -1,4 +1,4 @@
-#Sun Jan 01 14:38:02 NZDT 2012
+#Fri May 17 22:10:49 NZST 2013
 avrtarget/ClockFrequency=16000000
 avrtarget/ExtRAMSize=0
 avrtarget/ExtendedRAM=false
@@ -20,5 +20,17 @@ avrtarget/avrdude/ProgrammerID=programmerconfig.3
 avrtarget/avrdude/UseCounter=false
 avrtarget/avrdude/WriteEEPROM=false
 avrtarget/avrdude/WriteFlash=true
-avrtarget/perConfig=false
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/ClockFrequency=16000000
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/ExtRAMSize=0
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/ExtendedRAM=false
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/MCUType=atmega2560
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/UseEEPROM=false
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/UseExtendedRAMforHeap=true
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052/ClockFrequency=16000000
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052/ExtRAMSize=0
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052/ExtendedRAM=false
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052/MCUType=atmega1280
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052/UseEEPROM=false
+avrtarget/it.baeyens.avreclipse.configuration.app.release.980545052/UseExtendedRAMforHeap=true
+avrtarget/perConfig=true
 eclipse.preferences.version=1

@@ -1,5 +1,16 @@
-#Sun Jan 01 12:51:14 NZDT 2012
+#Fri May 17 22:06:41 NZST 2013
 eclipse.preferences.version=1
+environment/project/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/ARDUINOBOARDNAME/delimiter=\:
+environment/project/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/ARDUINOBOARDNAME/operation=replace
+environment/project/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/ARDUINOBOARDNAME/value=Arduino_Mega_ATmega2560
+environment/project/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/AVRDUDEOPTIONS/delimiter=\:
+environment/project/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/AVRDUDEOPTIONS/operation=replace
+environment/project/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/AVRDUDEOPTIONS/value=-patmega2560 -carduino -P/dev/ttyUSB0 -b57600 -D -v -v -v -v
+environment/project/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/AVRTARGETMCU/delimiter=\:
+environment/project/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/AVRTARGETMCU/operation=replace
+environment/project/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/AVRTARGETMCU/value=atmega2560
+environment/project/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/append=true
+environment/project/it.baeyens.avreclipse.configuration.app.release.980545052.36445091/appendContributed=true
 environment/project/it.baeyens.avreclipse.configuration.app.release.980545052/ARDUINOBOARDNAME/delimiter=\:
 environment/project/it.baeyens.avreclipse.configuration.app.release.980545052/ARDUINOBOARDNAME/operation=replace
 environment/project/it.baeyens.avreclipse.configuration.app.release.980545052/ARDUINOBOARDNAME/value=Arduino_Mega_ATmega1280
