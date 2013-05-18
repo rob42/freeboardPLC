@@ -24,6 +24,10 @@
 //enable mux onto Serial.print
 #define MUX true
 
+//uncomment to support different GPS
+#define GPS_EM_406A
+//#define GPS_MTEK_3329
+
 //misc output - SoftwareSerial
 //lcd
 #define rxPin 50

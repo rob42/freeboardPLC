@@ -124,7 +124,7 @@ void setup() {
 	Serial2.begin(4800, SERIAL_9N1); //Seatalk interface
 
 	if (DEBUG) Serial.println("Start nmea Rx - serial3..");
-	Serial3.begin(4800, SERIAL_8N1); //talker2
+	Serial3.begin(38400, SERIAL_8N1); //talker2
 
 	if (DEBUG) Serial.println("Start nmea Tx..");
 	pinMode(nmeaRxPin, INPUT);
