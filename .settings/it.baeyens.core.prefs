@@ -1,8 +1,8 @@
-#Fri May 17 22:10:49 NZST 2013
+#Sat May 18 14:50:58 NZST 2013
 avrtarget/ClockFrequency=16000000
 avrtarget/ExtRAMSize=0
 avrtarget/ExtendedRAM=false
-avrtarget/MCUType=atmega1280
+avrtarget/MCUType=atmega2560
 avrtarget/UseEEPROM=false
 avrtarget/UseExtendedRAMforHeap=true
 avrtarget/avrdude/BitBangDelay=

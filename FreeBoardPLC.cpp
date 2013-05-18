@@ -112,7 +112,7 @@ void setup() {
 	//model.readConfig();
 	inputSerial.reserve(40);
 	// initialize  serial ports:
-	Serial.begin(38400, 8, 1, 0);
+	Serial.begin(38400, SERIAL_8N1);
 	if (DEBUG) Serial.println("Initializing..");
 
 	//start gps on serial1, autobaud
@@ -121,10 +121,10 @@ void setup() {
 	Serial1.begin(38400);
 
 	if (DEBUG) Serial.println("Start seatalk - serial2..");
-	Serial2.begin(4800, 9, 1, 0); //Seatalk interface
+	Serial2.begin(4800, SERIAL_9N1); //Seatalk interface
 
 	if (DEBUG) Serial.println("Start nmea Rx - serial3..");
-	Serial3.begin(4800, 8, 1, 0); //talker2
+	Serial3.begin(4800, SERIAL_8N1); //talker2
 
 	if (DEBUG) Serial.println("Start nmea Tx..");
 	pinMode(nmeaRxPin, INPUT);

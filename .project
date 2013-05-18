@@ -4,6 +4,7 @@
 	<comment></comment>
 	<projects>
 		<project>Arduino_Mega_ATmega1280</project>
+		<project>Arduino_Mega_ATmega2560</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -8,7 +8,7 @@
  * published by the Free Software Foundation.
  */
 
-#include "pins_arduino.h"
+
 #include "SPI.h"
 
 SPIClass SPI;

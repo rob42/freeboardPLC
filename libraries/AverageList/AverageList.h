@@ -44,11 +44,12 @@ class AverageList {
 		
 		//add a value to the AverageList at the next index, if out of bounds, return false, else return true
 		void addValue(datatype value){ 
+			currentIndex=currentIndex+1;
 			if (currentSize<size){
 				values[currentSize++] = value;
-				currentIndex = ++currentIndex % currentSize;
+				currentIndex = currentIndex % currentSize;
 			}else{
-				currentIndex = ++currentIndex % size;
+				currentIndex = currentIndex % size;
 				values[currentIndex] = value; 
 			}
 		}

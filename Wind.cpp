@@ -63,7 +63,7 @@
 const unsigned int SPEED_DEBOUNCE = 0;
 const unsigned int DIR_DEBOUNCE = 0;
 volatile unsigned long lastPulse;
-volatile unsigned long windSpeedDur;
+volatile unsigned long windSpeedDur=0;
 volatile  float windSpeedRpm;
 volatile unsigned long windSpeedMicros;
 volatile unsigned long windDirDur;
@@ -115,8 +115,9 @@ void Wind::readWindDataSpeed() {
 		// so 1000000/66=15151/360=42us/degree at 118knts
 		lastPulse=millis();
 		windSpeedDur=micros()-windSpeedMicros;
-		if(windSpeedDur>0)
+		if(windSpeedDur>0){
 			speedList.addValue(windSpeedDur);
+		}
 		windSpeedMicros=micros();
 	}
 
