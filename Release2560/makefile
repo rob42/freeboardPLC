@@ -19,18 +19,6 @@ RM := rm -rf
 -include libraries/EEPROM/subdir.mk
 -include libraries/Bounce/subdir.mk
 -include libraries/AltSoftSerial/subdir.mk
--include Release/libraries/SPI/subdir.mk
--include Release/libraries/PinCatcher/subdir.mk
--include Release/libraries/PString/subdir.mk
--include Release/libraries/PID_v1/subdir.mk
--include Release/libraries/NMEA/subdir.mk
--include Release/libraries/LiquidCrystal/subdir.mk
--include Release/libraries/FlexiTimer2/subdir.mk
--include Release/libraries/Firmata/subdir.mk
--include Release/libraries/EEPROM/subdir.mk
--include Release/libraries/Bounce/subdir.mk
--include Release/libraries/AltSoftSerial/subdir.mk
--include Release/subdir.mk
 -include subdir.mk
 -include objects.mk
 
@@ -84,7 +72,7 @@ sizedummy \
 all: FreeBoardPLC.elf secondary-outputs
 
 dependents:
-	-cd /home/robert/gitrep/Arduino_Mega_ATmega2560/Release && $(MAKE) all
+	-cd /home/robert/gitrep/Arduino_Mega_ATmega2560/Release && $(MAKE) clean all
 
 # Tool invocations
 FreeBoardPLC.elf: $(OBJS) $(USER_OBJS) /home/robert/gitrep/Arduino_Mega_ATmega2560/Release/libArduino_Mega_ATmega2560.a

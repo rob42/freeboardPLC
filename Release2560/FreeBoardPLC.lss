@@ -956,7 +956,7 @@ Disassembly of section .text:
      8f2:	55 82       	std	Z+5, r5	; 0x05
      8f4:	66 82       	std	Z+6, r6	; 0x06
      8f6:	77 82       	std	Z+7, r7	; 0x07
-     8f8:	88 e3       	ldi	r24, 0x38	; 56
+     8f8:	87 e3       	ldi	r24, 0x37	; 55
      8fa:	95 e0       	ldi	r25, 0x05	; 5
      8fc:	91 83       	std	Z+1, r25	; 0x01
      8fe:	80 83       	st	Z, r24
@@ -2001,7 +2001,7 @@ Disassembly of section .text:
     10f6:	0e 94 d9 3f 	call	0x7fb2	; 0x7fb2 <__unordsf2>
     10fa:	88 23       	and	r24, r24
     10fc:	19 f0       	breq	.+6      	; 0x1104 <_ZN5Print10printFloatEdh+0x38>
-    10fe:	66 e4       	ldi	r22, 0x46	; 70
+    10fe:	65 e4       	ldi	r22, 0x45	; 69
     1100:	75 e0       	ldi	r23, 0x05	; 5
     1102:	32 c0       	rjmp	.+100    	; 0x1168 <_ZN5Print10printFloatEdh+0x9c>
     1104:	46 01       	movw	r8, r12
@@ -2026,7 +2026,7 @@ Disassembly of section .text:
     112c:	0e 94 1d 3d 	call	0x7a3a	; 0x7a3a <__cmpsf2>
     1130:	18 16       	cp	r1, r24
     1132:	1c f4       	brge	.+6      	; 0x113a <_ZN5Print10printFloatEdh+0x6e>
-    1134:	6a e4       	ldi	r22, 0x4A	; 74
+    1134:	69 e4       	ldi	r22, 0x49	; 73
     1136:	75 e0       	ldi	r23, 0x05	; 5
     1138:	17 c0       	rjmp	.+46     	; 0x1168 <_ZN5Print10printFloatEdh+0x9c>
     113a:	2f ef       	ldi	r18, 0xFF	; 255
@@ -2048,7 +2048,7 @@ Disassembly of section .text:
     115c:	0e 94 1d 3d 	call	0x7a3a	; 0x7a3a <__cmpsf2>
     1160:	87 ff       	sbrs	r24, 7
     1162:	12 c0       	rjmp	.+36     	; 0x1188 <_ZN5Print10printFloatEdh+0xbc>
-    1164:	6e e4       	ldi	r22, 0x4E	; 78
+    1164:	6d e4       	ldi	r22, 0x4D	; 77
     1166:	75 e0       	ldi	r23, 0x05	; 5
     1168:	c8 01       	movw	r24, r16
     116a:	cf 91       	pop	r28
@@ -2133,7 +2133,7 @@ Disassembly of section .text:
     121a:	79 1e       	adc	r7, r25
     121c:	cc 23       	and	r28, r28
     121e:	c9 f1       	breq	.+114    	; 0x1292 <_ZN5Print10printFloatEdh+0x1c6>
-    1220:	65 ec       	ldi	r22, 0xC5	; 197
+    1220:	64 ec       	ldi	r22, 0xC4	; 196
     1222:	73 e0       	ldi	r23, 0x03	; 3
     1224:	c8 01       	movw	r24, r16
     1226:	0e 94 33 3c 	call	0x7866	; 0x7866 <_ZN5Print5writeEPKc>
@@ -4325,7 +4325,7 @@ Disassembly of section .text:
     2334:	e9 01       	movw	r28, r18
     2336:	04 2f       	mov	r16, r20
     2338:	18 2f       	mov	r17, r24
-    233a:	67 ef       	ldi	r22, 0xF7	; 247
+    233a:	66 ef       	ldi	r22, 0xF6	; 246
     233c:	74 e0       	ldi	r23, 0x04	; 4
     233e:	c6 01       	movw	r24, r12
     2340:	0e 94 11 0c 	call	0x1822	; 0x1822 <_ZN6StringC1EPKc>
@@ -11888,7 +11888,7 @@ FreeBoardModel::FreeBoardModel() {
     54fc:	51 87       	std	Z+9, r21	; 0x09
     54fe:	62 87       	std	Z+10, r22	; 0x0a
     5500:	73 87       	std	Z+11, r23	; 0x0b
-    5502:	88 e3       	ldi	r24, 0x38	; 56
+    5502:	87 e3       	ldi	r24, 0x37	; 55
     5504:	95 e0       	ldi	r25, 0x05	; 5
     5506:	91 83       	std	Z+1, r25	; 0x01
     5508:	80 83       	st	Z, r24
@@ -12226,7 +12226,7 @@ FreeBoardModel::FreeBoardModel() {
     5770:	8d 2f       	mov	r24, r29
     5772:	9c 2f       	mov	r25, r28
     5774:	0e 94 9c 06 	call	0xd38	; 0xd38 <_ZN5Print5printEPKc>
-    5778:	60 e6       	ldi	r22, 0x60	; 96
+    5778:	6f e5       	ldi	r22, 0x5F	; 95
     577a:	72 e0       	ldi	r23, 0x02	; 2
     577c:	8d 2f       	mov	r24, r29
     577e:	9c 2f       	mov	r25, r28
@@ -12239,7 +12239,7 @@ FreeBoardModel::FreeBoardModel() {
     578e:	8d 2f       	mov	r24, r29
     5790:	9c 2f       	mov	r25, r28
     5792:	0e 94 44 08 	call	0x1088	; 0x1088 <_ZN5Print5printEii>
-    5796:	6e e6       	ldi	r22, 0x6E	; 110
+    5796:	6d e6       	ldi	r22, 0x6D	; 109
     5798:	72 e0       	ldi	r23, 0x02	; 2
     579a:	8d 2f       	mov	r24, r29
     579c:	9c 2f       	mov	r25, r28
@@ -12253,7 +12253,7 @@ FreeBoardModel::FreeBoardModel() {
     57b0:	85 a5       	ldd	r24, Z+45	; 0x2d
     57b2:	88 23       	and	r24, r24
     57b4:	d9 f1       	breq	.+118    	; 0x582c <_ZN14FreeBoardModel11writeSimpleE14HardwareSerial+0xd2>
-    57b6:	64 e7       	ldi	r22, 0x74	; 116
+    57b6:	63 e7       	ldi	r22, 0x73	; 115
     57b8:	72 e0       	ldi	r23, 0x02	; 2
     57ba:	8d 2f       	mov	r24, r29
     57bc:	9c 2f       	mov	r25, r28
@@ -12268,7 +12268,7 @@ FreeBoardModel::FreeBoardModel() {
     57d0:	8d 2f       	mov	r24, r29
     57d2:	9c 2f       	mov	r25, r28
     57d4:	0e 94 5a 09 	call	0x12b4	; 0x12b4 <_ZN5Print5printEdi>
-    57d8:	6a e7       	ldi	r22, 0x7A	; 122
+    57d8:	69 e7       	ldi	r22, 0x79	; 121
     57da:	72 e0       	ldi	r23, 0x02	; 2
     57dc:	8d 2f       	mov	r24, r29
     57de:	9c 2f       	mov	r25, r28
@@ -12282,7 +12282,7 @@ FreeBoardModel::FreeBoardModel() {
     57f2:	8d 2f       	mov	r24, r29
     57f4:	9c 2f       	mov	r25, r28
     57f6:	0e 94 5a 09 	call	0x12b4	; 0x12b4 <_ZN5Print5printEdi>
-    57fa:	60 e8       	ldi	r22, 0x80	; 128
+    57fa:	6f e7       	ldi	r22, 0x7F	; 127
     57fc:	72 e0       	ldi	r23, 0x02	; 2
     57fe:	8d 2f       	mov	r24, r29
     5800:	9c 2f       	mov	r25, r28
@@ -12304,7 +12304,7 @@ FreeBoardModel::FreeBoardModel() {
     5824:	8d 2f       	mov	r24, r29
     5826:	9c 2f       	mov	r25, r28
     5828:	0e 94 5a 09 	call	0x12b4	; 0x12b4 <_ZN5Print5printEdi>
-    582c:	66 e8       	ldi	r22, 0x86	; 134
+    582c:	65 e8       	ldi	r22, 0x85	; 133
     582e:	72 e0       	ldi	r23, 0x02	; 2
     5830:	8d 2f       	mov	r24, r29
     5832:	9c 2f       	mov	r25, r28
@@ -12321,7 +12321,7 @@ FreeBoardModel::FreeBoardModel() {
     584a:	8d 2f       	mov	r24, r29
     584c:	9c 2f       	mov	r25, r28
     584e:	0e 94 44 08 	call	0x1088	; 0x1088 <_ZN5Print5printEii>
-    5852:	6c e8       	ldi	r22, 0x8C	; 140
+    5852:	6b e8       	ldi	r22, 0x8B	; 139
     5854:	72 e0       	ldi	r23, 0x02	; 2
     5856:	8d 2f       	mov	r24, r29
     5858:	9c 2f       	mov	r25, r28
@@ -12342,7 +12342,7 @@ FreeBoardModel::FreeBoardModel() {
     587a:	80 81       	ld	r24, Z
     587c:	88 23       	and	r24, r24
     587e:	b9 f1       	breq	.+110    	; 0x58ee <_ZN14FreeBoardModel11writeSimpleE14HardwareSerial+0x194>
-    5880:	62 e9       	ldi	r22, 0x92	; 146
+    5880:	61 e9       	ldi	r22, 0x91	; 145
     5882:	72 e0       	ldi	r23, 0x02	; 2
     5884:	8d 2f       	mov	r24, r29
     5886:	9c 2f       	mov	r25, r28
@@ -12359,7 +12359,7 @@ FreeBoardModel::FreeBoardModel() {
     589e:	8d 2f       	mov	r24, r29
     58a0:	9c 2f       	mov	r25, r28
     58a2:	0e 94 5a 09 	call	0x12b4	; 0x12b4 <_ZN5Print5printEdi>
-    58a6:	68 e9       	ldi	r22, 0x98	; 152
+    58a6:	67 e9       	ldi	r22, 0x97	; 151
     58a8:	72 e0       	ldi	r23, 0x02	; 2
     58aa:	8d 2f       	mov	r24, r29
     58ac:	9c 2f       	mov	r25, r28
@@ -12376,7 +12376,7 @@ FreeBoardModel::FreeBoardModel() {
     58c4:	8d 2f       	mov	r24, r29
     58c6:	9c 2f       	mov	r25, r28
     58c8:	0e 94 5a 09 	call	0x12b4	; 0x12b4 <_ZN5Print5printEdi>
-    58cc:	6e e9       	ldi	r22, 0x9E	; 158
+    58cc:	6d e9       	ldi	r22, 0x9D	; 157
     58ce:	72 e0       	ldi	r23, 0x02	; 2
     58d0:	8d 2f       	mov	r24, r29
     58d2:	9c 2f       	mov	r25, r28
@@ -12391,7 +12391,7 @@ FreeBoardModel::FreeBoardModel() {
     58e6:	8d 2f       	mov	r24, r29
     58e8:	9c 2f       	mov	r25, r28
     58ea:	0e 94 5a 09 	call	0x12b4	; 0x12b4 <_ZN5Print5printEdi>
-    58ee:	64 ea       	ldi	r22, 0xA4	; 164
+    58ee:	63 ea       	ldi	r22, 0xA3	; 163
     58f0:	72 e0       	ldi	r23, 0x02	; 2
     58f2:	8d 2f       	mov	r24, r29
     58f4:	9c 2f       	mov	r25, r28
@@ -12406,7 +12406,7 @@ FreeBoardModel::FreeBoardModel() {
     5908:	8d 2f       	mov	r24, r29
     590a:	9c 2f       	mov	r25, r28
     590c:	0e 94 44 08 	call	0x1088	; 0x1088 <_ZN5Print5printEii>
-    5910:	6a ea       	ldi	r22, 0xAA	; 170
+    5910:	69 ea       	ldi	r22, 0xA9	; 169
     5912:	72 e0       	ldi	r23, 0x02	; 2
     5914:	8d 2f       	mov	r24, r29
     5916:	9c 2f       	mov	r25, r28
@@ -12421,7 +12421,7 @@ FreeBoardModel::FreeBoardModel() {
     592a:	8d 2f       	mov	r24, r29
     592c:	9c 2f       	mov	r25, r28
     592e:	0e 94 44 08 	call	0x1088	; 0x1088 <_ZN5Print5printEii>
-    5932:	6e e5       	ldi	r22, 0x5E	; 94
+    5932:	6d e5       	ldi	r22, 0x5D	; 93
     5934:	72 e0       	ldi	r23, 0x02	; 2
     5936:	8d 2f       	mov	r24, r29
     5938:	9c 2f       	mov	r25, r28
@@ -13213,7 +13213,7 @@ void setup() {
     5e5e:	95 e0       	ldi	r25, 0x05	; 5
     5e60:	0e 94 2c 05 	call	0xa58	; 0xa58 <_ZN14HardwareSerial5beginEmh>
 	if (DEBUG) Serial.println("Initializing..");
-    5e64:	60 eb       	ldi	r22, 0xB0	; 176
+    5e64:	6f ea       	ldi	r22, 0xAF	; 175
     5e66:	72 e0       	ldi	r23, 0x02	; 2
     5e68:	88 eb       	ldi	r24, 0xB8	; 184
     5e6a:	95 e0       	ldi	r25, 0x05	; 5
@@ -13221,7 +13221,7 @@ void setup() {
 
 	//start gps on serial1, autobaud
 	if (DEBUG) Serial.println("Start gps..");
-    5e70:	6f eb       	ldi	r22, 0xBF	; 191
+    5e70:	6e eb       	ldi	r22, 0xBE	; 190
     5e72:	72 e0       	ldi	r23, 0x02	; 2
     5e74:	88 eb       	ldi	r24, 0xB8	; 184
     5e76:	95 e0       	ldi	r25, 0x05	; 5
@@ -13240,7 +13240,7 @@ void setup() {
     5e90:	0e 94 ab 04 	call	0x956	; 0x956 <_ZN14HardwareSerial5beginEm>
 
 	if (DEBUG) Serial.println("Start seatalk - serial2..");
-    5e94:	6b ec       	ldi	r22, 0xCB	; 203
+    5e94:	6a ec       	ldi	r22, 0xCA	; 202
     5e96:	72 e0       	ldi	r23, 0x02	; 2
     5e98:	88 eb       	ldi	r24, 0xB8	; 184
     5e9a:	95 e0       	ldi	r25, 0x05	; 5
@@ -13256,7 +13256,7 @@ void setup() {
     5eae:	0e 94 2c 05 	call	0xa58	; 0xa58 <_ZN14HardwareSerial5beginEmh>
 
 	if (DEBUG) Serial.println("Start nmea Rx - serial3..");
-    5eb2:	65 ee       	ldi	r22, 0xE5	; 229
+    5eb2:	64 ee       	ldi	r22, 0xE4	; 228
     5eb4:	72 e0       	ldi	r23, 0x02	; 2
     5eb6:	88 eb       	ldi	r24, 0xB8	; 184
     5eb8:	95 e0       	ldi	r25, 0x05	; 5
@@ -13272,7 +13272,7 @@ void setup() {
     5ecc:	0e 94 2c 05 	call	0xa58	; 0xa58 <_ZN14HardwareSerial5beginEmh>
 
 	if (DEBUG) Serial.println("Start nmea Tx..");
-    5ed0:	6f ef       	ldi	r22, 0xFF	; 255
+    5ed0:	6e ef       	ldi	r22, 0xFE	; 254
     5ed2:	72 e0       	ldi	r23, 0x02	; 2
     5ed4:	88 eb       	ldi	r24, 0xB8	; 184
     5ed6:	95 e0       	ldi	r25, 0x05	; 5
@@ -13296,7 +13296,7 @@ void setup() {
 
 	//setup interrupts to windPins
 	if (DEBUG) Serial.println("Start wind..");
-    5efc:	6f e0       	ldi	r22, 0x0F	; 15
+    5efc:	6e e0       	ldi	r22, 0x0E	; 14
     5efe:	73 e0       	ldi	r23, 0x03	; 3
     5f00:	88 eb       	ldi	r24, 0xB8	; 184
     5f02:	95 e0       	ldi	r25, 0x05	; 5
@@ -13326,7 +13326,7 @@ void setup() {
 
 //	//setup timers
 	if (DEBUG) Serial.println("Start timer..");
-    5f34:	6c e1       	ldi	r22, 0x1C	; 28
+    5f34:	6b e1       	ldi	r22, 0x1B	; 27
     5f36:	73 e0       	ldi	r23, 0x03	; 3
     5f38:	88 eb       	ldi	r24, 0xB8	; 184
     5f3a:	95 e0       	ldi	r25, 0x05	; 5
@@ -13344,7 +13344,7 @@ void setup() {
 	//lcd.clearLcd();
 
 	if (DEBUG) Serial.println("Setup complete..");
-    5f54:	6a e2       	ldi	r22, 0x2A	; 42
+    5f54:	69 e2       	ldi	r22, 0x29	; 41
     5f56:	73 e0       	ldi	r23, 0x03	; 3
     5f58:	88 eb       	ldi	r24, 0xB8	; 184
     5f5a:	95 e0       	ldi	r25, 0x05	; 5
@@ -13653,7 +13653,7 @@ void process(char * s, char parser) {
 	//if (DEBUG) Serial.print("Process str:");
 	//if (DEBUG) Serial.println(s);
 	char *cmd = strtok(s, ",");
-    6116:	6e e5       	ldi	r22, 0x5E	; 94
+    6116:	6d e5       	ldi	r22, 0x5D	; 93
     6118:	72 e0       	ldi	r23, 0x02	; 2
     611a:	73 c1       	rjmp	.+742    	; 0x6402 <_Z7processPcc+0x31a>
     611c:	4d b6       	in	r4, 0x3d	; 61
@@ -13715,7 +13715,7 @@ void process(char * s, char parser) {
 
 			//anchor
 			if (strcmp(key, ANCHOR_ALARM_STATE) == 0) {
-    6176:	6b e3       	ldi	r22, 0x3B	; 59
+    6176:	6a e3       	ldi	r22, 0x3A	; 58
     6178:	73 e0       	ldi	r23, 0x03	; 3
     617a:	ce 01       	movw	r24, r28
     617c:	01 96       	adiw	r24, 0x01	; 1
@@ -13746,7 +13746,7 @@ void process(char * s, char parser) {
     61b0:	ba c0       	rjmp	.+372    	; 0x6326 <_Z7processPcc+0x23e>
 				}
 			} else if (strcmp(key, ANCHOR_ALARM_ADJUST) == 0) {
-    61b2:	60 e4       	ldi	r22, 0x40	; 64
+    61b2:	6f e3       	ldi	r22, 0x3F	; 63
     61b4:	73 e0       	ldi	r23, 0x03	; 3
     61b6:	ce 01       	movw	r24, r28
     61b8:	01 96       	adiw	r24, 0x01	; 1
@@ -13773,7 +13773,7 @@ void process(char * s, char parser) {
     61e8:	0e 94 ff 2d 	call	0x5bfe	; 0x5bfe <_ZN14FreeBoardModel15setAnchorRadiusEf>
     61ec:	9c c0       	rjmp	.+312    	; 0x6326 <_Z7processPcc+0x23e>
 			} else if (strcmp(key, ANCHOR_ALARM_LAT) == 0) {
-    61ee:	65 e4       	ldi	r22, 0x45	; 69
+    61ee:	64 e4       	ldi	r22, 0x44	; 68
     61f0:	73 e0       	ldi	r23, 0x03	; 3
     61f2:	ce 01       	movw	r24, r28
     61f4:	01 96       	adiw	r24, 0x01	; 1
@@ -13790,7 +13790,7 @@ void process(char * s, char parser) {
     620c:	0e 94 e3 2d 	call	0x5bc6	; 0x5bc6 <_ZN14FreeBoardModel12setAnchorLatEf>
     6210:	8a c0       	rjmp	.+276    	; 0x6326 <_Z7processPcc+0x23e>
 			} else if (strcmp(key, ANCHOR_ALARM_LON) == 0) {
-    6212:	6a e4       	ldi	r22, 0x4A	; 74
+    6212:	69 e4       	ldi	r22, 0x49	; 73
     6214:	73 e0       	ldi	r23, 0x03	; 3
     6216:	ce 01       	movw	r24, r28
     6218:	01 96       	adiw	r24, 0x01	; 1
@@ -13809,7 +13809,7 @@ void process(char * s, char parser) {
 			}
 			//autopliot
 			else if (strcmp(key, AUTOPILOT_STATE) == 0) {
-    6236:	6f e4       	ldi	r22, 0x4F	; 79
+    6236:	6e e4       	ldi	r22, 0x4E	; 78
     6238:	73 e0       	ldi	r23, 0x03	; 3
     623a:	ce 01       	movw	r24, r28
     623c:	01 96       	adiw	r24, 0x01	; 1
@@ -13832,7 +13832,7 @@ void process(char * s, char parser) {
     6258:	0e 94 e0 2e 	call	0x5dc0	; 0x5dc0 <_ZN14FreeBoardModel14setAutopilotOnEb>
     625c:	64 c0       	rjmp	.+200    	; 0x6326 <_Z7processPcc+0x23e>
 			} else if (strcmp(key, AUTOPILOT_ADJUST) == 0) {
-    625e:	64 e5       	ldi	r22, 0x54	; 84
+    625e:	63 e5       	ldi	r22, 0x53	; 83
     6260:	73 e0       	ldi	r23, 0x03	; 3
     6262:	ce 01       	movw	r24, r28
     6264:	01 96       	adiw	r24, 0x01	; 1
@@ -13860,7 +13860,7 @@ void process(char * s, char parser) {
     6298:	0e 94 4e 2e 	call	0x5c9c	; 0x5c9c <_ZN14FreeBoardModel25setAutopilotTargetHeadingEd>
     629c:	44 c0       	rjmp	.+136    	; 0x6326 <_Z7processPcc+0x23e>
 			} else if (strcmp(key, AUTOPILOT_SOURCE) == 0) {
-    629e:	69 e5       	ldi	r22, 0x59	; 89
+    629e:	68 e5       	ldi	r22, 0x58	; 88
     62a0:	73 e0       	ldi	r23, 0x03	; 3
     62a2:	ce 01       	movw	r24, r28
     62a4:	01 96       	adiw	r24, 0x01	; 1
@@ -13877,7 +13877,7 @@ void process(char * s, char parser) {
 			}
 			//wind
 			else if (strcmp(key, WIND_SPEED_ALARM_STATE) == 0) {
-    62bc:	6e e5       	ldi	r22, 0x5E	; 94
+    62bc:	6d e5       	ldi	r22, 0x5D	; 93
     62be:	73 e0       	ldi	r23, 0x03	; 3
     62c0:	ce 01       	movw	r24, r28
     62c2:	01 96       	adiw	r24, 0x01	; 1
@@ -13896,7 +13896,7 @@ void process(char * s, char parser) {
     62de:	0e 94 b6 2e 	call	0x5d6c	; 0x5d6c <_ZN14FreeBoardModel14setWindAlarmOnEb>
     62e2:	21 c0       	rjmp	.+66     	; 0x6326 <_Z7processPcc+0x23e>
 			} else if (strcpy(key, WIND_ALARM_KNOTS) == 0) {
-    62e4:	63 e6       	ldi	r22, 0x63	; 99
+    62e4:	62 e6       	ldi	r22, 0x62	; 98
     62e6:	73 e0       	ldi	r23, 0x03	; 3
     62e8:	ce 01       	movw	r24, r28
     62ea:	01 96       	adiw	r24, 0x01	; 1
@@ -13912,7 +13912,7 @@ void process(char * s, char parser) {
     6300:	0e 94 bb 2e 	call	0x5d76	; 0x5d76 <_ZN14FreeBoardModel17setWindAlarmSpeedEi>
     6304:	10 c0       	rjmp	.+32     	; 0x6326 <_Z7processPcc+0x23e>
 			} else if (strcpy(key, WIND_ZERO_ADJUST) == 0) {
-    6306:	68 e6       	ldi	r22, 0x68	; 104
+    6306:	67 e6       	ldi	r22, 0x67	; 103
     6308:	73 e0       	ldi	r23, 0x03	; 3
     630a:	ce 01       	movw	r24, r28
     630c:	01 96       	adiw	r24, 0x01	; 1
@@ -13983,7 +13983,7 @@ void process(char * s, char parser) {
 			//if (DEBUG) Serial.println(val);
 			// incoming data = WST,WSA,WDT,WDA,WSU,LAT,LON,COG,MGH,SOG,YAW
 			if (strcmp(key, MGH) == 0) {
-    6384:	6d e6       	ldi	r22, 0x6D	; 109
+    6384:	6c e6       	ldi	r22, 0x6C	; 108
     6386:	73 e0       	ldi	r23, 0x03	; 3
     6388:	ce 01       	movw	r24, r28
     638a:	01 96       	adiw	r24, 0x01	; 1
@@ -14000,7 +14000,7 @@ void process(char * s, char parser) {
     63a2:	0e 94 a4 2e 	call	0x5d48	; 0x5d48 <_ZN14FreeBoardModel18setMagneticHeadingEf>
 			}
 			if (strcmp(key, DECL) == 0) {
-    63a6:	61 e7       	ldi	r22, 0x71	; 113
+    63a6:	60 e7       	ldi	r22, 0x70	; 112
     63a8:	73 e0       	ldi	r23, 0x03	; 3
     63aa:	ce 01       	movw	r24, r28
     63ac:	01 96       	adiw	r24, 0x01	; 1
@@ -14017,7 +14017,7 @@ void process(char * s, char parser) {
     63c4:	0e 94 aa 2e 	call	0x5d54	; 0x5d54 <_ZN14FreeBoardModel14setDeclinationEf>
 			}
 			if (strcmp(key, WDT) == 0) {
-    63c8:	65 e7       	ldi	r22, 0x75	; 117
+    63c8:	64 e7       	ldi	r22, 0x74	; 116
     63ca:	73 e0       	ldi	r23, 0x03	; 3
     63cc:	ce 01       	movw	r24, r28
     63ce:	01 96       	adiw	r24, 0x01	; 1
@@ -14045,7 +14045,7 @@ void process(char * s, char parser) {
 		}
 		//next token
 		cmd = strtok(NULL, ",");
-    63fa:	6e e5       	ldi	r22, 0x5E	; 94
+    63fa:	6d e5       	ldi	r22, 0x5D	; 93
     63fc:	72 e0       	ldi	r23, 0x02	; 2
     63fe:	80 e0       	ldi	r24, 0x00	; 0
     6400:	90 e0       	ldi	r25, 0x00	; 0
@@ -14209,7 +14209,7 @@ void serialEvent() {
     64d2:	c8 01       	movw	r24, r16
     64d4:	0e 94 74 30 	call	0x60e8	; 0x60e8 <_Z7processPcc>
 			inputSerial = "";
-    64d8:	67 ef       	ldi	r22, 0xF7	; 247
+    64d8:	66 ef       	ldi	r22, 0xF6	; 246
     64da:	74 e0       	ldi	r23, 0x04	; 4
     64dc:	8d e4       	ldi	r24, 0x4D	; 77
     64de:	99 e0       	ldi	r25, 0x09	; 9
@@ -14291,7 +14291,7 @@ FreeBoardModel model;
 class NmeaSerial: AltSoftSerial {
 public:
 	NmeaSerial(FreeBoardModel* model):model(model){};
-    6542:	84 e2       	ldi	r24, 0x24	; 36
+    6542:	83 e2       	ldi	r24, 0x23	; 35
     6544:	95 e0       	ldi	r25, 0x05	; 5
     6546:	90 93 6e 0f 	sts	0x0F6E, r25
     654a:	80 93 6d 0f 	sts	0x0F6D, r24
@@ -14381,7 +14381,7 @@ Seatalk seatalk(&Serial2, &model);
     65d6:	0e 94 bd 36 	call	0x6d7a	; 0x6d7a <_ZN7SeatalkC1EP14HardwareSerialP14FreeBoardModel>
 
 String inputSerial = ""; // a string to hold incoming data
-    65da:	67 ef       	ldi	r22, 0xF7	; 247
+    65da:	66 ef       	ldi	r22, 0xF6	; 246
     65dc:	74 e0       	ldi	r23, 0x04	; 4
     65de:	8d e4       	ldi	r24, 0x4D	; 77
     65e0:	99 e0       	ldi	r25, 0x09	; 9
@@ -14444,7 +14444,7 @@ char gpsBuffer[40];
 PString gpsStr(gpsBuffer, sizeof(gpsBuffer));
 
 Gps::~Gps() {
-    6616:	2c ef       	ldi	r18, 0xFC	; 252
+    6616:	2b ef       	ldi	r18, 0xFB	; 251
     6618:	34 e0       	ldi	r19, 0x04	; 4
     661a:	fc 01       	movw	r30, r24
     661c:	31 83       	std	Z+1, r19	; 0x01
@@ -14452,7 +14452,7 @@ Gps::~Gps() {
     6620:	08 95       	ret
 
 00006622 <_ZN3GpsD0Ev>:
-    6622:	2c ef       	ldi	r18, 0xFC	; 252
+    6622:	2b ef       	ldi	r18, 0xFB	; 251
     6624:	34 e0       	ldi	r19, 0x04	; 4
     6626:	fc 01       	movw	r30, r24
     6628:	31 83       	std	Z+1, r19	; 0x01
@@ -14463,7 +14463,7 @@ Gps::~Gps() {
 00006630 <_ZN3GpsC1EP4NMEAP14FreeBoardModel>:
 Gps::Gps(NMEA* gpsSource, FreeBoardModel* model) {
     6630:	fc 01       	movw	r30, r24
-    6632:	8c ef       	ldi	r24, 0xFC	; 252
+    6632:	8b ef       	ldi	r24, 0xFB	; 251
     6634:	94 e0       	ldi	r25, 0x04	; 4
     6636:	91 83       	std	Z+1, r25	; 0x01
     6638:	80 83       	st	Z, r24
@@ -14568,7 +14568,7 @@ bool Gps::testMsg() {
     66ac:	cc 23       	and	r28, r28
     66ae:	39 f0       	breq	.+14     	; 0x66be <_ZN3Gps7testMsgEv+0x7a>
 			Serial.println("OK");
-    66b0:	69 e7       	ldi	r22, 0x79	; 121
+    66b0:	68 e7       	ldi	r22, 0x78	; 120
     66b2:	73 e0       	ldi	r23, 0x03	; 3
     66b4:	88 eb       	ldi	r24, 0xB8	; 184
     66b6:	95 e0       	ldi	r25, 0x05	; 5
@@ -14576,7 +14576,7 @@ bool Gps::testMsg() {
     66bc:	0f c0       	rjmp	.+30     	; 0x66dc <_ZN3Gps7testMsgEv+0x98>
 		else
 			Serial.println("FAIL");
-    66be:	6c e7       	ldi	r22, 0x7C	; 124
+    66be:	6b e7       	ldi	r22, 0x7B	; 123
     66c0:	73 e0       	ldi	r23, 0x03	; 3
     66c2:	88 eb       	ldi	r24, 0xB8	; 184
     66c4:	95 e0       	ldi	r25, 0x05	; 5
@@ -14621,7 +14621,7 @@ int Gps::autoBaud() {
 	//should only output simple NMEA [$A-Z0-9*\r\c]
 
 	if (DEBUG) Serial.println("   try autobaud 4800..");
-    66f2:	61 e8       	ldi	r22, 0x81	; 129
+    66f2:	60 e8       	ldi	r22, 0x80	; 128
     66f4:	73 e0       	ldi	r23, 0x03	; 3
     66f6:	88 eb       	ldi	r24, 0xB8	; 184
     66f8:	95 e0       	ldi	r25, 0x05	; 5
@@ -14644,7 +14644,7 @@ int Gps::autoBaud() {
     671a:	95 e0       	ldi	r25, 0x05	; 5
     671c:	0e 94 c4 05 	call	0xb88	; 0xb88 <_ZN14HardwareSerial3endEv>
 	if (DEBUG) Serial.println("   try autobaud 9600..");
-    6720:	68 e9       	ldi	r22, 0x98	; 152
+    6720:	67 e9       	ldi	r22, 0x97	; 151
     6722:	73 e0       	ldi	r23, 0x03	; 3
     6724:	88 eb       	ldi	r24, 0xB8	; 184
     6726:	95 e0       	ldi	r25, 0x05	; 5
@@ -14667,7 +14667,7 @@ int Gps::autoBaud() {
     6748:	95 e0       	ldi	r25, 0x05	; 5
     674a:	0e 94 c4 05 	call	0xb88	; 0xb88 <_ZN14HardwareSerial3endEv>
 	if (DEBUG) Serial.println("   try autobaud 19200..");
-    674e:	6f ea       	ldi	r22, 0xAF	; 175
+    674e:	6e ea       	ldi	r22, 0xAE	; 174
     6750:	73 e0       	ldi	r23, 0x03	; 3
     6752:	88 eb       	ldi	r24, 0xB8	; 184
     6754:	95 e0       	ldi	r25, 0x05	; 5
@@ -14690,7 +14690,7 @@ int Gps::autoBaud() {
     6776:	95 e0       	ldi	r25, 0x05	; 5
     6778:	0e 94 c4 05 	call	0xb88	; 0xb88 <_ZN14HardwareSerial3endEv>
 	if (DEBUG) Serial.println("   try autobaud 38400..");
-    677c:	67 ec       	ldi	r22, 0xC7	; 199
+    677c:	66 ec       	ldi	r22, 0xC6	; 198
     677e:	73 e0       	ldi	r23, 0x03	; 3
     6780:	88 eb       	ldi	r24, 0xB8	; 184
     6782:	95 e0       	ldi	r25, 0x05	; 5
@@ -14713,7 +14713,7 @@ int Gps::autoBaud() {
     67a4:	95 e0       	ldi	r25, 0x05	; 5
     67a6:	0e 94 c4 05 	call	0xb88	; 0xb88 <_ZN14HardwareSerial3endEv>
 	if (DEBUG) Serial.println("   try autobaud 57600..");
-    67aa:	6f ed       	ldi	r22, 0xDF	; 223
+    67aa:	6e ed       	ldi	r22, 0xDE	; 222
     67ac:	73 e0       	ldi	r23, 0x03	; 3
     67ae:	88 eb       	ldi	r24, 0xB8	; 184
     67b0:	95 e0       	ldi	r25, 0x05	; 5
@@ -14736,7 +14736,7 @@ int Gps::autoBaud() {
     67d2:	95 e0       	ldi	r25, 0x05	; 5
     67d4:	0e 94 c4 05 	call	0xb88	; 0xb88 <_ZN14HardwareSerial3endEv>
 	if (DEBUG) Serial.println("   default to 4800..");
-    67d8:	67 ef       	ldi	r22, 0xF7	; 247
+    67d8:	66 ef       	ldi	r22, 0xF6	; 246
     67da:	73 e0       	ldi	r23, 0x03	; 3
     67dc:	88 eb       	ldi	r24, 0xB8	; 184
     67de:	95 e0       	ldi	r25, 0x05	; 5
@@ -15211,7 +15211,7 @@ void Gps::setupGpsImpl(){
 		//Serial1.begin(38400, 8, 1, 0); //gps
 		//set debug on
 		Serial1.println("$PSRF105,1*3E");
-    6b2e:	6c e0       	ldi	r22, 0x0C	; 12
+    6b2e:	6b e0       	ldi	r22, 0x0B	; 11
     6b30:	74 e0       	ldi	r23, 0x04	; 4
     6b32:	86 e9       	ldi	r24, 0x96	; 150
     6b34:	95 e0       	ldi	r25, 0x05	; 5
@@ -15219,42 +15219,42 @@ void Gps::setupGpsImpl(){
 
 		//set VTG off -  Vector track an Speed over the Ground
 		Serial1.println("$PSRF103,05,00,00,01*21");
-    6b3a:	6c e4       	ldi	r22, 0x4C	; 76
+    6b3a:	6b e4       	ldi	r22, 0x4B	; 75
     6b3c:	74 e0       	ldi	r23, 0x04	; 4
     6b3e:	86 e9       	ldi	r24, 0x96	; 150
     6b40:	95 e0       	ldi	r25, 0x05	; 5
     6b42:	0e 94 ed 06 	call	0xdda	; 0xdda <_ZN5Print7printlnEPKc>
 		//set GLL off -  Lat/Lon data
 		Serial1.println("$PSRF103,01,00,00,01*25");
-    6b46:	64 e6       	ldi	r22, 0x64	; 100
+    6b46:	63 e6       	ldi	r22, 0x63	; 99
     6b48:	74 e0       	ldi	r23, 0x04	; 4
     6b4a:	86 e9       	ldi	r24, 0x96	; 150
     6b4c:	95 e0       	ldi	r25, 0x05	; 5
     6b4e:	0e 94 ed 06 	call	0xdda	; 0xdda <_ZN5Print7printlnEPKc>
 		//set GGA on, 5sec, constant -  Fix information
 		Serial1.println("$PSRF103,00,00,05,01*21");
-    6b52:	6c e7       	ldi	r22, 0x7C	; 124
+    6b52:	6b e7       	ldi	r22, 0x7B	; 123
     6b54:	74 e0       	ldi	r23, 0x04	; 4
     6b56:	86 e9       	ldi	r24, 0x96	; 150
     6b58:	95 e0       	ldi	r25, 0x05	; 5
     6b5a:	0e 94 ed 06 	call	0xdda	; 0xdda <_ZN5Print7printlnEPKc>
 		//set GSA on, 5 sec, constant - Overall Satellite data
 		Serial1.println("$PSRF103,02,00,05,01*23");
-    6b5e:	64 e9       	ldi	r22, 0x94	; 148
+    6b5e:	63 e9       	ldi	r22, 0x93	; 147
     6b60:	74 e0       	ldi	r23, 0x04	; 4
     6b62:	86 e9       	ldi	r24, 0x96	; 150
     6b64:	95 e0       	ldi	r25, 0x05	; 5
     6b66:	0e 94 ed 06 	call	0xdda	; 0xdda <_ZN5Print7printlnEPKc>
 		//set GSV on, 20sec, constant -Detailed Satellite data
 		Serial1.println("$PSRF103,03,00,20,01*25");
-    6b6a:	6c ea       	ldi	r22, 0xAC	; 172
+    6b6a:	6b ea       	ldi	r22, 0xAB	; 171
     6b6c:	74 e0       	ldi	r23, 0x04	; 4
     6b6e:	86 e9       	ldi	r24, 0x96	; 150
     6b70:	95 e0       	ldi	r25, 0x05	; 5
     6b72:	0e 94 ed 06 	call	0xdda	; 0xdda <_ZN5Print7printlnEPKc>
 		//set RMC on, 1sec, constant, Recommended minimum info
 		Serial1.println("$PSRF103,04,00,01,01*21");
-    6b76:	64 ec       	ldi	r22, 0xC4	; 196
+    6b76:	63 ec       	ldi	r22, 0xC3	; 195
     6b78:	74 e0       	ldi	r23, 0x04	; 4
     6b7a:	86 e9       	ldi	r24, 0x96	; 150
     6b7c:	95 e0       	ldi	r25, 0x05	; 5
@@ -15262,7 +15262,7 @@ void Gps::setupGpsImpl(){
 
 		//debug off
 		Serial1.println("$PSRF105,0*3F");
-    6b82:	67 e3       	ldi	r22, 0x37	; 55
+    6b82:	66 e3       	ldi	r22, 0x36	; 54
     6b84:	74 e0       	ldi	r23, 0x04	; 4
     6b86:	86 e9       	ldi	r24, 0x96	; 150
     6b88:	95 e0       	ldi	r25, 0x05	; 5
@@ -15273,7 +15273,7 @@ void Gps::setupGpsImpl(){
 
 		//$PSRF100,1,38400,8,1,0*3D\r\n
 		Serial1.print("$PSRF100,1,38400,8,1,0*3D\r\n");
-    6b8e:	6c ed       	ldi	r22, 0xDC	; 220
+    6b8e:	6b ed       	ldi	r22, 0xDB	; 219
     6b90:	74 e0       	ldi	r23, 0x04	; 4
     6b92:	86 e9       	ldi	r24, 0x96	; 150
     6b94:	95 e0       	ldi	r25, 0x05	; 5
@@ -15475,8 +15475,8 @@ public:
     6c96:	01 96       	adiw	r24, 0x01	; 1
     6c98:	0e 94 86 18 	call	0x310c	; 0x310c <_ZN7PString5beginEv>
 	str.print("$FBMWV,");
-    6c9c:	60 e0       	ldi	r22, 0x00	; 0
-    6c9e:	75 e0       	ldi	r23, 0x05	; 5
+    6c9c:	6f ef       	ldi	r22, 0xFF	; 255
+    6c9e:	74 e0       	ldi	r23, 0x04	; 4
     6ca0:	ce 01       	movw	r24, r28
     6ca2:	01 96       	adiw	r24, 0x01	; 1
     6ca4:	0e 94 9c 06 	call	0xd38	; 0xd38 <_ZN5Print5printEPKc>
@@ -15492,7 +15492,7 @@ public:
     6cba:	01 96       	adiw	r24, 0x01	; 1
     6cbc:	0e 94 44 08 	call	0x1088	; 0x1088 <_ZN5Print5printEii>
 	str.print(".0,R,");
-    6cc0:	68 e0       	ldi	r22, 0x08	; 8
+    6cc0:	67 e0       	ldi	r22, 0x07	; 7
     6cc2:	75 e0       	ldi	r23, 0x05	; 5
     6cc4:	ce 01       	movw	r24, r28
     6cc6:	01 96       	adiw	r24, 0x01	; 1
@@ -15510,7 +15510,7 @@ public:
     6ce0:	01 96       	adiw	r24, 0x01	; 1
     6ce2:	0e 94 5a 09 	call	0x12b4	; 0x12b4 <_ZN5Print5printEdi>
 	str.print(",N,A*");
-    6ce6:	6e e0       	ldi	r22, 0x0E	; 14
+    6ce6:	6d e0       	ldi	r22, 0x0D	; 13
     6ce8:	75 e0       	ldi	r23, 0x05	; 5
     6cea:	ce 01       	movw	r24, r28
     6cec:	01 96       	adiw	r24, 0x01	; 1
@@ -16773,7 +16773,7 @@ class AverageList {
     7610:	90 93 bd 05 	sts	0x05BD, r25
     7614:	a0 93 be 05 	sts	0x05BE, r26
     7618:	b0 93 bf 05 	sts	0x05BF, r27
-    761c:	28 e3       	ldi	r18, 0x38	; 56
+    761c:	27 e3       	ldi	r18, 0x37	; 55
     761e:	35 e0       	ldi	r19, 0x05	; 5
     7620:	30 93 b9 05 	sts	0x05B9, r19
     7624:	20 93 b8 05 	sts	0x05B8, r18

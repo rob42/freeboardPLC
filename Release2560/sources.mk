@@ -43,16 +43,4 @@ libraries/Firmata \
 libraries/EEPROM \
 libraries/Bounce \
 libraries/AltSoftSerial \
-Release \
-Release/libraries/SPI \
-Release/libraries/PinCatcher \
-Release/libraries/PString \
-Release/libraries/PID_v1 \
-Release/libraries/NMEA \
-Release/libraries/LiquidCrystal \
-Release/libraries/FlexiTimer2 \
-Release/libraries/Firmata \
-Release/libraries/EEPROM \
-Release/libraries/Bounce \
-Release/libraries/AltSoftSerial \
 
