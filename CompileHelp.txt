@@ -11,6 +11,9 @@ Major failures when compiling after first importing from git
 When you press the hammer in the toolbar it should build - not complain its not an AVR project
 Check you have an AVR project nature -If you right click the project>Convert To> AVR Eclipse
 
+**Make sure you use the right AVR plugin:
+ - the AVR (http://www.baeyens.it/eclipse/). The 'other' avr plugin (http://avr-eclipse.sourceforge.net) will give all sorts of problems as the project expects the baeyens version.
+
 +++++++
 Cant upload a binary? - check you have the correct build configuration active
 	you have the right board the in ARDUINOBOARDNAME = Arduino_Mega_ATmega1280

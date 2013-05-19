@@ -7,7 +7,7 @@ If you just want the binary hex files to upload to the arduino mega they are in 
 However to  open and compile the project:
 
 Get Eclipse from http://eclipse.org/ and install it anywhere, but usually in C:\eclipse for windows. DONT pick a directory with spaces, and dont use any in projects - it will cause you grief :-)
-In eclipse install the Arduino and eGit plugins - google will help.
+In eclipse install the AVR (http://www.baeyens.it/eclipse/) and eGit plugins - google will help. The 'other' avr plugin (http://avr-eclipse.sourceforge.net) will give all sorts of problems as the project expects the baeyens version.
 
 Follow the instructions from github to install git on your PC, and clone this project and your chosen Arduino_ATmegaxxxx project to you local repository.
 
