@@ -14,7 +14,8 @@ Follow the instructions from github to install git on your PC, and clone this pr
 Start eclipse and File>Import>From Git and follow the wizard. You should end up with two projects in your workspace.
 On the  Arduino_ATmegaxxxx project Rright-click and Clean, then Build Project.
 
-It should complete without errors, if not look in the Console tab for the full build log. You can email me if needed.
+It should complete without errors, if not look in the Console tab for the full build log. There are some hints in COmpileError.txt.
+You can email me if needed. 
 
 Do the same for the FreeboardPLC project. 
 There are two options: right-click project>Build configurations>Set Active>(choose your board)
