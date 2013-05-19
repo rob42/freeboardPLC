@@ -241,39 +241,6 @@
 							<tool id="it.baeyens.avreclipse.tool.avrdude.app.release.1010537711" name="AVRDude" superClass="it.baeyens.avreclipse.tool.avrdude.app.release"/>
 						</toolChain>
 					</folderInfo>
-					<folderInfo id="it.baeyens.avreclipse.configuration.app.release.980545052.36445091.libraries/AltSoftSerial" name="/" resourcePath="libraries/AltSoftSerial">
-						<toolChain id="it.baeyens.avreclipse.toolchain.winavr.app.release.278539141" name="AVR-GCC Toolchain" superClass="it.baeyens.avreclipse.toolchain.winavr.app.release" unusedChildren="">
-							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objcopy.flash.app.release.1046730981.1218567368" name="Generate HEX file for Flash memory" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objcopy.flash.app.release.1046730981"/>
-							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objcopy.eeprom.app.release.219589584.1447152056" name="Generate HEX file for EEPROM" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objcopy.eeprom.app.release.219589584"/>
-							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.app.release.615307235.1588137675" name="Generate Extended Listing (Source + generated Assembler)" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.app.release.615307235"/>
-							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.size.app.release.1878891254.114036072" name="Print Size" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.size.app.release.1878891254"/>
-							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.avrdude.app.release.1381992110.2088588857" name="AVRDude" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.avrdude.app.release.1381992110"/>
-							<targetPlatform id="it.baeyens.avreclipse.targetplatform.winavr.app.release.589908083" name="AVR Cross-Target" superClass="it.baeyens.avreclipse.targetplatform.winavr.app.release"/>
-							<tool id="it.baeyens.avreclipse.tool.assembler.winavr.app.release.717655037" name="AVR Assembler" superClass="it.baeyens.avreclipse.tool.assembler.winavr.app.release.389570886">
-								<inputType id="it.baeyens.avreclipse.tool.assembler.input.1049349799" superClass="it.baeyens.avreclipse.tool.assembler.input"/>
-							</tool>
-							<tool id="it.baeyens.avreclipse.tool.compiler.winavr.app.release.1869847796" name="AVR Compiler" superClass="it.baeyens.avreclipse.tool.compiler.winavr.app.release.1267113895">
-								<inputType id="it.baeyens.avreclipse.compiler.winavr.input.108487313" name="C Source Files" superClass="it.baeyens.avreclipse.compiler.winavr.input"/>
-							</tool>
-							<tool id="it.baeyens.avreclipse.tool.cppcompiler.app.release.26513235" name="AVR C++ Compiler" superClass="it.baeyens.avreclipse.tool.cppcompiler.app.release.1578834088">
-								<option id="it.baeyens.avreclipse.cppcompiler.option.incpath.712367151" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.cppcompiler.option.incpath" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_ATmega1280/arduino}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/PString}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/AltSoftSerial}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries}&quot;"/>
-								</option>
-								<inputType id="it.baeyens.avreclipse.cppcompiler.input.1655948863" superClass="it.baeyens.avreclipse.cppcompiler.input"/>
-							</tool>
-							<tool id="it.baeyens.avreclipse.tool.linker.winavr.app.release.1456676212" name="AVR C Linker" superClass="it.baeyens.avreclipse.tool.linker.winavr.app.release.862087991"/>
-							<tool id="it.baeyens.avreclipse.tool.cpplinker.app.release.1737741143" name="AVR C++ Linker" superClass="it.baeyens.avreclipse.tool.cpplinker.app.release.65622591"/>
-							<tool id="it.baeyens.avreclipse.tool.archiver.winavr.base.375909914" name="AVR Archiver" superClass="it.baeyens.avreclipse.tool.archiver.winavr.base.149477066"/>
-							<tool id="it.baeyens.avreclipse.tool.objdump.winavr.app.release.1705195096" name="AVR Create Extended Listing" superClass="it.baeyens.avreclipse.tool.objdump.winavr.app.release.1929894200"/>
-							<tool id="it.baeyens.avreclipse.tool.objcopy.flash.winavr.app.release.2083083034" name="AVR Create Flash image" superClass="it.baeyens.avreclipse.tool.objcopy.flash.winavr.app.release.399882718"/>
-							<tool id="it.baeyens.avreclipse.tool.objcopy.eeprom.winavr.app.release.1650960829" name="AVR Create EEPROM image" superClass="it.baeyens.avreclipse.tool.objcopy.eeprom.winavr.app.release.684947779"/>
-							<tool id="it.baeyens.avreclipse.tool.size.winavr.app.release.561709488" name="Print Size" superClass="it.baeyens.avreclipse.tool.size.winavr.app.release.1731805548"/>
-							<tool id="it.baeyens.avreclipse.tool.avrdude.app.release.1876422966" name="AVRDude" superClass="it.baeyens.avreclipse.tool.avrdude.app.release.1010537711"/>
-						</toolChain>
-					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
