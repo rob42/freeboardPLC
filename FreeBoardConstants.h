@@ -25,8 +25,8 @@
 #define MUX true
 
 //uncomment to support different GPS
-#define GPS_EM_406A
-//#define GPS_MTEK_3329
+#define GPS_EM_406A 1
+#define GPS_MTEK_3329 2
 
 //misc output - SoftwareSerial
 //lcd
@@ -161,5 +161,10 @@
 #define WIND_ALARM_KNOTS "#WSK"
 #define WIND_ZERO_ADJUST "#WZJ"
 
-
+#define GPS_MODEL "#GPS"
+#define SERIAL_BAUD0 "#SB0"
+#define SERIAL_BAUD1 "#SB1"
+#define SERIAL_BAUD2 "#SB2"
+#define SERIAL_BAUD3 "#SB3"
+#define SEATALK "#STK"
 #endif

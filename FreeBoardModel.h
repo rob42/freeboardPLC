@@ -158,6 +158,19 @@ public:
 	void setRadarAlarmOn(volatile bool radarAlarmOn);
     bool isAutopilotOn() ;
     void setAutopilotOn(bool autopilotOn);
+    short getGpsModel();
+    void setGpsModel(short gpsModel);
+    int getSerialBaud();
+    void setSerialBaud(int serialBaud);
+    int getSerialBaud1();
+	void setSerialBaud1(int serialBaud1);
+	int getSerialBaud2();
+	void setSerialBaud2(int serialBaud2);
+	int getSerialBaud3();
+	void setSerialBaud3(int serialBaud3);
+ 	bool getSeaTalk();
+ 	void setSeaTalk(bool seaTalk);
+
     void saveConfig();
     void readConfig();
     int writeSimple(HardwareSerial ser);
@@ -245,7 +258,7 @@ private:
 
 	//CONFIG_T
 	struct Configuration{		// 35 bytes
-	
+		//ver 5
 		float anchorLat;	//32 bits (4 bytes). 
 		float anchorLon;	//32 bits (4 bytes). 
 		float anchorRadius;	//32 bits (4 bytes). 
@@ -262,7 +275,13 @@ private:
 		bool windAlarmOn;	//1 byte
 		float windFactor;	//32 bits (4 bytes). 
 		int windZeroOffset;	//16 bits (2 bytes)
-
+		//ver 6
+		short gpsModel; //8 bits
+		int serialBaud; //16 bytes
+		int serialBaud1; //16 bytes
+		int serialBaud2; //16 bytes
+		int serialBaud3; //16 bytes
+		bool seaTalk; //8 bytes
 	}config;
 
 	int version;

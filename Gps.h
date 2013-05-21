@@ -32,6 +32,7 @@
 #include "PString.h"
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
+#include "FreeBoardPLC.h"
 
 
 class Gps {
