@@ -47,7 +47,7 @@
  Other NMEA talkers attached to Serial2, Serial3, etc
  All NMEA recv devices should listen on Serial0 Tx or nmea repeater on 52/53
  All at 4800 default
- GPS at 38400, pins Rx19 - yellow, Tx20 - orange
+ GPS at 38400, pins Rx18 - yellow, Tx19 - orange
  Lcd at 19200
  Lcd disabled,  on 50,51 (lcd)
  AltSoftSerial Tx46,Rx48 (NMEA)

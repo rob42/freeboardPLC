@@ -28,6 +28,8 @@
 #define GPS_EM_406A 1
 #define GPS_MTEK_3329 2
 
+//GPS pins are Serial1
+//EM406A pin 3 = RX to arduino TX - pin18, RX to pin19
 //misc output - SoftwareSerial
 //lcd
 #define rxPin 50
@@ -50,7 +52,7 @@
  //Wind dir on pin 2 - INT0
 #define windSpeedPin 3 // pin3
 #define windSpeedInterrupt 1 // INT1
-#define windDirPin 2 // pin 20
+#define windDirPin 2 // pin 2
 #define windDirInterrupt 0 // INT0
 
 
