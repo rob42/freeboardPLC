@@ -260,7 +260,7 @@ private:
 		bool mobAlarmOn;	//1 byte
 		int windAlarmSpeed;	//16 bits (2 bytes)
 		bool windAlarmOn;	//1 byte
-		float windFactor;	//32 bits (4 bytes). 
+		float windFactor;	//32 bits (4 bytes).
 		int windZeroOffset;	//16 bits (2 bytes)
 
 	}config;

@@ -110,7 +110,7 @@ FreeBoardModel::FreeBoardModel() {
 	config.mobAlarmOn = false;
 	config.windAlarmSpeed = 99;
 	config.windAlarmOn = false;
-	config.windFactor = 1.0;
+	config.windFactor = 10000.0;
 	config.windZeroOffset = 0;
 	//}config;
 

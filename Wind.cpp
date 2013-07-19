@@ -64,7 +64,7 @@ const unsigned int SPEED_DEBOUNCE = 0;
 const unsigned int DIR_DEBOUNCE = 0;
 volatile unsigned long lastPulse;
 volatile unsigned long windSpeedDur=0;
-volatile  float windSpeedRpm;
+volatile  long windSpeedRps;
 volatile unsigned long windSpeedMicros;
 volatile unsigned long windDirDur;
 volatile bool windSpeedFlag;
@@ -110,7 +110,7 @@ void Wind::readWindDataSpeed() {
 		//counts clicks, one per rotation, about 2-3 rotations/s =1m/s = 1.94knts
 		//therefore about 50/ms = 100knts = 150 rps = 1000000/150 = 6500 us per pulse
 		//at 100 knts about 20us per degree of rotation
-		//ULTIMETER:
+		//FROM ULTIMETER:
 		// 66RPS = 136MPH == 118 KNTS
 		// so 1000000/66=15151/360=42us/degree at 118knts
 		lastPulse=millis();
@@ -163,18 +163,23 @@ void Wind::calcWindData() {
 			//Serial.println("Wind speed reset");
 			speedList.reset();
 		}else{
+			//speedlist is type long -  max value = 3000000 micros
 			if(speedList.getTotalAverage()>0){
-				windSpeedRpm=1000000.0/speedList.getTotalAverage();
-				//convert to KNTS
-				if(windSpeedRpm<3.229){
-					model->setWindAverage(model->getWindFactor() *( -0.09515*(windSpeedRpm*windSpeedRpm) + 2.5476*(windSpeedRpm) - 0.1226));
-				}else if(windSpeedRpm < 54.362){
-					model->setWindAverage(model->getWindFactor() *(0.0045*(windSpeedRpm*windSpeedRpm) + 1.9099*(windSpeedRpm) + 0.9638));
+				// arduino long = -2,147,483,648 to 2,147,483,647
+				//1000 millis = 1 rps - this is 1000 x rps (for int arithmetic) range 333 - 33333
+				windSpeedRps=100000000/speedList.getTotalAverage();
+				//NOTE:converted multipliers to KNTS
+				//need to avoid div/0 errors
+				if(windSpeedRps<323){
+					//need extra accuracy here, zero is very unlikely
+					windSpeedRps=windSpeedRps*10;
+					model->setWindAverage(((((windSpeedRps*windSpeedRps)/-105) + ((25476*windSpeedRps)/100) - 12260)/10)/model->getWindFactor());
+				}else if(windSpeedRps < 5436){
+					//rps2 = min 10426441, max 30,864,197, cant get div/0 here?
+					model->setWindAverage((((windSpeedRps*windSpeedRps)/2222) + ((19099*windSpeedRps)/100) + 9638)/model->getWindFactor());
 				}else{
-					model->setWindAverage(model->getWindFactor() *(0.09593*(windSpeedRpm*windSpeedRpm) - 8.3147*(windSpeedRpm) + 286.65));
+					model->setWindAverage(((((windSpeedRps*windSpeedRps)/1042)*100) - (8314700*windSpeedRps) + 2866500)/model->getWindFactor());
 				}
-				//Serial.print(", WindAvg:");
-				//		Serial.println(( -0.09515*(windSpeedRpm*windSpeedRpm) + 2.5476*(windSpeedRpm) - 0.1226));
 			}
 			//update gusts
 			if (model->getWindAverage() > model->getWindMax())
@@ -185,7 +190,11 @@ void Wind::calcWindData() {
 			//should round to int, min 1
 			int dir = (int)dirList.getRotationalAverage();
 			//limit to +-360, after adjust zero
-			dir = (dir + model->getWindZeroOffset()) %360;
+			//C = A – B * (A / B)
+			dir = (dir + model->getWindZeroOffset());// %360;
+			if(dir!=0){
+				dir = dir-360 * (dir/360);
+			}
 			//if minus, then reverse to +ve
 			if (dir<0){
 				dir = 360+dir;
