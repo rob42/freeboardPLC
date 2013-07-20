@@ -33,6 +33,7 @@
 #include<Arduino.h>
 #include<Print.h>
 
+
 template<typename datatype>
 class AverageList {
 	public:
@@ -40,6 +41,7 @@ class AverageList {
 		AverageList(datatype* storage, byte storageSize) : values(storage) , size(storageSize) { 
 			currentSize = 0; 
 			currentIndex = 0; 
+
 		}
 		
 		//add a value to the AverageList at the next index, if out of bounds, return false, else return true
@@ -71,10 +73,12 @@ class AverageList {
 			float x = 0;
 			float y = 0;
 			float angle=0;
+
 			for (byte i=0; i<currentSize; i++){
-				angle=2*PI*values[i];
+				angle=TWO_PI*values[i];
 			    x += cos(angle);
 			    y += sin(angle);
+
 			}
 			//TODO:watch out for zeros
 			if(x==0.0f && y==0.0f){
@@ -169,6 +173,8 @@ class AverageList {
 		}
 		//return the current index
 		byte getCurrentIndex() { return currentIndex; }
+		byte getCurrentSize() { return currentSize; }
+		byte getValue(int x) { return values[x]; }
 		void debug(char* name,Print& printer){
 			printer.print(name);
 			printer.print(" [");
@@ -180,11 +186,14 @@ class AverageList {
 			}
 			printer.println("]");
 		}
+
 	private:
 		datatype* values;	//pointer to allocated space
 		byte size;			//keep track of the size of the values array
 		byte currentSize;	//keep track of the current index
 		byte currentIndex;	//keep track of the current index
+
+
 };
 #endif
 

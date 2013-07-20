@@ -46,6 +46,11 @@ public:
 	void calcWindData();
 	void readWindDataSpeed();
 	void readWindDataDir();
+	float isin(long x);
+	float icos(long x);
+	float itan(long x);
+	float fsin(float d);
+	int getRotationalAverage();
 private:
 
 	FreeBoardModel* model;
