@@ -36,7 +36,7 @@
 
 #define AUTOPILOT_WIND 'W'
 #define AUTOPILOT_COMPASS 'C'
-#define EEPROM_VER 5
+#define EEPROM_VER 6
 class FreeBoardModel {
 public:
 //alarms

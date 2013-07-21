@@ -66,7 +66,7 @@ void NmeaSerial::printWindNmea() {
 	//Assemble a sentence of the various parts so that we can calculate the proper checksum
 
 	PString str(windSentence, sizeof(windSentence));
-	str.print("$FBMWV,");
+	str.print("$WIMWV,");
 	str.print(model->getWindApparentDir());
 	str.print(".0,R,");
 	str.print(model->getWindAverage());

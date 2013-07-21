@@ -174,7 +174,7 @@ class AverageList {
 		//return the current index
 		byte getCurrentIndex() { return currentIndex; }
 		byte getCurrentSize() { return currentSize; }
-		byte getValue(int x) { return values[x]; }
+		datatype getValue(byte x) { return values[x]; }
 		void debug(char* name,Print& printer){
 			printer.print(name);
 			printer.print(" [");

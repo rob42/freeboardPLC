@@ -68,13 +68,13 @@ volatile  long windSpeedRps;
 volatile unsigned long windSpeedMicros;
 volatile unsigned long windDirDur;
 volatile bool windSpeedFlag;
-volatile bool windDirFlag;
+//volatile bool windDirFlag;
 
-typedef volatile long val; //change float to the datatype you want to use
-typedef volatile float rval; //change float to the datatype you want to use
+typedef volatile unsigned long val; //change float to the datatype you want to use
+typedef volatile unsigned long rval; //change float to the datatype you want to use
 const byte MAX_NUMBER_OF_READINGS = 3;
 val speedStorage[MAX_NUMBER_OF_READINGS] = {0};
-rval dirStorage[MAX_NUMBER_OF_READINGS] = {0.0};
+rval dirStorage[MAX_NUMBER_OF_READINGS] = {0};
 const unsigned int  isinTable16[] ={
 			  0, 1144, 2287, 3430, 4571, 5712, 6850, 7987, 9121, 10252, 11380,
 			  12505, 13625, 14742, 15854, 16962, 18064, 19161, 20251, 21336, 22414,
@@ -101,7 +101,7 @@ Wind::Wind( FreeBoardModel* model) {
 	windSpeedMicros=micros();
 	windDirDur=0;
 	windSpeedFlag=true;
-	windDirFlag=false;
+	//windDirFlag=false;
 	speedList.reset();
 	dirList.reset();
 
@@ -158,7 +158,11 @@ float Wind::fsin(float d)
 int Wind::getRotationalAverage(){
 	float x = 0;
 	float y = 0;
-	float angle=0;
+	//float angle=0;
+	Serial.print("DEBUG:windDirDur=");
+	Serial.print(windDirDur);
+	Serial.print(",windSpeedDur=");
+	Serial.println(windSpeedDur);
 
 	for (byte i=0; i<dirList.getCurrentSize(); i++){
 		//angle=TWO_PI*dirList.getValue(i);
@@ -166,7 +170,15 @@ int Wind::getRotationalAverage(){
 		//y += sin(angle);
 		x += icos(dirList.getValue(i));
 		y += isin(dirList.getValue(i));
+		Serial.print("DEBUG:angle=");
+		Serial.println(dirList.getValue(i));
 	}
+
+
+			Serial.print(", cos=");
+			Serial.print(x);
+			Serial.print("sin=");
+			Serial.println(y);
 	//TODO:watch out for zeros
 	if(x==0.0f && y==0.0f){
 		return 0.0f;
@@ -189,13 +201,18 @@ void Wind::readWindDataSpeed() {
 
 		lastPulse=millis();
 		windSpeedDur=micros()-windSpeedMicros;
+		windSpeedMicros=micros();
 		if(windSpeedDur>0){
 			speedList.addValue(windSpeedDur);
 		}
-		windSpeedMicros=micros();
+
 	}
 
 }
+/*
+ * The anemometer turns up to 60rps at 140knots - so min 16ms/16000us per turn
+ * Mostly much lower :-)
+ */
 void Wind::readWindDataDir() {
 	if(!windSpeedFlag){
 		windSpeedFlag=true;
@@ -205,8 +222,11 @@ void Wind::readWindDataDir() {
 		//at 130 knts about 46us per degree of rotation
 		//debounce 5ms
 		windDirDur=micros()-windSpeedMicros;
-		if(windDirDur>0 && windSpeedDur>windDirDur)
-			dirList.addValue(((float)windDirDur/(float)windSpeedDur));
+		//dirList.addValue(windDirDur);
+		if(windDirDur>0 && windSpeedDur>windDirDur){
+			windDirDur=(windDirDur*360ul)/windSpeedDur;
+			dirList.addValue(windDirDur);
+		}
 
 	}
 }
@@ -249,7 +269,7 @@ void Wind::calcWindData() {
 				if(windSpeedRps<323){
 					//need extra accuracy here, zero is very unlikely
 					windSpeedRps=windSpeedRps*10;
-					model->setWindAverage(((((windSpeedRps*windSpeedRps)/-105) + ((25476*windSpeedRps)/100) - 12260)/10)/model->getWindFactor());
+					model->setWindAverage(((((windSpeedRps*windSpeedRps)/-105) + ((25476*windSpeedRps)/100) - 12260))/model->getWindFactor()*10);
 				}else if(windSpeedRps < 5436){
 					//rps2 = min 10426441, max 30,864,197, cant get div/0 here?
 					model->setWindAverage((((windSpeedRps*windSpeedRps)/2222) + ((19099*windSpeedRps)/100) + 9638)/model->getWindFactor());

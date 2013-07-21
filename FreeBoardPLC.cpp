@@ -235,13 +235,13 @@ void loop() {
 		//do these every 100ms
 		autopilot.calcAutoPilot();
 
-//		if (interval % 2 == 0) {
-//			//do every 200ms
-		wind.calcWindData();
-//		}
+		if (interval % 2 == 0) {
+			//do every 200ms
+
+		}
 		if (interval % 5 == 0) {
 			//do every 500ms
-
+			wind.calcWindData();
 			//fire any alarms
 			//alarm.checkAlarms();
 			model.writeSimple(Serial);

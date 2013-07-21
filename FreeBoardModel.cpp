@@ -137,9 +137,9 @@ template<class T> int writeObject(HardwareSerial ser, T& value, char name) {
 
 int FreeBoardModel::writeSimple(HardwareSerial ser) {
 	//ArduIMU output format
-	//!!!VER:1.9,RLL:-0.52,PCH:0.06,YAW:80.24,IMUH:253,MGX:44,MGY:-254,MGZ:-257,MGH:80.11,LAT:-412937350,LON:1732472000,ALT:14,COG:116,SOG:0,FIX:1,SAT:5,TOW:22504700,
+	//!!VER:1.9,RLL:-0.52,PCH:0.06,YAW:80.24,IMUH:253,MGX:44,MGY:-254,MGZ:-257,MGH:80.11,LAT:-412937350,LON:1732472000,ALT:14,COG:116,SOG:0,FIX:1,SAT:5,TOW:22504700,
 
-	ser.print("!!!VER:1.9,");
+	ser.print("!!VER:1.9,");
 	ser.print("UID:MEGA,APX:");
 	ser.print(autopilotState.autopilotOn);
 	ser.print(",APS:");
@@ -241,6 +241,10 @@ void FreeBoardModel::readConfig() {
 	EEPROM_readAnything(0, ver);
 	if (ver != version) {
 		//do any conversion of old data here
+		//if windfactor <10 then 100000000
+		if(EEPROM_VER<6 && config.windFactor<1000.0){
+			config.windFactor=10000.0;
+		}
 		//save
 		saveConfig();
 	}
