@@ -242,6 +242,7 @@ void loop() {
 		if (interval % 5 == 0) {
 			//do every 500ms
 			wind.calcWindData();
+			nmea.printWindNmea();
 			//fire any alarms
 			//alarm.checkAlarms();
 			model.writeSimple(Serial);
@@ -250,7 +251,7 @@ void loop() {
 			//do every 1000ms
 			anchor.checkAnchor();
 			alarm.checkWindAlarm();
-			nmea.printWindNmea();
+
 			//nmea.printTrueHeading();
 			//Serial.print("Interrupts:");
 			//Serial.println(intCnt);
