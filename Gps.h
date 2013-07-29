@@ -26,16 +26,13 @@
 #ifndef GPS_H_
 #define GPS_H_
 
-//uncomment to support different GPS
-#define GPS_EM_406A
-//#define GPS_MTEK_3329
-
 #include "Arduino.h"
 
 #include "nmea.h"
 #include "PString.h"
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
+#include "FreeBoardPLC.h"
 
 
 class Gps {

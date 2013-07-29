@@ -47,7 +47,7 @@
  Other NMEA talkers attached to Serial2, Serial3, etc
  All NMEA recv devices should listen on Serial0 Tx or nmea repeater on 52/53
  All at 4800 default
- GPS at 38400, pins Rx19 - yellow, Tx20 - orange
+ GPS at 38400, pins Rx18 - yellow, Tx19 - orange
  Lcd at 19200
  Lcd disabled,  on 50,51 (lcd)
  AltSoftSerial Tx46,Rx48 (NMEA)
@@ -109,22 +109,26 @@ boolean inputSerial3Complete = false; // whether the string is complete
 
 void setup() {
 
-	//model.readConfig();
+	model.readConfig();
 	inputSerial.reserve(40);
 	// initialize  serial ports:
-	Serial.begin(38400, SERIAL_8N1);
+	Serial.begin(model.getSerialBaud(), SERIAL_8N1);
 	if (DEBUG) Serial.println("Initializing..");
 
 	//start gps on serial1, autobaud
 	if (DEBUG) Serial.println("Start gps..");
 	gps.setupGps();
-	Serial1.begin(38400);
+	Serial1.begin(model.getSerialBaud1());
 
 	if (DEBUG) Serial.println("Start seatalk - serial2..");
-	Serial2.begin(4800, SERIAL_9N1); //Seatalk interface
+	if(model.getSeaTalk()){
+		Serial2.begin(4800, SERIAL_9N1); //Seatalk interface
+	}else{
+		Serial2.begin(model.getSerialBaud2(), SERIAL_8N1);
+	}
 
 	if (DEBUG) Serial.println("Start nmea Rx - serial3..");
-	Serial3.begin(4800, SERIAL_8N1); //talker2
+	Serial3.begin(model.getSerialBaud3(), SERIAL_8N1); //talker2
 
 	if (DEBUG) Serial.println("Start nmea Tx..");
 	pinMode(nmeaRxPin, INPUT);
@@ -146,7 +150,7 @@ void setup() {
 
 	if (DEBUG) Serial.println("Setup complete..");
 	//print out the config
-	model.sendData(Serial, CONFIG_T);
+	//model.sendData(Serial, CONFIG_T);
 }
 /*
  * Timer interrupt driven method to do time sensitive calculations
@@ -209,7 +213,17 @@ void serialEvent1() {
 
 void serialEvent2() {
 	while (Serial2.available()) {
-		seatalk.processSeaTalkByte(Serial2.read());
+		if(model.getSeaTalk()){
+			seatalk.processSeaTalkByte(Serial2.read());
+		}else{
+			inputSerial2Complete = talker2.decode(Serial2.read());
+			if (inputSerial2Complete) {
+				if (MUX) nmea.printNmea(talker2.sentence());
+				Serial.println(talker2.sentence());
+				//loop every sentence
+				break;
+			}
+		}
 	}
 }
 
@@ -292,7 +306,7 @@ void process(char * s, char parser) {
 
 		char key[5];
 		int l = strlen(cmd);
-
+		bool save=false;
 		if (cmd[0] == '#') {
 			//
 			strncpy(key, cmd, 4);
@@ -338,6 +352,28 @@ void process(char * s, char parser) {
 			} else if (strcpy(key, WIND_ZERO_ADJUST) == 0) {
 				model.setWindZeroOffset(atoi(val));
 			}
+			//gps,serial,seatalk
+			else if (strcmp(key, GPS_MODEL) == 0) {
+				model.setGpsModel(atoi(val));
+				save=true;
+			} else if (strcpy(key, SERIAL_BAUD0) == 0) {
+				model.setSerialBaud(atoi(val));
+				save=true;
+			} else if (strcpy(key, SERIAL_BAUD1) == 0) {
+				model.setSerialBaud1(atoi(val));
+				save=true;
+			} else if (strcpy(key, SERIAL_BAUD2) == 0) {
+				model.setSerialBaud2(atoi(val));
+				save=true;
+			} else if (strcpy(key, SERIAL_BAUD3) == 0) {
+				model.setSerialBaud3(atoi(val));
+				save=true;
+			} else if (strcpy(key, SEATALK) == 0) {
+				model.setSeaTalk(atoi(val));
+				save=true;
+			}
+			if(save)model.saveConfig();
+
 		} else {
 			strncpy(key, cmd, 3);
 			key[3] = '\0';
@@ -365,3 +401,10 @@ void process(char * s, char parser) {
 	//if (DEBUG) Serial.println("Process str exit");
 }
 
+byte getChecksum(char* str){
+	byte cs = 0; //clear any old checksum
+	for (unsigned int n = 1; n < strlen(str) - 1; n++) {
+		cs ^= str[n]; //calculates the checksum
+	}
+	return cs;
+}

@@ -115,7 +115,7 @@ void Gps::setupGps() {
 	//now flush and restart
 	Serial1.flush();
 	Serial1.end();
-	Serial1.begin(38400);
+	Serial1.begin(model->getSerialBaud1(), SERIAL_8N1);
 }
 
 float Gps::getMetersTo(float targetLat, float targetLon, float currentLat, float currentLon) {
@@ -161,7 +161,7 @@ bool Gps::decode(byte inByte) {
 
 /*
  Reset the GPS to factory defaults
- */
+
 
 void Gps::resetGPS() {
 	//set debug on
@@ -175,7 +175,7 @@ void Gps::resetGPS() {
 	}
 	//debug off
 	Serial1.println("$PSRF105,0*3F");
-}
+}*/
 
 PString Gps::getLatString(float lat, int decimals, int padding, PString str) {
 
@@ -221,7 +221,7 @@ PString Gps::getLonString(float lon, int decimals, int padding, PString str) {
  */
 void Gps::setupGpsImpl(){
 	//setup based on GPS type - probably wants a more modular way if many GPS types appear
-	#ifdef GPS_EM_406A
+	if(GPS_EM_406A == model->getGpsModel()){
 		//Serial1.begin(38400, 8, 1, 0); //gps
 		//set debug on
 		Serial1.println("$PSRF105,1*3E");
@@ -251,9 +251,28 @@ void Gps::setupGpsImpl(){
 		//#define SIRF_BAUD_RATE_57600    "$PSRF100,1,57600,8,1,0*36\r\n"
 
 		//$PSRF100,1,38400,8,1,0*3D\r\n
-		Serial1.print("$PSRF100,1,38400,8,1,0*3D\r\n");
-	#endif
-	#ifdef GPS_MTEK_3329
+		char gpsSentence [20];
+		Serial1.print("$PSRF100,1,");
+		Serial1.print(model->getSerialBaud1());
+		Serial.print(",8,1,0*3D\r\n");
+		PString str(gpsSentence, sizeof(gpsSentence));
+		str.print("$PSRF100,1,");
+		str.print(model->getSerialBaud1());
+		str.print(",8,1,0*");
+		//calculate the checksum
+		byte cs = getChecksum(gpsSentence); //clear any old checksum
+		//bug - arduino prints 0x007 as 7, 0x02B as 2B, so we add it now
+		if (cs < 0x10) str.print('0');
+		str.print(cs, HEX); // Assemble the final message and send it out the serial port
+		Serial.println(gpsSentence);
+	}
+	if(GPS_MTEK_3329 == model->getGpsModel()){
+
+		//setting update rate to 1Hz
+		Serial1.println("$PMTK220,1000*1F");
+		//setting the NMEA Output to get RMC, GGA, GSA & GSV.
+		Serial1.println("$PMTK314,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28");
+
 		/*
 		  -Change unit refresh rate:
 		$PMTK220,100*2F       //Will set the GPS to 10hz (or updates every 100 milliseconds)
@@ -267,11 +286,19 @@ void Gps::setupGpsImpl(){
 		$PMTK251,38400*27
 		You can also set the GPS to any desired baud rate speed by changing the value inside the string and generate a new checksum here: http://www.hhhh.org/wiml/proj/nmeaxor.html
 		 */
-		//set to 38400
-		Serial1.println("$PMTK251,38400*27");
-		//setting update rate to 1Hz
-		Serial1.println("$PMTK220,1000*1F");
-		//setting the NMEA Output to get RMC, GGA, GSA & GSV.
-		Serial1.println("$PMTK314,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28");
-	#endif
+
+		char gpsSentence [20];
+		PString str(gpsSentence, sizeof(gpsSentence));
+		str.print("$PMTK251,");
+		str.print(model->getSerialBaud1());
+		str.print("*");
+		//calculate the checksum
+		byte cs = getChecksum(gpsSentence); //clear any old checksum
+		//bug - arduino prints 0x007 as 7, 0x02B as 2B, so we add it now
+		if (cs < 0x10) str.print('0');
+		str.print(cs, HEX); // Assemble the final message and send it out the serial port
+		Serial.println(gpsSentence);
+
+
+	}
 }

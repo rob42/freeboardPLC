@@ -1,12 +1,27 @@
 Technical Help and FAQ
 
-Build errors
-+++++++
-Cant upload a binary? - check you have the right board in ARDUINOBOARDNAME = Arduino_Mega_ATmega1280
-Its in Properties>C/C++ Build>Environment
+If this doesnt help then you can email me (robert@42.co.nz) but I will need a full description to help you:
+	OS type
+	Eclipse/AVR/egit versions, and the eclipse install dir.
+	A full description of what you did, and the console output from the build.
 
-In Properties/C/C++ Build/Settings
-Tool Settings tab
+Build errors I have known...
++++++++
+Major failures when compiling after first importing from git
+When you press the hammer in the toolbar it should build - not complain its not an AVR project
+Check you have an AVR project nature -If you right click the project>Convert To> AVR Eclipse
+
+**Make sure you use the right AVR plugin:
+ - the AVR (http://www.baeyens.it/eclipse/). The 'other' avr plugin (http://avr-eclipse.sourceforge.net) will give all sorts of problems as the project expects the baeyens version.
+
++++++++
+Cant upload a binary? - check you have the correct build configuration active
+	you have the right board the in ARDUINOBOARDNAME = Arduino_Mega_ATmega1280
+	Its in Properties>C/C++ Build>Environment
+
+Check you have the correct settings in Properties/C/C++ Build/Settings, the should have appeared automatically when you imprted the project
+
+Tool Settings tab (eg for 1280 build)
   AVR Assembler>Paths>
     PreProcessor
       "${workspace_loc:/Arduino_Mega_ATmega1280/arduino}"
@@ -22,6 +37,7 @@ Tool Settings tab
       ARDUINO=100
   AVR C++ Compiler
     Directories
+      "${workspace_loc:/Arduino_Mega_ATmega1280/arduino}"
       "${workspace_loc:/${ProjName}/libraries/PString}"
       "${workspace_loc:/${ProjName}/libraries/AverageList}"
       "${workspace_loc:/${ProjName}/libraries/PID_v1}"
@@ -29,7 +45,6 @@ Tool Settings tab
       "${workspace_loc:/${ProjName}/libraries/EEPROM}"
       "${workspace_loc:/${ProjName}/libraries/NMEA}"
       "${workspace_loc:/${ProjName}/libraries/AltSoftSerial}"
-      "${workspace_loc:/Arduino_Mega_ATmega1280/arduino}"
       "${workspace_loc:/${ProjName}/libraries}"
     Symbols
       As above
@@ -51,11 +66,9 @@ make: *** [libraries/PString/PString.o] Error 1
 
 You will get that error if you have not set ARDUINO=100 in the compile line.
 
-
 Right click the project (do both) >Properties>C/C Build>Settings.
 Choose tab Tool Settings, Open tree to AVR Compiler>Symbols. There should be one with ARDUINO=100, if not eneter it.
 Same for the AVR C Compiler
-
 
 +++++++
 
@@ -70,32 +83,9 @@ If you're using C++ then the hex file can get really big. In the linker menu, ch
 
 +++++++TODO list++++++++
 
-Got the infamous Mega 2560  stk500v2_ReceiveMessage():  timeout when trying to upload /-: It would hang in the middle of writing. Did lots of digging & looks like there's an obscure bug in the Mega 2560 where !!! in the code causes a timeout?! I found !!! in FreeBoardModel.cpp 
-
-
-> - libs and src .cpp and .h tweaked to remove specific folder
-> indications (#include "NmeaSerial.h" instead of #include
-> "NMEA/NmeaSerial.h"
->
-> - HardwareSerial.* modified for 9 bits serial for Seatalk had to
-> copied into /usr/share/arduino/hardware/arduino/cores
->
-> - I have replaced only HardwareSerial.* from the files available from
-> Git as I experienced linking error such as
-> - /usr/share/arduino/hardware/arduino/cores/arduino/Print.cpp:
-> In member function ‘size_t Print::print(const
-> __FlashStringHelper*)’:
-> - /usr/share/arduino/hardware/arduino/cores/arduino/Print.cpp:44:9:
-> error: ‘prog_char’ does not name a type
-> - /usr/share/arduino/hardware/arduino/cores/arduino/Print.cpp:47:23:
-> error: ‘p’ was not declared in this scope
-> - make: *** [.build/mega/arduino/Print.o] Erreur 1
->
 > - '#define __AVR_LIBC_DEPRECATED_ENABLE__ 1' had to be inserted
 > into /usr/share/arduino/hardware/arduino/cores/Arduino.h to avoid
 > this kind of warnings :
 > '/usr/share/arduino/hardware/arduino/cores/arduino/HardwareSerial.cpp:92:41:
 > error: attempt to use poisoned "SIG_USART0_RECV"'
 >
-> - I use Wheezy from testing (I know, 7 just been released) and the
-> Arduino libs may be slightly out of date (1.0.1). 

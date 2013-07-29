@@ -112,6 +112,13 @@ FreeBoardModel::FreeBoardModel() {
 	config.windAlarmOn = false;
 	config.windFactor = 10000.0;
 	config.windZeroOffset = 0;
+	//ver6
+	config.gpsModel= GPS_EM_406A;
+	config.serialBaud=38400;
+	config.serialBaud1=38400;
+	config.serialBaud2=9600; //seatalk?
+	config.serialBaud3=9600; //16 bytes
+	config.seaTalk=false;
 	//}config;
 
 //we change this if we change the struct so we can tell before reloading incompatible versions
@@ -726,3 +733,39 @@ void FreeBoardModel::setWindAlarmTriggered(bool windAlarmTriggered) {
 	this->windState.windAlarmTriggered = windAlarmTriggered;
 }
 
+short FreeBoardModel::getGpsModel(){
+	return this->config.gpsModel;
+}
+void FreeBoardModel::setGpsModel(short gpsModel){
+	this->config.gpsModel=gpsModel;
+}
+int FreeBoardModel::getSerialBaud(){
+	return this->config.serialBaud;
+}
+void FreeBoardModel::setSerialBaud(int serialBaud){
+	this->config.serialBaud=serialBaud;
+}
+int FreeBoardModel::getSerialBaud1(){
+	return this->config.serialBaud1;
+}
+void FreeBoardModel::setSerialBaud1(int serialBaud1){
+	this->config.serialBaud1=serialBaud1;
+}
+int FreeBoardModel::getSerialBaud2(){
+	return this->config.serialBaud2;
+}
+void FreeBoardModel::setSerialBaud2(int serialBaud2){
+	this->config.serialBaud2=serialBaud2;
+}
+int FreeBoardModel::getSerialBaud3(){
+	return this->config.serialBaud3;
+}
+void FreeBoardModel::setSerialBaud3(int serialBaud3){
+	this->config.serialBaud3=serialBaud3;
+}
+bool FreeBoardModel::getSeaTalk(){
+	return this->config.seaTalk;
+}
+void FreeBoardModel::setSeaTalk(bool seaTalk){
+	this->config.seaTalk=seaTalk;
+}

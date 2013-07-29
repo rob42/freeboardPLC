@@ -31,6 +31,7 @@
 #include "AltSoftSerial.h"
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
+#include "FreeBoardPLC.h"
 
 class NmeaSerial: AltSoftSerial {
 public:

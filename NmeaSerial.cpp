@@ -73,10 +73,7 @@ void NmeaSerial::printWindNmea() {
 	str.print(",N,A*");
 	//calculate the checksum
 
-	cs = 0; //clear any old checksum
-	for (unsigned int n = 1; n < strlen(windSentence) - 1; n++) {
-		cs ^= windSentence[n]; //calculates the checksum
-	}
+	cs = getChecksum(windSentence); //clear any old checksum
 	//bug - arduino prints 0x007 as 7, 0x02B as 2B, so we add it now
 	if (cs < 0x10) str.print('0');
 	str.print(cs, HEX); // Assemble the final message and send it out the serial port

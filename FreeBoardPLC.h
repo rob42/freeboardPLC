@@ -63,7 +63,7 @@ void readWDD();
 
 void calculate();
 void process(char * s, char parser);
-
+byte getChecksum(char* str);
 
 //Do not add code below this line
 #endif /* FreeBoardPLC_H_*/

@@ -13,7 +13,17 @@ Gps.d: ../Gps.cpp ../Gps.h \
  /home/robert/gitrep/freeboardPLC/libraries/PString/PString.h \
  /home/robert/gitrep/Arduino_Mega_ATmega2560/arduino/Print.h \
  ../FreeBoardConstants.h ../FreeBoardModel.h \
- /home/robert/gitrep/freeboardPLC/libraries/EEPROM/EEPROM.h
+ /home/robert/gitrep/freeboardPLC/libraries/EEPROM/EEPROM.h \
+ ../FreeBoardPLC.h \
+ /home/robert/gitrep/freeboardPLC/libraries/FlexiTimer2/FlexiTimer2.h \
+ ../Alarm.h ../Seatalk.h \
+ /home/robert/gitrep/Arduino_Mega_ATmega2560/arduino/HardwareSerial.h \
+ ../Wind.h \
+ /home/robert/gitrep/freeboardPLC/libraries/AverageList/AverageList.h \
+ ../Anchor.h ../NmeaSerial.h \
+ /home/robert/gitrep/freeboardPLC/libraries/AltSoftSerial/AltSoftSerial.h \
+ ../Autopilot.h \
+ /home/robert/gitrep/freeboardPLC/libraries/PID_v1/PID_v1.h
 
 ../Gps.h:
 
@@ -48,3 +58,27 @@ Gps.d: ../Gps.cpp ../Gps.h \
 ../FreeBoardModel.h:
 
 /home/robert/gitrep/freeboardPLC/libraries/EEPROM/EEPROM.h:
+
+../FreeBoardPLC.h:
+
+/home/robert/gitrep/freeboardPLC/libraries/FlexiTimer2/FlexiTimer2.h:
+
+../Alarm.h:
+
+../Seatalk.h:
+
+/home/robert/gitrep/Arduino_Mega_ATmega2560/arduino/HardwareSerial.h:
+
+../Wind.h:
+
+/home/robert/gitrep/freeboardPLC/libraries/AverageList/AverageList.h:
+
+../Anchor.h:
+
+../NmeaSerial.h:
+
+/home/robert/gitrep/freeboardPLC/libraries/AltSoftSerial/AltSoftSerial.h:
+
+../Autopilot.h:
+
+/home/robert/gitrep/freeboardPLC/libraries/PID_v1/PID_v1.h:
