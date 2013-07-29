@@ -42,11 +42,13 @@ class Wind {
 
 public:
 	Wind( FreeBoardModel* model);
-
+	void calcWindSpeedAndDir();
 	void calcWindData();
 	void readWindDataSpeed();
 	void readWindDataDir();
+	long isinLong(long x);
 	float isin(long x);
+	long icosLong(long x);
 	float icos(long x);
 	float itan(long x);
 	float fsin(float d);

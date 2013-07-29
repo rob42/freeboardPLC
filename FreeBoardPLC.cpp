@@ -134,9 +134,9 @@ void setup() {
 	//setup interrupts to windPins
 	if (DEBUG) Serial.println("Start wind..");
 	pinMode(windSpeedPin, INPUT);
-	attachInterrupt(windSpeedInterrupt, readWDS, FALLING);
+	attachInterrupt(windSpeedInterrupt, readWDS, CHANGE);
 	pinMode(windDirPin, INPUT);
-	attachInterrupt(windDirInterrupt, readWDD, FALLING);
+	attachInterrupt(windDirInterrupt, readWDD, CHANGE);
 
 //	//setup timers
 	if (DEBUG) Serial.println("Start timer..");
@@ -237,7 +237,7 @@ void loop() {
 
 		if (interval % 2 == 0) {
 			//do every 200ms
-
+			wind.calcWindSpeedAndDir();
 		}
 		if (interval % 5 == 0) {
 			//do every 500ms

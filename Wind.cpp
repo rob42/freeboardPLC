@@ -62,19 +62,21 @@
 //lots out here because they are accessed by interrupts
 const unsigned int SPEED_DEBOUNCE = 0;
 const unsigned int DIR_DEBOUNCE = 0;
-volatile unsigned long lastPulse;
-volatile unsigned long windSpeedDur = 0;
-volatile long windSpeedRps;
-volatile unsigned long windSpeedMicros;
-volatile unsigned long windDirDur;
-volatile bool windSpeedFlag;
-//volatile bool windDirFlag;
+volatile unsigned long lastSpeedPulse, lastDirPulse = 0ul;
 
-typedef volatile unsigned long val; //change float to the datatype you want to use
-typedef volatile unsigned long rval; //change float to the datatype you want to use
-const byte MAX_NUMBER_OF_READINGS = 3;
-val speedStorage[MAX_NUMBER_OF_READINGS] = { 0 };
-rval dirStorage[MAX_NUMBER_OF_READINGS] = { 0 };
+volatile long windSpeedRps = 0ul;
+volatile unsigned long windSpeedMicros, windSpeedMicrosLast = 0ul;
+volatile unsigned long windDirMicros, windDirMicrosLast = 0ul;
+
+volatile unsigned long windSpeedDur, windDirDur, windDirChg = 0ul;
+
+unsigned long wsTempLast, wsTemp, wsNow, wsAvg, wsDiff =0ul;
+unsigned long wdTemp, wdAvg = 0ul;
+volatile bool windSpeedFlag, windDirFlag;
+
+typedef volatile unsigned int val;
+const byte MAX_NUMBER_OF_READINGS = 5;
+val dirStorage[MAX_NUMBER_OF_READINGS] = { 0 };
 const unsigned int isinTable16[] = { 0, 1144, 2287, 3430, 4571, 5712, 6850, 7987, 9121, 10252, 11380, 12505, 13625, 14742, 15854, 16962, 18064, 19161, 20251,
 		21336, 22414, 23486, 24550, 25607, 26655, 27696, 28729, 29752, 30767, 31772, 32768,
 
@@ -84,19 +86,17 @@ const unsigned int isinTable16[] = { 0, 1144, 2287, 3430, 4571, 5712, 6850, 7987
 		57318, 57864, 58392, 58902, 59395, 59869, 60325, 60763, 61182, 61583, 61965, 62327, 62671, 62996, 63302, 63588, 63855, 64103, 64331, 64539, 64728,
 		64897, 65047, 65176, 65286, 65375, 65445, 65495, 65525, 65535, };
 
-AverageList<val> speedList = AverageList<val>(speedStorage, MAX_NUMBER_OF_READINGS);
-AverageList<rval> dirList = AverageList<rval>(dirStorage, MAX_NUMBER_OF_READINGS);
+AverageList<val> dirList = AverageList<val>(dirStorage, MAX_NUMBER_OF_READINGS);
 
 Wind::Wind(FreeBoardModel* model) {
 	this->model = model;
 	//initialise the wind interrupt
-	//analogReference(INTERNAL); //ref to about 1.1V
-	windSpeedDur = 0;
 	windSpeedMicros = micros();
+	windSpeedMicrosLast = windSpeedMicros;
 	windDirDur = 0;
+	windSpeedDur = 0;
 	windSpeedFlag = true;
-	//windDirFlag=false;
-	speedList.reset();
+	windDirFlag = true;
 	dirList.reset();
 
 	// read the last wind alarm values
@@ -107,7 +107,7 @@ Wind::Wind(FreeBoardModel* model) {
 
 //routines for fast sin and cos
 
-float Wind::isin(long x) {
+long Wind::isinLong(long x) {
 	boolean pos = true; // positive - keeps an eye on the sign.
 	if (x < 0) {
 		x = -x;
@@ -119,10 +119,17 @@ float Wind::isin(long x) {
 		pos = !pos;
 	}
 	if (x > 90) x = 180 - x;
-//  if (pos) return isinTable8[x] * 0.003921568627; // = /255.0
-//  return isinTable8[x] * -0.003921568627 ;
-	if (pos) return isinTable16[x] * 0.0000152590219; // = /65535.0
-	return isinTable16[x] * -0.0000152590219;
+
+	if (pos) return isinTable16[x]; // = /65535.0
+	return 0 - isinTable16[x];
+}
+
+float Wind::isin(long x) {
+	return isinLong(x) * 0.0000152590219;
+}
+
+long Wind::icosLong(long x) {
+	return isinLong(x + 90);
 }
 
 float Wind::icos(long x) {
@@ -144,35 +151,29 @@ float Wind::fsin(float d) {
  * Range is 0-360 DEGREES
  */
 int Wind::getRotationalAverage() {
-	float x = 0;
-	float y = 0;
-	//float angle=0;
-	//Serial.print("DEBUG:windDirDur=");
-	//unsigned long wdDur = windDirDur;
-	//Serial.print(wdDur);
-	//Serial.print(",windSpeedDur=");
-	//unsigned long wsDur = windSpeedDur;
-	//Serial.println(wsDur);
+	long x =0;
+	long y = 0;
+	float xf, yf = 0;
 
-	for (byte i = 0; i < dirList.getCurrentSize(); i++) {
-		//angle=TWO_PI*dirList.getValue(i);
-		//x += cos(angle);
-		//y += sin(angle);
-		x += icos(dirList.getValue(i));
-		y += isin(dirList.getValue(i));
+	byte i = 0;
+	for (; i < dirList.getCurrentSize(); i++) {
+		x += icosLong(dirList.getValue(i));
+		y += isinLong(dirList.getValue(i));
 		//Serial.print("DEBUG:angle=");
 		//Serial.println(dirList.getValue(i));
 	}
-
-	//Serial.print(", cos=");
-	//Serial.print(x);
-	//Serial.print("sin=");
-	//Serial.println(y);
 	//TODO:watch out for zeros
-	if (x == 0.0f && y == 0.0f) {
-		return 0.0f;
+	if (x == 0l && y == 0l) {
+		return 0l;
 	}
-	return degrees(atan2(y, x));
+	xf = (x* 0.0000152590219) / i;
+	yf = (y* 0.0000152590219) / i;
+	//Serial.print(", cos=");
+	//Serial.print(xf);
+	//Serial.print("sin=");
+	//Serial.println(yf);
+
+	return degrees(atan2(yf, xf));
 
 }
 
@@ -180,112 +181,145 @@ int Wind::getRotationalAverage() {
  */
 void Wind::readWindDataSpeed() {
 	//fastest rps = 15ms - avoid bounce
-	if (windSpeedFlag && millis() - lastPulse > 20ul) {
-		windSpeedFlag = false;
-		//called by speed pin interrupt
-		//micros resets every 50 min, reset if that happens
-		//FROM ULTIMETER:
-		//at 130 knts about 46us per degree of rotation
-
-		//should not change too fast
-		volatile unsigned long wsTemp = (micros() - windSpeedMicros);
-		windSpeedMicros = micros();
-		//discard rubbish
-		if(wsTemp<50ul || wsTemp > 3000000)return;
-
-		if (windSpeedDur > 0ul) {
-			volatile unsigned long windSpeedDurDiff = (wsTemp * 100ul) / windSpeedDur;
-			//can only change 10% per rev
-			if ( windSpeedDurDiff < 90ul) {
-				windSpeedDur = (windSpeedDur * 9ul) / 10ul;
-			}else if (windSpeedDurDiff > 110ul ) {
-				windSpeedDur = (windSpeedDur * 11ul) / 10ul;
-			}else{
-				//running average, to avoid random errors, adjust by speed
-				if(wsTemp<250000){
-					windSpeedDur=((10ul*windSpeedDur)+wsTemp)/11ul;
-				}else if(wsTemp<500000){
-					windSpeedDur=((6ul*windSpeedDur)+wsTemp)/7ul;
-				}else{
-					windSpeedDur=((3ul*windSpeedDur)+wsTemp)/4ul;
-				}
-			}
-			speedList.addValue(windSpeedDur);
+	if ((millis() - lastSpeedPulse) > 15) {
+		if (windSpeedFlag) {
+			//called by speed pin interrupt
+			windSpeedMicrosLast = windSpeedMicros;
+			windSpeedMicros = micros();
+			windSpeedFlag = false;
 		} else {
-			windSpeedDur = wsTemp;
+			windSpeedFlag = true;
 		}
-
-
+		lastSpeedPulse = millis();
 	}
-	lastPulse = millis();
-
 }
+
+void Wind::readWindDataDir() {
+	if((millis() - lastDirPulse) > 15) {
+		if (windDirFlag) {
+			windDirMicrosLast = windDirMicros;
+			windDirMicros = micros();
+			windDirFlag = false;
+		} else {
+			windDirFlag = true;
+		}
+		lastDirPulse=millis();
+	}
+}
+
 /*
  * The anemometer turns up to 60rps at 140knots - so min 16ms/16000us per turn
  * Mostly much lower :-)
  */
-void Wind::readWindDataDir() {
-	if (!windSpeedFlag) {
-		windSpeedFlag = true;
-		//called by dir pin interrupt
-		//micros resets every 50 min, reset if that happens
-		//FROM ULTIMETER:
-		//at 130 knts about 46us per degree of rotation
-		//debounce 5ms
-		volatile unsigned long wdTemp = (micros() - windSpeedMicros);
+void Wind::calcWindSpeedAndDir() {
+//grab data
+// an interrupt could fire in here
+	noInterrupts();
+	wsTempLast = windSpeedMicrosLast;
+	wsTemp = windSpeedMicros;
+	wdTemp = windDirMicros;
+	interrupts();
+/*
+	Serial.print("DEBUG:wsl=");
+	Serial.print(wsTempLast);
+	Serial.print(",wd=");
+	Serial.print(wdTemp);
+	Serial.print(",ws=");
+	Serial.println(wsTemp);
+	*/
+//interrupts();
+//micros resets every 50 min,
+// avoid 0, bad data, rollover and too fast (bounce? <15ms)
+	if (wsTempLast >= wsTemp || wsTemp - wsTempLast < 15000ul) return;
 
-		//dirList.addValue(windDirDur);
-		if (wdTemp > 50ul && windSpeedDur > wdTemp) {
-			wdTemp = (wdTemp * 360ul) / windSpeedDur;
-			//running average, to avoid random errors, adjust by speed
-			if(windSpeedDur<250000){
-				windDirDur=((10ul*windDirDur)+wdTemp)/11ul;
-			}else if(windSpeedDur<500000){
-				windDirDur=((6ul*windDirDur)+wdTemp)/7ul;
-			}else{
-				windDirDur=((3ul*windDirDur)+wdTemp)/4ul;
-			}
-			dirList.addValue(windDirDur);
+//speed in micros
+	wsNow = wsTemp - wsTempLast;
+	if (windSpeedDur == 0) windSpeedDur = wsNow;
+	wsDiff = (wsNow * 100ul) / windSpeedDur;
+	Serial.print("wsNow=");
+	Serial.print(wsNow);
+	Serial.print(",wsDiff=");
+	Serial.println(wsDiff);
+//can only change 10% per rev
+	if (wsDiff < 90ul) {
+		windSpeedDur = (windSpeedDur * 9ul) / 10ul;
+	} else if (wsDiff > 110ul) {
+		windSpeedDur = (windSpeedDur * 11ul) / 10ul;
+	} else {
+		//running average, to avoid random errors, adjust by speed
+		if (wsNow < 250000) {
+			windSpeedDur = ((10ul * windSpeedDur) + wsNow) / 11ul;
+		} else if (wsNow < 500000) {
+			windSpeedDur = ((6ul * windSpeedDur) + wsNow) / 7ul;
+		} else {
+			windSpeedDur = ((3ul * windSpeedDur) + wsNow) / 4ul;
 		}
+	}
+	//Serial.print(",wsduration=");
+	//	Serial.println(windSpeedDur);
+//direction
+//FROM ULTIMETER:
+//AT 130 KNTS ABOUT 46US PER DEGREE OF ROTATION
+//WE CAN USE  360*182041/1000 = 65535 INT ROLLOVER TO GIVE US DIR AVERAGING
+	if (wdTemp > wsTemp) {
+		wdTemp = wdTemp - wsTemp;
+	} else {
+		wdTemp = wdTemp - wsTempLast;
+	}
+	//Serial.print("wdTemp=");
+	//		Serial.print(wdTemp);
+	if (wdTemp > 50 && wdTemp<wsNow) {
+		if (wdAvg == 0) wdAvg = wdTemp;
+		wsDiff = (wdTemp * 100ul) / wdAvg;
+		if (wsDiff < 90ul) {
+			wdAvg = (wdAvg * 9ul) / 10ul;
+		} else if (wsDiff > 110ul) {
+			wdAvg = (wdAvg * 11ul) / 10ul;
+		} else {
+			//average
+			if (wsNow < 250000) {
+				wdAvg = ((10ul * wdAvg) + wdTemp) / 11ul;
+			} else if (wsNow < 500000) {
+				wdAvg = ((6ul * wdAvg) + wdTemp) / 7ul;
+			} else {
+				wdAvg = ((3ul * wdAvg) + wdTemp) / 4ul;
+			}
+		}
+		//convert to degrees
+
+		windDirDur = (wdAvg * 360ul) / windSpeedDur;
+	/*	Serial.print(", wdAvg=");
+		Serial.println(wdAvg);*/
+		Serial.print(", wdDirDir=");
+		Serial.println(windDirDur);
+		dirList.addValue(windDirDur);
 
 	}
+
 }
 
 /*
  * Calculates wind data. Direction is apparent, 0-360 deg off the bow, clockwise, in degrees.
  */
 void Wind::calcWindData() {
-	//Serial.print("Windspeed list:");
-	//Serial.print(speedList.getTotalAverage());
-	//Serial.print(", WindSpeedDur:");
-	//Serial.println(lastPulse);
-	//Serial.print("WindDir list:");
-	//Serial.print(dirList.getTotalAverage());
-	//Serial.print(", WindDirDur:");
-	//Serial.println(windSpeedMicros);
 
-	//fix rollover
-	if (millis() < lastPulse) lastPulse = millis();
+//fix rollover
+	if (millis() < lastSpeedPulse) lastSpeedPulse = millis();
+	if (millis() < lastDirPulse) lastDirPulse = millis();
 
 	model->setWindLastUpdate(millis());
-	/*if(DEBUG){
-	 Serial.print("Wind dir:");
-	 Serial.print(dirList.getTotalAverage());
-	 Serial.print(", Wind speed:");
-	 Serial.println(speedList.getTotalAverage());
-	 }*/
-	//convert to windAverage
-	if (millis() - lastPulse > 3000) {
+
+//convert to windAverage
+	if (millis() - lastSpeedPulse > 3000) {
 		//no rotation, no wind
 		model->setWindAverage(0);
 		//Serial.println("Wind speed reset");
-		speedList.reset();
 	} else {
-		//speedlist is type long -  max value = 3000000 micros
-		if (speedList.getTotalAverage() > 0) {
+		//windSpeedDur is type long -  max sensor value = 3000000 micros
+		if (windSpeedDur > 0) {
 			// arduino long = -2,147,483,648 to 2,147,483,647
 			//1000 millis = 1 rps - this is 1000 x rps (for int arithmetic) range 333 - 33333
-			windSpeedRps = 100000000 / speedList.getTotalAverage();
+			windSpeedRps = 100000000 / windSpeedDur;
 			//NOTE:converted multipliers to KNTS
 			//need to avoid div/0 errors
 			if (windSpeedRps < 323) {
