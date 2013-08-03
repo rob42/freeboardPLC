@@ -252,9 +252,6 @@ void Gps::setupGpsImpl(){
 
 		//$PSRF100,1,38400,8,1,0*3D\r\n
 		char gpsSentence [20];
-		Serial1.print("$PSRF100,1,");
-		Serial1.print(model->getSerialBaud1());
-		Serial.print(",8,1,0*3D\r\n");
 		PString str(gpsSentence, sizeof(gpsSentence));
 		str.print("$PSRF100,1,");
 		str.print(model->getSerialBaud1());
@@ -264,7 +261,7 @@ void Gps::setupGpsImpl(){
 		//bug - arduino prints 0x007 as 7, 0x02B as 2B, so we add it now
 		if (cs < 0x10) str.print('0');
 		str.print(cs, HEX); // Assemble the final message and send it out the serial port
-		Serial.println(gpsSentence);
+		Serial1.println(gpsSentence);
 	}
 	if(GPS_MTEK_3329 == model->getGpsModel()){
 
@@ -297,8 +294,7 @@ void Gps::setupGpsImpl(){
 		//bug - arduino prints 0x007 as 7, 0x02B as 2B, so we add it now
 		if (cs < 0x10) str.print('0');
 		str.print(cs, HEX); // Assemble the final message and send it out the serial port
-		Serial.println(gpsSentence);
-
+		Serial1.println(gpsSentence);
 
 	}
 }

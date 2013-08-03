@@ -114,10 +114,10 @@ FreeBoardModel::FreeBoardModel() {
 	config.windZeroOffset = 0;
 	//ver6
 	config.gpsModel= GPS_EM_406A;
-	config.serialBaud=38400;
-	config.serialBaud1=38400;
-	config.serialBaud2=9600; //seatalk?
-	config.serialBaud3=9600; //16 bytes
+	config.serialBaud=38400l;
+	config.serialBaud1=38400l;
+	config.serialBaud2=9600l; //seatalk?
+	config.serialBaud3=9600l; //16 bytes
 	config.seaTalk=false;
 	//}config;
 
@@ -239,7 +239,7 @@ void FreeBoardModel::saveConfig() {
 	//write out a current version
 	EEPROM_writeAnything(0, version);
 	//write data
-	EEPROM_writeAnything(EEPROM_VER, config);
+	EEPROM_writeAnything(EEPROM_DATA, config);
 }
 
 void FreeBoardModel::readConfig() {
@@ -247,19 +247,15 @@ void FreeBoardModel::readConfig() {
 	int ver;
 	EEPROM_readAnything(0, ver);
 	if (ver != version) {
-		//do any conversion of old data here
-		//if windfactor <10 then 100000000
-		if(EEPROM_VER<6 && config.windFactor<1000.0){
-			config.windFactor=10000.0;
-		}
-		//save
+		//save a default config, since we cant read the old one safely
 		saveConfig();
 	}
 
 	//now we know its compatible
-	EEPROM_readAnything(EEPROM_VER, config);
+	EEPROM_readAnything(EEPROM_DATA, config);
 
 }
+
 //accessors
 bool FreeBoardModel::isWindAlarmTriggered() {
 	return windState.windAlarmTriggered;
@@ -739,28 +735,28 @@ short FreeBoardModel::getGpsModel(){
 void FreeBoardModel::setGpsModel(short gpsModel){
 	this->config.gpsModel=gpsModel;
 }
-int FreeBoardModel::getSerialBaud(){
+long FreeBoardModel::getSerialBaud(){
 	return this->config.serialBaud;
 }
-void FreeBoardModel::setSerialBaud(int serialBaud){
+void FreeBoardModel::setSerialBaud(long serialBaud){
 	this->config.serialBaud=serialBaud;
 }
-int FreeBoardModel::getSerialBaud1(){
+long FreeBoardModel::getSerialBaud1(){
 	return this->config.serialBaud1;
 }
-void FreeBoardModel::setSerialBaud1(int serialBaud1){
+void FreeBoardModel::setSerialBaud1(long serialBaud1){
 	this->config.serialBaud1=serialBaud1;
 }
-int FreeBoardModel::getSerialBaud2(){
+long FreeBoardModel::getSerialBaud2(){
 	return this->config.serialBaud2;
 }
-void FreeBoardModel::setSerialBaud2(int serialBaud2){
+void FreeBoardModel::setSerialBaud2(long serialBaud2){
 	this->config.serialBaud2=serialBaud2;
 }
-int FreeBoardModel::getSerialBaud3(){
+long FreeBoardModel::getSerialBaud3(){
 	return this->config.serialBaud3;
 }
-void FreeBoardModel::setSerialBaud3(int serialBaud3){
+void FreeBoardModel::setSerialBaud3(long serialBaud3){
 	this->config.serialBaud3=serialBaud3;
 }
 bool FreeBoardModel::getSeaTalk(){

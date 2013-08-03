@@ -108,7 +108,6 @@ boolean inputSerial2Complete = false; // whether the string is complete
 boolean inputSerial3Complete = false; // whether the string is complete
 
 void setup() {
-
 	model.readConfig();
 	inputSerial.reserve(40);
 	// initialize  serial ports:
@@ -219,7 +218,7 @@ void serialEvent2() {
 			inputSerial2Complete = talker2.decode(Serial2.read());
 			if (inputSerial2Complete) {
 				if (MUX) nmea.printNmea(talker2.sentence());
-				Serial.println(talker2.sentence());
+				//Serial.println(talker2.sentence());
 				//loop every sentence
 				break;
 			}
@@ -251,14 +250,15 @@ void loop() {
 
 		if (interval % 2 == 0) {
 			//do every 200ms
-			wind.calcWindSpeedAndDir();
+			//wind.calcWindSpeedAndDir();
 		}
 		if (interval % 5 == 0) {
 			//do every 500ms
+			wind.calcWindSpeedAndDir();
 			wind.calcWindData();
 			nmea.printWindNmea();
 			//fire any alarms
-			//alarm.checkAlarms();
+			alarm.checkAlarms();
 			model.writeSimple(Serial);
 		}
 		if (interval % 10 == 0) {
@@ -266,7 +266,7 @@ void loop() {
 			anchor.checkAnchor();
 			alarm.checkWindAlarm();
 
-			//nmea.printTrueHeading();
+			nmea.printTrueHeading();
 			//Serial.print("Interrupts:");
 			//Serial.println(intCnt);
 		}

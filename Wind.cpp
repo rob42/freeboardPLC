@@ -230,16 +230,16 @@ void Wind::calcWindSpeedAndDir() {
 //interrupts();
 //micros resets every 50 min,
 // avoid 0, bad data, rollover and too fast (bounce? <15ms)
-	if (wsTempLast >= wsTemp || wsTemp - wsTempLast < 15000ul) return;
+	if (wsTempLast >= wsTemp || wsTemp - wsTempLast < 15000ul) {
+		//Serial.println("DEBUG:wsTempLast >= wsTemp || wsTemp - wsTempLast < 15000ul");
+		return;
+	}
 
 //speed in micros
 	wsNow = wsTemp - wsTempLast;
 	if (windSpeedDur == 0) windSpeedDur = wsNow;
 	wsDiff = (wsNow * 100ul) / windSpeedDur;
-	Serial.print("wsNow=");
-	Serial.print(wsNow);
-	Serial.print(",wsDiff=");
-	Serial.println(wsDiff);
+
 //can only change 10% per rev
 	if (wsDiff < 90ul) {
 		windSpeedDur = (windSpeedDur * 9ul) / 10ul;
@@ -290,11 +290,16 @@ void Wind::calcWindSpeedAndDir() {
 		windDirDur = (wdAvg * 360ul) / windSpeedDur;
 	/*	Serial.print(", wdAvg=");
 		Serial.println(wdAvg);*/
-		Serial.print(", wdDirDir=");
-		Serial.println(windDirDur);
+
 		dirList.addValue(windDirDur);
 
 	}
+	//Serial.print("wsNow,");
+	//Serial.print(wsNow);
+	//Serial.print(",wsDiff,");
+	//Serial.print(wsDiff);
+	//Serial.print(",wdDirDir,");
+	//Serial.println(windDirDur);
 
 }
 

@@ -36,7 +36,8 @@
 
 #define AUTOPILOT_WIND 'W'
 #define AUTOPILOT_COMPASS 'C'
-#define EEPROM_VER 6
+#define EEPROM_VER 7
+#define EEPROM_DATA 4
 class FreeBoardModel {
 public:
 //alarms
@@ -160,14 +161,14 @@ public:
     void setAutopilotOn(bool autopilotOn);
     short getGpsModel();
     void setGpsModel(short gpsModel);
-    int getSerialBaud();
-    void setSerialBaud(int serialBaud);
-    int getSerialBaud1();
-	void setSerialBaud1(int serialBaud1);
-	int getSerialBaud2();
-	void setSerialBaud2(int serialBaud2);
-	int getSerialBaud3();
-	void setSerialBaud3(int serialBaud3);
+    long getSerialBaud();
+    void setSerialBaud(long serialBaud);
+    long getSerialBaud1();
+	void setSerialBaud1(long serialBaud1);
+	long getSerialBaud2();
+	void setSerialBaud2(long serialBaud2);
+	long getSerialBaud3();
+	void setSerialBaud3(long serialBaud3);
  	bool getSeaTalk();
  	void setSeaTalk(bool seaTalk);
 
@@ -257,7 +258,7 @@ private:
 	}windState;
 
 	//CONFIG_T
-	struct Configuration{		// 35 bytes
+	struct Configuration{		// 49 bytes
 		//ver 5
 		float anchorLat;	//32 bits (4 bytes). 
 		float anchorLon;	//32 bits (4 bytes). 
@@ -276,12 +277,12 @@ private:
 		float windFactor;	//32 bits (4 bytes).
 		int windZeroOffset;	//16 bits (2 bytes)
 		//ver 6
-		short gpsModel; //8 bits
-		int serialBaud; //16 bytes
-		int serialBaud1; //16 bytes
-		int serialBaud2; //16 bytes
-		int serialBaud3; //16 bytes
-		bool seaTalk; //8 bytes
+		short gpsModel; //2 bytes
+		long serialBaud; //4 bytes, baud can be > 64000!
+		long serialBaud1; //4 bytes
+		long serialBaud2; //4 bytes
+		long serialBaud3; //4 bytes
+		bool seaTalk; //1 bytes
 	}config;
 
 	int version;
