@@ -12,7 +12,7 @@ In eclipse install the AVR (http://www.baeyens.it/eclipse/) and eGit plugins - g
 Follow the instructions from github to install git on your PC, and clone this project and your chosen Arduino_ATmegaxxxx project to you local repository.
 
 Start eclipse and File>Import>From Git and follow the wizard. You should end up with two projects in your workspace.
-On the  Arduino_ATmegaxxxx project Rright-click and Clean, then Build Project.
+On the  Arduino_ATmegaxxxx project Right-click and Clean, then Build Project.
 
 It should complete without errors, if not look in the Console tab for the full build log. There are some hints in COmpileError.txt.
 You can email me if needed. 

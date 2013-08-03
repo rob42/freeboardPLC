@@ -63,6 +63,16 @@ bool Gps::testMsg() {
 int Gps::autoBaud() {
 	//try the various baud rates until one makes sense
 	//should only output simple NMEA [$A-Z0-9*\r\c]
+	//start with saved default
+	if (DEBUG){
+		Serial.print("   try autobaud ");
+		Serial.print(model->getSerialBaud1());
+		Serial.println("..");
+	}
+
+	Serial1.begin(model->getSerialBaud1());
+	if (testMsg()) return model->getSerialBaud1();
+	Serial1.end();
 
 	if (DEBUG) Serial.println("   try autobaud 4800..");
 	Serial1.begin(4800);
