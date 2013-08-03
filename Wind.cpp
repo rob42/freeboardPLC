@@ -35,6 +35,8 @@
  */
 
 /*
+ * The wind rotor turns anti-clockwise.
+ *
  * In ULTIMETER Weather Stations, speed is determined by measuring the time interval between
  * two successive closures of the speed reed. Calibration is done as follows (RPS = revolutions
  * per second):
@@ -156,6 +158,7 @@ int Wind::getRotationalAverage() {
 	float xf, yf = 0;
 
 	byte i = 0;
+
 	for (; i < dirList.getCurrentSize(); i++) {
 		x += icosLong(dirList.getValue(i));
 		y += isinLong(dirList.getValue(i));
@@ -260,7 +263,7 @@ void Wind::calcWindSpeedAndDir() {
 //direction
 //FROM ULTIMETER:
 //AT 130 KNTS ABOUT 46US PER DEGREE OF ROTATION
-//WE CAN USE  360*182041/1000 = 65535 INT ROLLOVER TO GIVE US DIR AVERAGING
+
 	if (wdTemp > wsTemp) {
 		wdTemp = wdTemp - wsTemp;
 	} else {
@@ -285,13 +288,15 @@ void Wind::calcWindSpeedAndDir() {
 				wdAvg = ((3ul * wdAvg) + wdTemp) / 4ul;
 			}
 		}
-		//convert to degrees
+		//convert to degrees, this is deg anti-clockwise from arbitrary 'north'
 
 		windDirDur = (wdAvg * 360ul) / windSpeedDur;
 	/*	Serial.print(", wdAvg=");
 		Serial.println(wdAvg);*/
-
-		dirList.addValue(windDirDur);
+		//correct the dir to clockwise
+		if(windDirDur>=0 && windDirDur <360){
+			dirList.addValue(360l-windDirDur);
+		}
 
 	}
 	//Serial.print("wsNow,");
@@ -341,7 +346,7 @@ void Wind::calcWindData() {
 		//update gusts
 		if (model->getWindAverage() > model->getWindMax()) model->setWindMax(model->getWindAverage());
 
-		// calc direction, degrees clockwise
+		// calc direction, in degrees clockwise
 		//should round to int, min 1
 		int dir = (int) getRotationalAverage();
 		//limit to +-360, after adjust zero
