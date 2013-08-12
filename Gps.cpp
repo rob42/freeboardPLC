@@ -70,9 +70,9 @@ int Gps::autoBaud() {
 		Serial.println("..");
 	}
 
-	Serial1.begin(model->getSerialBaud1());
-	if (testMsg()) return model->getSerialBaud1();
-	Serial1.end();
+	//Serial1.begin(model->getSerialBaud1());
+	//if (testMsg()) return model->getSerialBaud1();
+	//Serial1.end();
 
 	if (DEBUG) Serial.println("   try autobaud 4800..");
 	Serial1.begin(4800);
@@ -126,6 +126,7 @@ void Gps::setupGps() {
 	Serial1.flush();
 	Serial1.end();
 	Serial1.begin(model->getSerialBaud1(), SERIAL_8N1);
+	//Serial1.begin(38400, SERIAL_8N1);
 }
 
 float Gps::getMetersTo(float targetLat, float targetLon, float currentLat, float currentLon) {
@@ -154,7 +155,8 @@ float Gps::getMetersTo(float targetLat, float targetLon, float currentLat, float
 bool Gps::decode(byte inByte) {
 	// check if the character completes a valid GPS sentence
 	model->setGpsDecode(gpsSource->decode(inByte));
-	//if(DEBUG)Serial.print(inByte,BYTE);
+	//if(DEBUG)
+	//Serial.println(inByte);
 	if (model->isGpsDecode()) {
 		model->setGpsStatus(gpsSource->gprmc_status());
 		if (gpsSource->gprmc_status() == 'A' && gpsSource->term(0)[2] != 'R' && gpsSource->term(0)[3] != 'M' && gpsSource->term(0)[4] != 'C') {
@@ -231,6 +233,7 @@ PString Gps::getLonString(float lon, int decimals, int padding, PString str) {
  */
 void Gps::setupGpsImpl(){
 	//setup based on GPS type - probably wants a more modular way if many GPS types appear
+	Serial.println("Setting GPS config..." );
 	if(GPS_EM_406A == model->getGpsModel()){
 		//Serial1.begin(38400, 8, 1, 0); //gps
 		//set debug on
@@ -261,7 +264,7 @@ void Gps::setupGpsImpl(){
 		//#define SIRF_BAUD_RATE_57600    "$PSRF100,1,57600,8,1,0*36\r\n"
 
 		//$PSRF100,1,38400,8,1,0*3D\r\n
-		char gpsSentence [20];
+		char gpsSentence [30];
 		PString str(gpsSentence, sizeof(gpsSentence));
 		str.print("$PSRF100,1,");
 		str.print(model->getSerialBaud1());
@@ -272,6 +275,8 @@ void Gps::setupGpsImpl(){
 		if (cs < 0x10) str.print('0');
 		str.print(cs, HEX); // Assemble the final message and send it out the serial port
 		Serial1.println(gpsSentence);
+		//Serial1.println("$PSRF100,1,38400,8,1,0*3D");
+		Serial.println(gpsSentence);
 	}
 	if(GPS_MTEK_3329 == model->getGpsModel()){
 
@@ -294,7 +299,7 @@ void Gps::setupGpsImpl(){
 		You can also set the GPS to any desired baud rate speed by changing the value inside the string and generate a new checksum here: http://www.hhhh.org/wiml/proj/nmeaxor.html
 		 */
 
-		char gpsSentence [20];
+		char gpsSentence [30];
 		PString str(gpsSentence, sizeof(gpsSentence));
 		str.print("$PMTK251,");
 		str.print(model->getSerialBaud1());

@@ -108,6 +108,7 @@ boolean inputSerial2Complete = false; // whether the string is complete
 boolean inputSerial3Complete = false; // whether the string is complete
 
 void setup() {
+	//model.saveConfig();
 	model.readConfig();
 	inputSerial.reserve(40);
 	// initialize  serial ports:
