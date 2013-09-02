@@ -4,6 +4,8 @@ Current build is done on a Kubuntu 12.10 linux laptop. It should build on any OS
 
 If you just want the binary hex files to upload to the arduino mega they are in the Release[Mega_model] directory.
 
+**You can upload these with the installer https://github.com/rob42/freeboard-installer if you dont want to compile code.
+
 However to  open and compile the project:
 
 Get Eclipse from http://eclipse.org/ and install it anywhere, but usually in C:\eclipse for windows. DONT pick a directory with spaces, and dont use any in projects - it will cause you grief :-)
