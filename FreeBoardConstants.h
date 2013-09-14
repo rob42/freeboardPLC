@@ -25,6 +25,7 @@
 #define MUX true
 
 //uncomment to support different GPS
+#define GPS_GENERIC 0
 #define GPS_EM_406A 1
 #define GPS_MTEK_3329 2
 

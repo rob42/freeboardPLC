@@ -1,0 +1,58 @@
+Configuration and command set
++++++++++++++++++++++++++++++
+
+There are a variety of commands that can be sent to the Mega over a serial terminal. 
+The easiest is to install the Arduino IDE (available from the arduino site) and use the Serial terminal in that program.
+
+I am assuming your mega is probably connected to your computer with a USB cable at this point. Open the serial 
+terminal program on the Mega's port (COM4 or similar in Windows, probably /dev/ttyUSB? in linux). The default baud rate
+etc is 38400, 8, N, 1.
+
+You should see a few boot messages, then recurring $IIMVW... NMEA messages, and !!VER:1.9,.. messages.
+
+The default configuration is:
+	GPS Model= GPS_EM_406A
+	config.serial0 Baud=38400
+	serial1 Baud=38400
+	serial2 Baud=9600
+	serial3 Baud=9600
+	seaTalk on serial2 = OFF;
+	
+You can now send commands to the Mega to alter the configuration:
+
+A command is #, 3 letters, : , and the value to be set. Multiple commands 
+are separated with a comma, eg #GPS=1,#SER1=9600,
+
+The default GPS model is EM406A, at 38400 on Serial1
+Options are #GPS=0 for generic GPS 
+Options are #GPS=1 for EM406A GPS  - also recommend switching to 38400bps
+Options are #GPS=2 for MTEK_3329 GPS  - also recommend switching to 38400bps
+
+Changing baud rates:
+
+Possible baud rates are 4800, 9600, 19200, 38400, 57600
+eg for baud rate 38400 #SB0=38400
+Main serial0 (shared with USB) #SB0 - (WARNING: if you change this you will need to reconnect at the new speed.)
+Serial1 - usually GPS #SB1
+Serial2 - optionally used for Seatalk #SB2
+Serial3 #SB3
+
+Use Serial2 for SEATALK, also sets baud at 4800: #STK=0
+Dont use Serial2 for SEATALK:  #STK=1  (set baud with #SB2 above)
+
+Examples:
+Set an existing generic gps on serial1 at 4800bps
+
+#GPS=0,#SER1=4800, hit [ENTER]
+
+To make serial2 listen for Seatalk at 4800bps
+
+#STK=1, Hit [Enter]
+
+To listen for AIS on serial 3 at 38400bps (default for AIS)
+
+#SER3=38400, hit [Enter]
+
+The changes are saved immediately, but wont take effect till the next reboot.
+  
+

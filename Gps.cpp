@@ -234,7 +234,11 @@ PString Gps::getLonString(float lon, int decimals, int padding, PString str) {
 void Gps::setupGpsImpl(){
 	//setup based on GPS type - probably wants a more modular way if many GPS types appear
 	Serial.println("Setting GPS config..." );
+	if(GPS_GENERIC == model->getGpsModel()){
+			Serial.println("Setting GPS to GENERIC" );
+	}
 	if(GPS_EM_406A == model->getGpsModel()){
+		Serial.println("Setting GPS to EM_406A" );
 		//Serial1.begin(38400, 8, 1, 0); //gps
 		//set debug on
 		Serial1.println("$PSRF105,1*3E");
@@ -279,7 +283,7 @@ void Gps::setupGpsImpl(){
 		Serial.println(gpsSentence);
 	}
 	if(GPS_MTEK_3329 == model->getGpsModel()){
-
+		Serial.println("Setting GPS to MTEK_3329" );
 		//setting update rate to 1Hz
 		Serial1.println("$PMTK220,1000*1F");
 		//setting the NMEA Output to get RMC, GGA, GSA & GSV.
