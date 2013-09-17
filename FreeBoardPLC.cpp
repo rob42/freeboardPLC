@@ -118,21 +118,35 @@ void setup() {
 	//start gps on serial1, autobaud
 	if (DEBUG) Serial.println("Start gps..");
 	gps.setupGps();
+	if (DEBUG) {
+		Serial.print("Start GPS Rx - serial1 at ");
+		Serial.println(model.getSerialBaud1());
+	}
 	Serial1.begin(model.getSerialBaud1());
 
-	if (DEBUG) Serial.println("Start seatalk - serial2..");
-	if(model.getSeaTalk()){
+	if (model.getSeaTalk()) {
+		if (DEBUG) Serial.println("Start seatalk - serial2 at 4800");
 		Serial2.begin(4800, SERIAL_9N1); //Seatalk interface
-	}else{
+	} else {
+		if (DEBUG) {
+			Serial.print("Start nmea Rx - serial2 at ");
+			Serial.println(model.getSerialBaud2());
+		}
 		Serial2.begin(model.getSerialBaud2(), SERIAL_8N1);
 	}
 
-	if (DEBUG) Serial.println("Start nmea Rx - serial3..");
+	if (DEBUG) {
+		Serial.print("Start nmea Rx - serial3 at ");
+		Serial.println(model.getSerialBaud3());
+	}
 	Serial3.begin(model.getSerialBaud3(), SERIAL_8N1); //talker2
 
 	if (DEBUG) Serial.println("Start nmea Tx..");
 	pinMode(nmeaRxPin, INPUT);
 	pinMode(nmeaTxPin, OUTPUT);
+	if (DEBUG) {
+		Serial.print("Start nmea Tx - on pins 53 Tx, 52 Rx at 4800");
+	}
 	nmea.begin(4800);
 
 	//setup interrupts to windPins
@@ -213,9 +227,9 @@ void serialEvent1() {
 
 void serialEvent2() {
 	while (Serial2.available()) {
-		if(model.getSeaTalk()){
+		if (model.getSeaTalk()) {
 			seatalk.processSeaTalkByte(Serial2.read());
-		}else{
+		} else {
 			inputSerial2Complete = talker2.decode(Serial2.read());
 			if (inputSerial2Complete) {
 				if (MUX) nmea.printNmea(talker2.sentence());
@@ -307,7 +321,7 @@ void process(char * s, char parser) {
 
 		char key[5];
 		int l = strlen(cmd);
-		bool save=false;
+		bool save = false;
 		if (cmd[0] == '#') {
 			//
 			strncpy(key, cmd, 4);
@@ -326,12 +340,16 @@ void process(char * s, char parser) {
 				if (atoi(val) == 1) {
 					anchor.setAnchorPoint();
 				}
+				save=true;
 			} else if (strcmp(key, ANCHOR_ALARM_ADJUST) == 0) {
 				model.setAnchorRadius(model.getAnchorRadius() + atof(val));
+				save=true;
 			} else if (strcmp(key, ANCHOR_ALARM_LAT) == 0) {
 				model.setAnchorLat(atof(val));
+				save=true;
 			} else if (strcmp(key, ANCHOR_ALARM_LON) == 0) {
 				model.setAnchorLon(atof(val));
+				save=true;
 			}
 			//autopliot
 			else if (strcmp(key, AUTOPILOT_STATE) == 0) {
@@ -348,32 +366,35 @@ void process(char * s, char parser) {
 			//wind
 			else if (strcmp(key, WIND_SPEED_ALARM_STATE) == 0) {
 				model.setWindAlarmOn(atoi(val));
+				save=true;
 			} else if (strcpy(key, WIND_ALARM_KNOTS) == 0) {
 				model.setWindAlarmSpeed(atoi(val));
+				save=true;
 			} else if (strcpy(key, WIND_ZERO_ADJUST) == 0) {
 				model.setWindZeroOffset(atoi(val));
+				save=true;
 			}
 			//gps,serial,seatalk
 			else if (strcmp(key, GPS_MODEL) == 0) {
 				model.setGpsModel(atoi(val));
-				save=true;
+				save = true;
 			} else if (strcpy(key, SERIAL_BAUD0) == 0) {
 				model.setSerialBaud(atoi(val));
-				save=true;
+				save = true;
 			} else if (strcpy(key, SERIAL_BAUD1) == 0) {
 				model.setSerialBaud1(atoi(val));
-				save=true;
+				save = true;
 			} else if (strcpy(key, SERIAL_BAUD2) == 0) {
 				model.setSerialBaud2(atoi(val));
-				save=true;
+				save = true;
 			} else if (strcpy(key, SERIAL_BAUD3) == 0) {
 				model.setSerialBaud3(atoi(val));
-				save=true;
+				save = true;
 			} else if (strcpy(key, SEATALK) == 0) {
 				model.setSeaTalk(atoi(val));
-				save=true;
+				save = true;
 			}
-			if(save)model.saveConfig();
+			if (save) model.saveConfig();
 
 		} else {
 			strncpy(key, cmd, 3);
@@ -402,7 +423,7 @@ void process(char * s, char parser) {
 	//if (DEBUG) Serial.println("Process str exit");
 }
 
-byte getChecksum(char* str){
+byte getChecksum(char* str) {
 	byte cs = 0; //clear any old checksum
 	for (unsigned int n = 1; n < strlen(str) - 1; n++) {
 		cs ^= str[n]; //calculates the checksum

@@ -37,8 +37,8 @@ Serial1 - usually GPS #SB1
 Serial2 - optionally used for Seatalk #SB2
 Serial3 #SB3
 
-Use Serial2 for SEATALK, also sets baud at 4800: #STK=0
-Dont use Serial2 for SEATALK:  #STK=1  (set baud with #SB2 above)
+Use Serial2 for SEATALK, also sets baud at 4800: #STK=1
+Dont use Serial2 for SEATALK:  #STK=0  (set baud with #SB2 above)
 
 Examples:
 Set an existing generic gps on serial1 at 4800bps
