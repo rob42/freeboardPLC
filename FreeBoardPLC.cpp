@@ -102,7 +102,7 @@ Anchor anchor(&model);
 Seatalk seatalk(&Serial2, &model);
 
 String inputSerial = ""; // a string to hold incoming data
-char inputSerialArray[40];
+char inputSerialArray[100];
 int inputSerialPos=0;
 //boolean inputSerialComplete = false; // whether the string is complete
 boolean inputSerial1Complete = false; // whether the GPS string is complete
@@ -207,11 +207,12 @@ void serialEvent() {
 		inputSerialArray[inputSerialPos]=inChar;
 					inputSerialPos++;
 		//inputSerial += inChar;
-		if (inChar == '\n' || inChar == '\r') {
+		if (inChar == '\n' || inChar == '\r' || inputSerialPos>98) {
 			//null to mark this array end
 			inputSerialArray[inputSerialPos]='\0';
 			process(inputSerialArray, ',');
 			inputSerialPos=0;
+			memset(inputSerialArray, 0, sizeof(inputSerialArray));
 		}
 		//Serial.println(inputSerialArray);
 
