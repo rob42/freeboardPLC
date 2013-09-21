@@ -34,7 +34,7 @@ Changing baud rates:
 
 Possible baud rates are 4800, 9600, 19200, 38400, 57600
 eg for baud rate 38400 #SB0=38400
-Main serial0 (shared with USB) #SB0 - (WARNING: if you change this you will need to reconnect at the new speed.)
+Main serial0 (shared with USB) #SB0 - (WARNING: if you change this and reboot, you will need to reconnect at the new speed.)
 Serial1 - usually GPS #SB1
 Serial2 - optionally used for Seatalk #SB2
 Serial3 #SB3

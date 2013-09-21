@@ -203,7 +203,6 @@ void serialEvent() {
 	while (Serial.available()) {
 		// get the new byte:
 		char inChar = (char) Serial.read();
-		Serial.println(inChar);
 		// add it to the inputString:
 		inputSerialArray[inputSerialPos]=inChar;
 					inputSerialPos++;
@@ -214,7 +213,7 @@ void serialEvent() {
 			process(inputSerialArray, ',');
 			inputSerialPos=0;
 		}
-		Serial.println(inputSerialArray);
+		//Serial.println(inputSerialArray);
 
 	}
 
@@ -226,7 +225,7 @@ void serialEvent1() {
 		// read from port 1 (GPS), send to port 0:
 		if (inputSerial1Complete) {
 			if (MUX) nmea.printNmea(gpsSource.sentence());
-			//**Serial.println(gpsSource.sentence());
+			Serial.println(gpsSource.sentence());
 			//loop every sentence
 			break;
 		}
@@ -279,17 +278,17 @@ void loop() {
 			//do every 500ms
 			wind.calcWindSpeedAndDir();
 			wind.calcWindData();
-			//**nmea.printWindNmea();
+			nmea.printWindNmea();
 			//fire any alarms
 			alarm.checkAlarms();
-			//**model.writeSimple(Serial);
+			model.writeSimple(Serial);
 		}
 		if (interval % 10 == 0) {
 			//do every 1000ms
 			anchor.checkAnchor();
 			alarm.checkWindAlarm();
 
-			//**nmea.printTrueHeading();
+			nmea.printTrueHeading();
 			//Serial.print("Interrupts:");
 			//Serial.println(intCnt);
 		}
@@ -316,8 +315,8 @@ void loop() {
 }
 
 void process(char * s, char parser) {
-	if (DEBUG) Serial.print("Process str:");
-	if (DEBUG) Serial.println(s);
+	//if (DEBUG) Serial.print("Process str:");
+	//if (DEBUG) Serial.println(s);
 	char *cmd = strtok(s, ",");
 	while (cmd != NULL && strlen(cmd) > 3) {
 		//starts with # its a command
@@ -389,16 +388,16 @@ void process(char * s, char parser) {
 				model.setGpsModel(atoi(val));
 				save = true;
 			} else if (strcmp(key, SERIAL_BAUD0) == 0) {
-				model.setSerialBaud(atoi(val));
+				model.setSerialBaud(atol(val));
 				save = true;
 			} else if (strcmp(key, SERIAL_BAUD1) == 0) {
-				model.setSerialBaud1(atoi(val));
+				model.setSerialBaud1(atol(val));
 				save = true;
 			} else if (strcmp(key, SERIAL_BAUD2) == 0) {
-				model.setSerialBaud2(atoi(val));
+				model.setSerialBaud2(atol(val));
 				save = true;
 			} else if (strcmp(key, SERIAL_BAUD3) == 0) {
-				model.setSerialBaud3(atoi(val));
+				model.setSerialBaud3(atol(val));
 				save = true;
 			} else if (strcmp(key, SEATALK) == 0) {
 				model.setSeaTalk(atoi(val));

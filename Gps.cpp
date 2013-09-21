@@ -47,7 +47,7 @@ bool Gps::testMsg() {
 			//Serial.print(c);
 			//Serial.print(",");
 			//not Cntrl-n or printable so invalid
-			if (c > 128) valid = false;
+			if (c > 126) valid = false;
 		}
 	}
 	if (DEBUG) {
@@ -69,10 +69,9 @@ int Gps::autoBaud() {
 		Serial.print(model->getSerialBaud1());
 		Serial.println("..");
 	}
-
-	//Serial1.begin(model->getSerialBaud1());
-	//if (testMsg()) return model->getSerialBaud1();
-	//Serial1.end();
+	Serial1.begin(model->getSerialBaud1());
+		if (testMsg()) return model->getSerialBaud1();
+	Serial1.end();
 
 	if (DEBUG) Serial.println("   try autobaud 4800..");
 	Serial1.begin(4800);
