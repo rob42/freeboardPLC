@@ -320,10 +320,10 @@ void process(char * s, char parser) {
 	char *cmd = strtok(s, ",");
 	while (cmd != NULL && strlen(cmd) > 3) {
 		//starts with # its a command
-		if (DEBUG) Serial.print("Process incoming..l=");
-		if (DEBUG) Serial.print(strlen(cmd));
-		if (DEBUG) Serial.print(", ");
-		if (DEBUG) Serial.println(cmd);
+		//if (DEBUG) Serial.print("Process incoming..l=");
+		//if (DEBUG) Serial.print(strlen(cmd));
+		//if (DEBUG) Serial.print(", ");
+		//if (DEBUG) Serial.println(cmd);
 
 		char key[5];
 		int l = strlen(cmd);
