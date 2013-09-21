@@ -170,4 +170,6 @@
 #define SERIAL_BAUD2 "#SB2"
 #define SERIAL_BAUD3 "#SB3"
 #define SEATALK "#STK"
+
+#define CONFIG "#CFG"
 #endif

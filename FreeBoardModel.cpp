@@ -49,7 +49,7 @@ FreeBoardModel::FreeBoardModel() {
 	anchorState.anchorW = -180.0;
 
 	//autopilot
-	autopilotState.autopilotOn=false;
+	autopilotState.autopilotOn = false;
 	//disengage the autopilot if we reboot!!
 	//Dont want to go screaming off on wrong course.
 	autopilotState.autopilotReference = AUTOPILOT_COMPASS;
@@ -62,8 +62,8 @@ FreeBoardModel::FreeBoardModel() {
 	autopilotState.autopilotAlarmMaxCourseError = 10; // +/- course error, for over 1 minute
 
 	//compass
-	magneticHeading=0;
-	declination=0;
+	magneticHeading = 0;
+	declination = 0;
 	//gps
 	gpsState.gpsDecode = false; //flag to indicate a new sentence was decoded.
 	gpsState.gpsLastFix = 0; //time of last good gps fix.
@@ -90,7 +90,7 @@ FreeBoardModel::FreeBoardModel() {
 	//windState.windFactor=0;
 	windState.windMax = 0;
 	windState.windApparentDir = 0;
-	windState.windTrueDir=0;
+	windState.windTrueDir = 0;
 	//int windAlarmSpeed;
 	//bool windAlarmOn;
 	windState.windAlarmTriggered = false;
@@ -113,12 +113,12 @@ FreeBoardModel::FreeBoardModel() {
 	config.windFactor = 10000.0;
 	config.windZeroOffset = 0;
 	//ver6
-	config.gpsModel= GPS_EM_406A;
-	config.serialBaud=38400l;
-	config.serialBaud1=38400l;
-	config.serialBaud2=9600l; //seatalk?
-	config.serialBaud3=9600l; //16 bytes
-	config.seaTalk=false;
+	config.gpsModel = GPS_EM_406A;
+	config.serialBaud = 38400l;
+	config.serialBaud1 = 38400l;
+	config.serialBaud2 = 9600l; //seatalk?
+	config.serialBaud3 = 9600l; //16 bytes
+	config.seaTalk = false;
 	//}config;
 
 //we change this if we change the struct so we can tell before reloading incompatible versions
@@ -141,7 +141,6 @@ template<class T> int writeObject(HardwareSerial ser, T& value, char name) {
 
 }
 
-
 int FreeBoardModel::writeSimple(HardwareSerial ser) {
 	//ArduIMU output format
 	//!!VER:1.9,RLL:-0.52,PCH:0.06,YAW:80.24,IMUH:253,MGX:44,MGY:-254,MGZ:-257,MGH:80.11,LAT:-412937350,LON:1732472000,ALT:14,COG:116,SOG:0,FIX:1,SAT:5,TOW:22504700,
@@ -158,7 +157,7 @@ int FreeBoardModel::writeSimple(HardwareSerial ser) {
 		ser.print(",APC:");
 		ser.print(getAutopilotCurrentHeading());
 		ser.print(",APR:");
-		ser.print(autopilotState.autopilotRudderCommand-33.0);// 0-66 in model
+		ser.print(autopilotState.autopilotRudderCommand - 33.0); // 0-66 in model
 	}
 	//if anchor alarm on, send data
 	ser.print(",AAX:");
@@ -179,6 +178,33 @@ int FreeBoardModel::writeSimple(HardwareSerial ser) {
 	ser.print(",WSK:");
 	ser.print(config.windAlarmSpeed);
 
+	ser.println(",");
+	return 0;
+}
+/*
+ * Write out the config to serial
+ */
+int FreeBoardModel::writeConfig(HardwareSerial ser) {
+	//ArduIMU output format
+	//!!VER:1.9,RLL:-0.52,PCH:0.06,YAW:80.24,IMUH:253,MGX:44,MGY:-254,MGZ:-257,MGH:80.11,LAT:-412937350,LON:1732472000,ALT:14,COG:116,SOG:0,FIX:1,SAT:5,TOW:22504700,
+
+	ser.print("!!VER:1.9,");
+	ser.print("UID:MEGA,APX:");
+
+	ser.print(",WZJ:");
+	ser.print(getWindZeroOffset());
+	ser.print(",GPS:");
+	ser.print(getGpsModel());
+	ser.print(",SB0:");
+	ser.print(getSerialBaud());
+	ser.print(",SB1:");
+	ser.print(getSerialBaud1());
+	ser.print(",SB2:");
+	ser.print(getSerialBaud2());
+	ser.print(",SB3:");
+	ser.print(getSerialBaud3());
+	ser.print(",STK:");
+	ser.print(getSeaTalk());
 	ser.println(",");
 	return 0;
 }
@@ -314,8 +340,8 @@ float FreeBoardModel::getAnchorW() {
  */
 double FreeBoardModel::getAutopilotOffCourse() {
 	//get degrees between
-	autopilotState.autopilotOffCourse = getAutopilotTargetHeading()	- getAutopilotCurrentHeading();
-	autopilotState.autopilotOffCourse += (autopilotState.autopilotOffCourse>180) ? -360 : (autopilotState.autopilotOffCourse<-180) ? 360 : 0;
+	autopilotState.autopilotOffCourse = getAutopilotTargetHeading() - getAutopilotCurrentHeading();
+	autopilotState.autopilotOffCourse += (autopilotState.autopilotOffCourse > 180) ? -360 : (autopilotState.autopilotOffCourse < -180) ? 360 : 0;
 
 	return autopilotState.autopilotOffCourse;
 }
@@ -344,17 +370,17 @@ double FreeBoardModel::getAutopilotTargetHeading() {
 	return autopilotState.autopilotTargetHeading;
 }
 double FreeBoardModel::getAutopilotCurrentHeading() {
-	if(autopilotState.autopilotReference == AUTOPILOT_WIND){
+	if (autopilotState.autopilotReference == AUTOPILOT_WIND) {
 		return windState.windApparentDir;
 	}
 	//default option - compass
 	return magneticHeading;
 }
 
-int FreeBoardModel::getAutopilotDeadZone(){
+int FreeBoardModel::getAutopilotDeadZone() {
 	return this->config.autopilotDeadZone;
 }
-int FreeBoardModel::getAutopilotSlack(){
+int FreeBoardModel::getAutopilotSlack() {
 	return this->config.autopilotSlack;
 }
 
@@ -394,10 +420,10 @@ float FreeBoardModel::getGpsUtc() {
 	return gpsState.gpsUtc;
 }
 
-float FreeBoardModel::getMagneticHeading(){
+float FreeBoardModel::getMagneticHeading() {
 	return this->magneticHeading;
 }
-float FreeBoardModel::getDeclination(){
+float FreeBoardModel::getDeclination() {
 	return declination;
 }
 
@@ -531,32 +557,27 @@ void FreeBoardModel::setAnchorW(float anchorW) {
 
 void FreeBoardModel::setAutopilotReference(char autopilotReference) {
 
-	if(autopilotReference != AUTOPILOT_WIND && autopilotReference != AUTOPILOT_COMPASS) return;
+	if (autopilotReference != AUTOPILOT_WIND && autopilotReference != AUTOPILOT_COMPASS) return;
 	this->autopilotState.autopilotReference = autopilotReference;
-	if(autopilotState.autopilotReference ==AUTOPILOT_WIND){
-			autopilotState.autopilotTargetHeading=windState.windApparentDir;
+	if (autopilotState.autopilotReference == AUTOPILOT_WIND) {
+		autopilotState.autopilotTargetHeading = windState.windApparentDir;
 	}
-	if(autopilotState.autopilotReference == AUTOPILOT_COMPASS){
-		autopilotState.autopilotTargetHeading=magneticHeading;
+	if (autopilotState.autopilotReference == AUTOPILOT_COMPASS) {
+		autopilotState.autopilotTargetHeading = magneticHeading;
 	}
 	//and netralise the rudder position too.
-	this->autopilotState.autopilotRudderCommand=33;
+	this->autopilotState.autopilotRudderCommand = 33;
 }
 
-void FreeBoardModel::setAutopilotAlarmMaxCourseError(
-		double autopilotAlarmMaxCourseError) {
-	this->autopilotState.autopilotAlarmMaxCourseError =
-			autopilotAlarmMaxCourseError;
+void FreeBoardModel::setAutopilotAlarmMaxCourseError(double autopilotAlarmMaxCourseError) {
+	this->autopilotState.autopilotAlarmMaxCourseError = autopilotAlarmMaxCourseError;
 }
 
-void FreeBoardModel::setAutopilotAlarmMaxWindError(
-		double autopilotAlarmMaxWindError) {
-	this->autopilotState.autopilotAlarmMaxWindError =
-			autopilotAlarmMaxWindError;
+void FreeBoardModel::setAutopilotAlarmMaxWindError(double autopilotAlarmMaxWindError) {
+	this->autopilotState.autopilotAlarmMaxWindError = autopilotAlarmMaxWindError;
 }
 
-void FreeBoardModel::setAutopilotAlarmMaxXtError(
-		double autopilotAlarmMaxXtError) {
+void FreeBoardModel::setAutopilotAlarmMaxXtError(double autopilotAlarmMaxXtError) {
 	autopilotState.autopilotAlarmMaxXTError = autopilotAlarmMaxXtError;
 }
 
@@ -567,7 +588,6 @@ void FreeBoardModel::setAutopilotAlarmOn(bool autopilotAlarmOn) {
 void FreeBoardModel::setAutopilotAlarmTriggered(bool autopilotAlarmTriggered) {
 	this->autopilotState.autopilotAlarmTriggered = autopilotAlarmTriggered;
 }
-
 
 void FreeBoardModel::setAutopilotRudderCommand(double autopilotRudderCommand) {
 	this->autopilotState.autopilotRudderCommand = autopilotRudderCommand;
@@ -580,7 +600,7 @@ void FreeBoardModel::setAutopilotRudderCommand(double autopilotRudderCommand) {
  */
 void FreeBoardModel::setAutopilotTargetHeading(double autopilotTargetHeading) {
 	//make this 0-360 range only
-		this->autopilotState.autopilotTargetHeading = (double)(((int)autopilotTargetHeading+360) % 360);
+	this->autopilotState.autopilotTargetHeading = (double) (((int) autopilotTargetHeading + 360) % 360);
 }
 
 void FreeBoardModel::setGpsAlarmFixTime(long gpsAlarmFixTime) {
@@ -631,12 +651,12 @@ void FreeBoardModel::setGpsUtc(float gpsUtc) {
 	this->gpsState.gpsUtc = gpsUtc;
 }
 
-void FreeBoardModel::setMagneticHeading(float magneticHeading){
-	this->magneticHeading=magneticHeading;
+void FreeBoardModel::setMagneticHeading(float magneticHeading) {
+	this->magneticHeading = magneticHeading;
 }
 
-void FreeBoardModel::setDeclination(float declination){
-	this->declination=declination;
+void FreeBoardModel::setDeclination(float declination) {
+	this->declination = declination;
 }
 
 void FreeBoardModel::setMobAlarmTriggered(volatile bool mobAlarmTriggered) {
@@ -679,8 +699,7 @@ void FreeBoardModel::setWindLastUpdate(unsigned long windLastUpdate) {
 }
 
 volatile bool FreeBoardModel::isAlarmTriggered() {
-	return windState.windAlarmTriggered && radarAlarmTriggered
-			&& gpsState.gpsAlarmTriggered && anchorState.anchorAlarmTriggered
+	return windState.windAlarmTriggered && radarAlarmTriggered && gpsState.gpsAlarmTriggered && anchorState.anchorAlarmTriggered
 			&& autopilotState.autopilotAlarmTriggered && mobAlarmTriggered;
 }
 
@@ -715,8 +734,6 @@ void FreeBoardModel::setAutopilotSlack(int slack) {
 	this->config.autopilotSlack = slack;
 }
 
-
-
 void FreeBoardModel::setRadarAlarmOn(volatile bool radarAlarmOn) {
 	this->config.radarAlarmOn = radarAlarmOn;
 }
@@ -729,39 +746,39 @@ void FreeBoardModel::setWindAlarmTriggered(bool windAlarmTriggered) {
 	this->windState.windAlarmTriggered = windAlarmTriggered;
 }
 
-short FreeBoardModel::getGpsModel(){
+short FreeBoardModel::getGpsModel() {
 	return this->config.gpsModel;
 }
-void FreeBoardModel::setGpsModel(short gpsModel){
-	this->config.gpsModel=gpsModel;
+void FreeBoardModel::setGpsModel(short gpsModel) {
+	this->config.gpsModel = gpsModel;
 }
-long FreeBoardModel::getSerialBaud(){
+long FreeBoardModel::getSerialBaud() {
 	return this->config.serialBaud;
 }
-void FreeBoardModel::setSerialBaud(long serialBaud){
-	this->config.serialBaud=serialBaud;
+void FreeBoardModel::setSerialBaud(long serialBaud) {
+	this->config.serialBaud = serialBaud;
 }
-long FreeBoardModel::getSerialBaud1(){
+long FreeBoardModel::getSerialBaud1() {
 	return this->config.serialBaud1;
 }
-void FreeBoardModel::setSerialBaud1(long serialBaud1){
-	this->config.serialBaud1=serialBaud1;
+void FreeBoardModel::setSerialBaud1(long serialBaud1) {
+	this->config.serialBaud1 = serialBaud1;
 }
-long FreeBoardModel::getSerialBaud2(){
+long FreeBoardModel::getSerialBaud2() {
 	return this->config.serialBaud2;
 }
-void FreeBoardModel::setSerialBaud2(long serialBaud2){
-	this->config.serialBaud2=serialBaud2;
+void FreeBoardModel::setSerialBaud2(long serialBaud2) {
+	this->config.serialBaud2 = serialBaud2;
 }
-long FreeBoardModel::getSerialBaud3(){
+long FreeBoardModel::getSerialBaud3() {
 	return this->config.serialBaud3;
 }
-void FreeBoardModel::setSerialBaud3(long serialBaud3){
-	this->config.serialBaud3=serialBaud3;
+void FreeBoardModel::setSerialBaud3(long serialBaud3) {
+	this->config.serialBaud3 = serialBaud3;
 }
-bool FreeBoardModel::getSeaTalk(){
+bool FreeBoardModel::getSeaTalk() {
 	return this->config.seaTalk;
 }
-void FreeBoardModel::setSeaTalk(bool seaTalk){
-	this->config.seaTalk=seaTalk;
+void FreeBoardModel::setSeaTalk(bool seaTalk) {
+	this->config.seaTalk = seaTalk;
 }

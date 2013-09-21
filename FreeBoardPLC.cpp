@@ -102,6 +102,8 @@ Anchor anchor(&model);
 Seatalk seatalk(&Serial2, &model);
 
 String inputSerial = ""; // a string to hold incoming data
+char inputSerialArray[40];
+int inputSerialPos=0;
 //boolean inputSerialComplete = false; // whether the string is complete
 boolean inputSerial1Complete = false; // whether the GPS string is complete
 boolean inputSerial2Complete = false; // whether the string is complete
@@ -110,10 +112,13 @@ boolean inputSerial3Complete = false; // whether the string is complete
 void setup() {
 	//model.saveConfig();
 	model.readConfig();
-	inputSerial.reserve(40);
+
 	// initialize  serial ports:
 	Serial.begin(model.getSerialBaud(), SERIAL_8N1);
 	if (DEBUG) Serial.println("Initializing..");
+	inputSerial.reserve(40);
+	//Serial.print("input size=");
+	//Serial.println(inputSerial.length());
 
 	//start gps on serial1, autobaud
 	if (DEBUG) Serial.println("Start gps..");
@@ -145,7 +150,7 @@ void setup() {
 	pinMode(nmeaRxPin, INPUT);
 	pinMode(nmeaTxPin, OUTPUT);
 	if (DEBUG) {
-		Serial.print("Start nmea Tx - on pins 53 Tx, 52 Rx at 4800");
+		Serial.println("Start nmea Tx - on pins 53 Tx, 52 Rx at 4800");
 	}
 	nmea.begin(4800);
 
@@ -198,18 +203,21 @@ void serialEvent() {
 	while (Serial.available()) {
 		// get the new byte:
 		char inChar = (char) Serial.read();
+		Serial.println(inChar);
 		// add it to the inputString:
-		inputSerial += inChar;
-		if (inChar == '\n') {
-			//inputSerialComplete = true;
-			char carray[inputSerial.length() + 1]; //determine size of the array
-			inputSerial.toCharArray(carray, sizeof(carray));
-			process(carray, ',');
-			inputSerial = "";
-			//inputSerialComplete = false;
+		inputSerialArray[inputSerialPos]=inChar;
+					inputSerialPos++;
+		//inputSerial += inChar;
+		if (inChar == '\n' || inChar == '\r') {
+			//null to mark this array end
+			inputSerialArray[inputSerialPos]='\0';
+			process(inputSerialArray, ',');
+			inputSerialPos=0;
 		}
+		Serial.println(inputSerialArray);
 
 	}
+
 }
 
 void serialEvent1() {
@@ -218,7 +226,7 @@ void serialEvent1() {
 		// read from port 1 (GPS), send to port 0:
 		if (inputSerial1Complete) {
 			if (MUX) nmea.printNmea(gpsSource.sentence());
-			Serial.println(gpsSource.sentence());
+			//**Serial.println(gpsSource.sentence());
 			//loop every sentence
 			break;
 		}
@@ -271,17 +279,17 @@ void loop() {
 			//do every 500ms
 			wind.calcWindSpeedAndDir();
 			wind.calcWindData();
-			nmea.printWindNmea();
+			//**nmea.printWindNmea();
 			//fire any alarms
 			alarm.checkAlarms();
-			model.writeSimple(Serial);
+			//**model.writeSimple(Serial);
 		}
 		if (interval % 10 == 0) {
 			//do every 1000ms
 			anchor.checkAnchor();
 			alarm.checkWindAlarm();
 
-			nmea.printTrueHeading();
+			//**nmea.printTrueHeading();
 			//Serial.print("Interrupts:");
 			//Serial.println(intCnt);
 		}
@@ -294,30 +302,29 @@ void loop() {
 
 //DEBUG
 //printf("Looping\n");
-	/*
-	 //Check memory
-	 check_mem() ;
-	 String s;
-	 s.append("Heap: ");
 
-	 s.append((int)heapptr);
-	 s.append(", stack: ");
-	 s.append((int)stackptr);
+	 //Check memory
+	 /*check_mem() ;
+	 String s= "Heap: ";
+	 s.reserve(20);
+	 s.concat((int)heapptr);
+	 s.concat(", stack: ");
+	 s.concat((int)stackptr);
 	 if(DEBUG)Serial.println(s);
 	 */
 
 }
 
 void process(char * s, char parser) {
-	//if (DEBUG) Serial.print("Process str:");
-	//if (DEBUG) Serial.println(s);
+	if (DEBUG) Serial.print("Process str:");
+	if (DEBUG) Serial.println(s);
 	char *cmd = strtok(s, ",");
 	while (cmd != NULL && strlen(cmd) > 3) {
 		//starts with # its a command
-		//if (DEBUG) Serial.print("Process incoming..l=");
-		//if (DEBUG) Serial.print(strlen(cmd));
-		//if (DEBUG) Serial.print(", ");
-		//if (DEBUG) Serial.println(cmd);
+		if (DEBUG) Serial.print("Process incoming..l=");
+		if (DEBUG) Serial.print(strlen(cmd));
+		if (DEBUG) Serial.print(", ");
+		if (DEBUG) Serial.println(cmd);
 
 		char key[5];
 		int l = strlen(cmd);
@@ -340,16 +347,16 @@ void process(char * s, char parser) {
 				if (atoi(val) == 1) {
 					anchor.setAnchorPoint();
 				}
-				save=true;
+				save = true;
 			} else if (strcmp(key, ANCHOR_ALARM_ADJUST) == 0) {
 				model.setAnchorRadius(model.getAnchorRadius() + atof(val));
-				save=true;
+				save = true;
 			} else if (strcmp(key, ANCHOR_ALARM_LAT) == 0) {
 				model.setAnchorLat(atof(val));
-				save=true;
+				save = true;
 			} else if (strcmp(key, ANCHOR_ALARM_LON) == 0) {
 				model.setAnchorLon(atof(val));
-				save=true;
+				save = true;
 			}
 			//autopliot
 			else if (strcmp(key, AUTOPILOT_STATE) == 0) {
@@ -366,31 +373,34 @@ void process(char * s, char parser) {
 			//wind
 			else if (strcmp(key, WIND_SPEED_ALARM_STATE) == 0) {
 				model.setWindAlarmOn(atoi(val));
-				save=true;
-			} else if (strcpy(key, WIND_ALARM_KNOTS) == 0) {
+				save = true;
+			} else if (strcmp(key, WIND_ALARM_KNOTS) == 0) {
 				model.setWindAlarmSpeed(atoi(val));
-				save=true;
-			} else if (strcpy(key, WIND_ZERO_ADJUST) == 0) {
+				save = true;
+			} else if (strcmp(key, WIND_ZERO_ADJUST) == 0) {
 				model.setWindZeroOffset(atoi(val));
-				save=true;
+				save = true;
+			}else if (strcmp(key, CONFIG) == 0) {
+				//Serial.println("Sending config..");
+				model.writeConfig(Serial);
 			}
 			//gps,serial,seatalk
 			else if (strcmp(key, GPS_MODEL) == 0) {
 				model.setGpsModel(atoi(val));
 				save = true;
-			} else if (strcpy(key, SERIAL_BAUD0) == 0) {
+			} else if (strcmp(key, SERIAL_BAUD0) == 0) {
 				model.setSerialBaud(atoi(val));
 				save = true;
-			} else if (strcpy(key, SERIAL_BAUD1) == 0) {
+			} else if (strcmp(key, SERIAL_BAUD1) == 0) {
 				model.setSerialBaud1(atoi(val));
 				save = true;
-			} else if (strcpy(key, SERIAL_BAUD2) == 0) {
+			} else if (strcmp(key, SERIAL_BAUD2) == 0) {
 				model.setSerialBaud2(atoi(val));
 				save = true;
-			} else if (strcpy(key, SERIAL_BAUD3) == 0) {
+			} else if (strcmp(key, SERIAL_BAUD3) == 0) {
 				model.setSerialBaud3(atoi(val));
 				save = true;
-			} else if (strcpy(key, SEATALK) == 0) {
+			} else if (strcmp(key, SEATALK) == 0) {
 				model.setSeaTalk(atoi(val));
 				save = true;
 			}

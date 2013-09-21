@@ -175,6 +175,7 @@ public:
     void saveConfig();
     void readConfig();
     int writeSimple(HardwareSerial ser);
+    int writeConfig(HardwareSerial ser);
     int sendData(HardwareSerial ser, char name);
     int receiveData(HardwareSerial ser, char name);
 private:
@@ -258,7 +259,7 @@ private:
 	}windState;
 
 	//CONFIG_T
-	struct Configuration{		// 49 bytes
+	struct Configuration{		// 57 bytes
 		//ver 5
 		float anchorLat;	//32 bits (4 bytes). 
 		float anchorLon;	//32 bits (4 bytes). 
