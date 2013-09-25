@@ -21,7 +21,7 @@ The default configuration is:
 You can now send commands to the Mega to alter the configuration:
 
 A command is #, 3 letters, : , and the value to be set. eg '#GPS=1'. Multiple commands 
-are separated with a comma, eg #GPS=1,#SER1=9600,
+are separated with a comma, eg #GPS=1,#SB1=9600,
 
 The #CFG command with no parameters will cause the current config to be printed to the serial port.
 
@@ -49,7 +49,7 @@ Print out current config:
 
 Set an existing generic gps on serial1 at 4800bps
 
-#GPS=0,#SER1=4800, hit [ENTER]
+#GPS=0,#SB1=4800, hit [ENTER]
 
 To make serial2 listen for Seatalk at 4800bps
 
@@ -57,7 +57,7 @@ To make serial2 listen for Seatalk at 4800bps
 
 To listen for AIS on serial 3 at 38400bps (default for AIS)
 
-#SER3=38400, hit [Enter]
+#SB3=38400, hit [Enter]
 
 The changes are saved immediately, but wont take effect till the next reboot.
   
