@@ -61,7 +61,8 @@ private:
 	/*
 	 Reset the GPS to factory defaults
 	 */
-	int autoBaud();
+	long autoBaud();
+	long detectRate(int rcvPin);
 	bool testMsg();
 	void resetGPS();
 	void setupGpsImpl();

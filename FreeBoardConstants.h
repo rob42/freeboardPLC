@@ -28,9 +28,11 @@
 #define GPS_GENERIC 0
 #define GPS_EM_406A 1
 #define GPS_MTEK_3329 2
-
-//GPS pins are Serial1
 //EM406A pin 3 = RX to arduino TX - pin18, RX to pin19
+//GPS pins are Serial1
+#define GPS_RX_PIN 19
+
+
 //misc output - SoftwareSerial
 //lcd
 #define rxPin 50

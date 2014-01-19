@@ -41,13 +41,19 @@ bool Gps::testMsg() {
 	//5 secs
 	unsigned long now = millis();
 	bool valid = true;
-	while (now + 5000 > millis() && valid) {
+	bool nmea = false;
+	while (now + 5000 > millis() && valid && !nmea) {
 		if (Serial1.available()) {
 			int c = Serial1.read();
 			//Serial.print(c);
 			//Serial.print(",");
 			//not Cntrl-n or printable so invalid
-			if (c > 126) valid = false;
+			if (c > 126) {
+				valid = false;
+				break;
+			}
+			//we should see if its got a $ sign (ASCII 36)
+			if (valid && c == 36) nmea = true;
 		}
 	}
 	if (DEBUG) {
@@ -56,44 +62,86 @@ bool Gps::testMsg() {
 		else
 			Serial.println("FAIL");
 	}
-	return valid;
+	return (valid && nmea);
 }
 
+long Gps::detectRate(int rcvPin)  // function to return valid received baud rate
+                          // Note that the serial monitor has no 600 baud option and 300 baud
+                          // doesn't seem to work with version 22 hardware serial library
+  {
+  long baud, rate = 10000, x=2000;
+  pinMode(rcvPin, INPUT);      // make sure serial in is a input pin
+  digitalWrite (rcvPin, HIGH); // pull up enabled just for noise protection
 
-int Gps::autoBaud() {
+  for (int i = 0; i < 1024; i++) {
+      x = pulseIn(rcvPin,LOW, 125000);   // measure the next zero bit width
+      if(x<1)continue;
+      rate = x < rate ? x : rate;
+  }
+  if(DEBUG){
+	  Serial.print("  detected pulse rate = ");
+	  Serial.println(rate);
+  }
+/*
+ 	 Time	Baud Rate
+	3333µs (3.3ms)300
+	833µs 	1200
+	416µs 	2400
+	208µs 	4800
+	104µs 	9600
+	69µs 	14400
+	52µs 	19200
+	34µs 	28800
+	26µs 	38400
+	17.3µs 	57600
+	8µs 	115200
+	Megas min is about 10uS? so there may be some inaccuracy
+ */
+  if (rate < 12)
+      baud = 115200;
+      else if (rate < 20)
+      baud = 57600;
+      else if (rate < 30)
+      baud = 38400;
+      else if (rate < 40)
+      baud = 28800;
+      else if (rate < 60)
+      baud = 19200;
+      else if (rate < 80)
+      baud = 14400;
+      else if (rate < 150)
+      baud = 9600;
+      else if (rate < 300)
+      baud = 4800;
+      else if (rate < 600)
+      baud = 2400;
+      else if (rate < 1200)
+      baud = 1200;
+      else
+      baud = 0;
+   return baud;
+  }
+
+
+long Gps::autoBaud() {
 	//try the various baud rates until one makes sense
 	//should only output simple NMEA [$A-Z0-9*\r\c]
 	//start with saved default
-	if (DEBUG){
-		Serial.print("   try autobaud ");
-		Serial.print(model->getSerialBaud1());
-		Serial.println("..");
-	}
-	Serial1.begin(model->getSerialBaud1());
-		if (testMsg()) return model->getSerialBaud1();
-	Serial1.end();
+	Serial.print("   try autobaud .. ");
+	long baud = detectRate(GPS_RX_PIN);
 
-	if (DEBUG) Serial.println("   try autobaud 4800..");
-	Serial1.begin(4800);
-	if (testMsg()) return 4800;
-	Serial1.end();
-	if (DEBUG) Serial.println("   try autobaud 9600..");
-	Serial1.begin(9600);
-	if (testMsg()) return 9600;
-	Serial1.end();
-	if (DEBUG) Serial.println("   try autobaud 19200..");
-	Serial1.begin(19200);
-	if (testMsg()) return 19200;
-	Serial1.end();
-	if (DEBUG) Serial.println("   try autobaud 38400..");
-	Serial1.begin(38400);
-	if (testMsg()) return 38400;
-	Serial1.end();
-	if (DEBUG) Serial.println("   try autobaud 57600..");
-	Serial1.begin(57600);
-	if (testMsg()) return 57600;
-	Serial1.end();
+	if(baud>0){
+		Serial.print("OK at ");
+		Serial.println(baud);
+		Serial1.begin(baud);
+		return baud;
+	}else{
+		Serial.print("FAILED");
+	}
+
+
 	if (DEBUG) Serial.println("   default to 4800..");
+	Serial1.begin(4800);
 	return 4800;
 }
 
