@@ -41,13 +41,19 @@
 #define nmeaRxPin 52
 #define nmeaTxPin 53
 
+//autopilot output
+#define autopilotRxPin 34
+#define autopilotTxPin 36
+#define autopilotEngagePin 22
+
+
 //alarm (piezo) - tx only so digital pins 22+
 //#define alarmPin0 50     // the number of the buzzer pin
 //#define alarmPin1 51     // the number of the buzzer pin
-#define alarmPin0 22     // the number of the buzzer pin
-#define alarmPin1 23     // the number of the buzzer pin
-#define alarmPin2 24     // the number of the buzzer pin
-#define alarmPin3 25     // the number of the buzzer pin
+#define alarmPin0 24     // the number of the buzzer pin
+#define alarmPin1 26     // the number of the buzzer pin
+#define alarmPin2 28     // the number of the buzzer pin
+#define alarmPin3 30     // the number of the buzzer pin
 //button pins - using PCINT2 analog 9-15, mega pins 63-69
 
 // need reliable efficient interrupts, so INT0/INT1
@@ -57,8 +63,9 @@
 #define windSpeedInterrupt 1 // INT1
 #define windDirPin 2 // pin 2
 #define windDirInterrupt 0 // INT0
-
-
+#define logPin 4 // pin4
+#define lpgPin A10 // analogue pin A10
+#define sensorPin A11 // analogue pin A11
 
 // 0.00053995680 nautical miles per meter
 //decimal lat lon is in degrees, and we have 60 NM per degree so degrees per meter

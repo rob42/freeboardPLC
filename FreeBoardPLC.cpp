@@ -157,9 +157,9 @@ void setup() {
 	//setup interrupts to windPins
 	if (DEBUG) Serial.println("Start wind..");
 	pinMode(windSpeedPin, INPUT);
-	attachInterrupt(windSpeedInterrupt, readWDS, CHANGE);
+	attachInterrupt(windSpeedInterrupt, readWDS, RISING);
 	pinMode(windDirPin, INPUT);
-	attachInterrupt(windDirInterrupt, readWDD, CHANGE);
+	attachInterrupt(windDirInterrupt, readWDD, RISING);
 
 //	//setup timers
 	if (DEBUG) Serial.println("Start timer..");

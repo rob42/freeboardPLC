@@ -678,7 +678,7 @@ void FreeBoardModel::setWindAlarmOn(bool windAlarmOn) {
 void FreeBoardModel::setWindAlarmSpeed(int windAlarmSpeed) {
 	this->config.windAlarmSpeed = windAlarmSpeed;
 }
-
+/* 0-360deg off the bow clockwise.*/
 void FreeBoardModel::setWindApparentDir(int windApparentDir) {
 	this->windState.windApparentDir = windApparentDir;
 }
