@@ -1,3 +1,6 @@
+
+NEW: Freeboard interface pcb arrives. See https://www.42.co.nz/freeboard/news/custompcboardprototypearrives.html
+
 NOTES:
 
 Current build is done on a Kubuntu 12.10 linux laptop. It should build on any OS with a reasonably current version of eclipse IDE.
