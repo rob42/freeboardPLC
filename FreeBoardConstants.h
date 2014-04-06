@@ -31,15 +31,23 @@
 //EM406A pin 3 = RX to arduino TX - pin18, RX to pin19
 //GPS pins are Serial1
 #define GPS_RX_PIN 19
+#define GPS_TX_PIN 18
 
+//SPI
+#define MISO_PIN 50
+#define M0SI_PIN 51
+#define SLCK_PIN 52
+#define SS_PIN 53 //should always be OUTPUT as arduino is master only
+#define CS_PIN A13 //analog A13
 
-//misc output - SoftwareSerial
-//lcd
-#define rxPin 50
-#define txPin 51
+//CAN bus controller
+#define CANRX A14
+#define CANTX A15
+
+//misc output - AltSoftSerial
 //mux NMEA output
-#define nmeaRxPin 52
-#define nmeaTxPin 53
+#define nmeaRxPin 48
+#define nmeaTxPin 46
 
 //autopilot output
 #define autopilotRxPin 34
@@ -48,24 +56,26 @@
 
 
 //alarm (piezo) - tx only so digital pins 22+
-//#define alarmPin0 50     // the number of the buzzer pin
-//#define alarmPin1 51     // the number of the buzzer pin
+
 #define alarmPin0 24     // the number of the buzzer pin
 #define alarmPin1 26     // the number of the buzzer pin
 #define alarmPin2 28     // the number of the buzzer pin
 #define alarmPin3 30     // the number of the buzzer pin
-//button pins - using PCINT2 analog 9-15, mega pins 63-69
 
-// need reliable efficient interrupts, so INT0/INT1
+// need reliable efficient interrupts
 //Wind speed on pin 3 - INT1 - yellow wire
  //Wind dir on pin 2 - INT0
 #define windSpeedPin 3 // pin3
 #define windSpeedInterrupt 1 // INT1
 #define windDirPin 2 // pin 2
 #define windDirInterrupt 0 // INT0
-#define logPin 4 // pin4
-#define lpgPin A10 // analogue pin A10
-#define sensorPin A11 // analogue pin A11
+//#define logPin 20 // pin20
+//#define logInterrupt 3 // INT3
+//#define logPin 21 // pin21 //INT 2
+#define lpgPin A12 // analogue pin A12
+#define sensorPin A13 // analogue pin A11
+#define level1Pin A10
+#define level2Pin A11
 
 // 0.00053995680 nautical miles per meter
 //decimal lat lon is in degrees, and we have 60 NM per degree so degrees per meter

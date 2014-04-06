@@ -150,7 +150,7 @@ void setup() {
 	pinMode(nmeaRxPin, INPUT);
 	pinMode(nmeaTxPin, OUTPUT);
 	if (DEBUG) {
-		Serial.println("Start nmea Tx - on pins 53 Tx, 52 Rx at 4800");
+		Serial.println("Start nmea Tx - on pins 46 Tx, 48 Rx at 4800");
 	}
 	nmea.begin(4800);
 
@@ -198,6 +198,8 @@ void readWDD() {
  hardware serial RX.  This routine is run between each
  time loop() runs, so using delay inside loop can delay
  response.  Multiple bytes of data may be available.
+
+ See http://joost.damad.be/2012/01/arduino-mega-and-multiple-hardware.html
  */
 void serialEvent() {
 	while (Serial.available()) {

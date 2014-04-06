@@ -62,8 +62,8 @@
 #include "Wind.h"
 
 //lots out here because they are accessed by interrupts
-const unsigned int SPEED_DEBOUNCE = 0;
-const unsigned int DIR_DEBOUNCE = 0;
+const unsigned long MILLIS_DEBOUNCE = 15ul;
+const unsigned long MICROS_DEBOUNCE = 2500ul;
 volatile unsigned long lastSpeedPulse, lastDirPulse = 0ul;
 
 long windSpeedRps = 0ul;
@@ -192,8 +192,10 @@ int Wind::getRotationalAverage() {
  */
 void Wind::readWindDataSpeed() {
 	//fastest rps = 15ms - avoid bounce
-	if ((millis() - lastSpeedPulse) > 15) {
-		if (windSpeedFlag && (micros()-windDirMicros)>15000) {
+	if ((millis() - lastSpeedPulse) > MILLIS_DEBOUNCE) {
+		if (windSpeedFlag
+				//&& (micros()-windSpeedMicros)>MICROS_DEBOUNCE
+				) {
 			//called by speed pin interrupt
 			windSpeedMicrosLast = windSpeedMicros;
 			windSpeedMicros = micros();
@@ -204,8 +206,10 @@ void Wind::readWindDataSpeed() {
 }
 
 void Wind::readWindDataDir() {
-	if((millis() - lastDirPulse) > 15) {
-		if (windSpeedFlag && (micros()-windSpeedMicros)>15000) {
+	if((millis() - lastDirPulse) > MILLIS_DEBOUNCE) {
+		if (!windSpeedFlag
+				//&& (micros()-windDirMicros)>MICROS_DEBOUNCE
+				) {
 			windDirMicrosLast = windDirMicros;
 			windDirMicros = micros();
 			//need consistent snapshot
@@ -231,17 +235,19 @@ void Wind::calcWindSpeedAndDir() {
 	wdTemp = windDirMicrosLast;
 	interrupts();
 
-	/*Serial.print("DEBUG:wsl=");
-	Serial.print(wsTempLast);
+	Serial.print("DEBUG:wsl=");
+	Serial.print(wsTempLastX);
 	Serial.print(",wd=");
-	Serial.print(wdTemp);
+	Serial.print(wsTempX);
 	Serial.print(",ws=");
-	Serial.println(wsTemp);*/
+	Serial.print(windDirMicrosLast);
+	Serial.print(",lastSpeedPulse=");
+	Serial.println(lastSpeedPulse);
 
 //micros resets every 50 min,
-// avoid 0, bad data, rollover and too fast (bounce? <15ms)
-	if (wsTempLast >= wsTemp || wsTemp - wsTempLast < 15000ul) {
-		//Serial.println("DEBUG:wsTempLast >= wsTemp || wsTemp - wsTempLast < 15000ul");
+// avoid 0, bad data, rollover and too fast (bounce? <25ms)
+	if (wsTempLast >= wsTemp || wsTemp - wsTempLast < MICROS_DEBOUNCE) {
+		//Serial.println("DEBUG:wsTempLast >= wsTemp || wsTemp - wsTempLast < MICROS_DEBOUNCE");
 		return;
 	}
 

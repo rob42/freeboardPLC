@@ -70,7 +70,7 @@ sizedummy \
 all: FreeBoardPLC.elf secondary-outputs
 
 dependents:
-	-cd /home/robert/gitrep/Arduino_Mega_ATmega2560/Release && $(MAKE) clean all
+	-cd /home/robert/gitrep/Arduino_Mega_ATmega2560/Release && $(MAKE) all
 
 # Tool invocations
 FreeBoardPLC.elf: $(OBJS) $(USER_OBJS) /home/robert/gitrep/Arduino_Mega_ATmega2560/Release/libArduino_Mega_ATmega2560.a

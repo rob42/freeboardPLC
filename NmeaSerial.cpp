@@ -29,9 +29,7 @@ NmeaSerial::~NmeaSerial() {
 
 }
 void NmeaSerial::begin(long speed) {
-	//initialise the nmea output
-	//pinMode(nmeaRxPin, INPUT);
-	//pinMode(nmeaTxPin, OUTPUT);
+	//initialise the nmea output, always pind 46/48 for AltSoftSerial
 	AltSoftSerial::begin(speed);
 }
 
