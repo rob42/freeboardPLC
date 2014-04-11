@@ -63,7 +63,7 @@
 
 //lots out here because they are accessed by interrupts
 const unsigned long MILLIS_DEBOUNCE = 15ul;
-const unsigned long MICROS_DEBOUNCE = 2500ul;
+const unsigned long MICROS_DEBOUNCE = 15000ul;
 volatile unsigned long lastSpeedPulse, lastDirPulse = 0ul;
 
 long windSpeedRps = 0ul;
