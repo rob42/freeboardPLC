@@ -69,9 +69,9 @@
 #define windSpeedInterrupt 1 // INT1
 #define windDirPin 2 // pin 2
 #define windDirInterrupt 0 // INT0
-//#define logPin 20 // pin20
-//#define logInterrupt 3 // INT3
-//#define logPin 21 // pin21 //INT 2
+#define logPin 20 // pin20
+#define logInterrupt 3 // INT3
+#define logPin 21 // pin21 //INT 2
 #define lpgPin A12 // analogue pin A12
 #define sensorPin A13 // analogue pin A11
 #define level1Pin A10

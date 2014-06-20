@@ -64,7 +64,7 @@ int inByteSerial1;
 int inByteSerial2;
 int inByteSerial3;
 char input;
-//volatile int intCnt = 0;
+
 
 //freeboard model
 FreeBoardModel model;
@@ -101,10 +101,13 @@ Anchor anchor(&model);
 
 Seatalk seatalk(&Serial2, &model);
 
-String inputSerial = ""; // a string to hold incoming data
+MultiSerial mSerial0 = MultiSerial(CS_PIN,0);
+MultiSerial mSerial1 = MultiSerial(CS_PIN,1);
+
+
 char inputSerialArray[100];
 int inputSerialPos=0;
-//boolean inputSerialComplete = false; // whether the string is complete
+
 boolean inputSerial1Complete = false; // whether the GPS string is complete
 boolean inputSerial2Complete = false; // whether the string is complete
 boolean inputSerial3Complete = false; // whether the string is complete
@@ -116,10 +119,7 @@ void setup() {
 	// initialize  serial ports:
 	Serial.begin(model.getSerialBaud(), SERIAL_8N1);
 	if (DEBUG) Serial.println("Initializing..");
-	inputSerial.reserve(40);
-	//Serial.print("input size=");
-	//Serial.println(inputSerial.length());
-
+	
 	//start gps on serial1, autobaud
 	if (DEBUG) Serial.println("Start gps..");
 	gps.setupGps();
@@ -154,6 +154,7 @@ void setup() {
 	}
 	nmea.begin(4800);
 
+
 	//setup interrupts to windPins
 	if (DEBUG) Serial.println("Start wind..");
 	pinMode(windSpeedPin, INPUT);
@@ -167,8 +168,19 @@ void setup() {
 	if (DEBUG) Serial.println("Start timer..");
 	FlexiTimer2::set(100, calculate); // 100ms period
 	FlexiTimer2::start();
-	//lcd.clearLcd();
-
+	
+	if (DEBUG) Serial.println("Start SPI uarts..");
+	delay(1000);
+	pinMode(A13, OUTPUT);
+	Serial.println("CS_PIN set to OUTPUT");
+	delay(1000);
+	//Clear Chip Select
+	digitalWrite(A13,HIGH);
+	Serial.println("CS_PIN OUTPUT = HIGH");
+	delay(1000);
+	mSerial0.begin(9600ul,7372800ul);
+	mSerial1.begin(9600ul,7372800ul);
+	
 	if (DEBUG) Serial.println("Setup complete..");
 	//print out the config
 	//model.sendData(Serial, CONFIG_T);
@@ -186,12 +198,10 @@ void calculate() {
 }
 
 void readWDS() {
-	//intCnt++;
 	wind.readWindDataSpeed();
 }
 
 void readWDD() {
-	//intCnt++;
 	wind.readWindDataDir();
 }
 
@@ -210,7 +220,7 @@ void serialEvent() {
 		// add it to the inputString:
 		inputSerialArray[inputSerialPos]=inChar;
 					inputSerialPos++;
-		//inputSerial += inChar;
+		
 		if (inChar == '\n' || inChar == '\r' || inputSerialPos>98) {
 			//null to mark this array end
 			inputSerialArray[inputSerialPos]='\0';
@@ -255,7 +265,9 @@ void serialEvent2() {
 
 void serialEvent3() {
 	while (Serial3.available()) {
-		inputSerial3Complete = talker3.decode(Serial3.read());
+		byte b = Serial3.read();
+		Serial.println(b);
+		inputSerial3Complete = talker3.decode(b);
 		if (inputSerial3Complete) {
 			if (MUX) nmea.printNmea(talker3.sentence());
 			Serial.println(talker3.sentence());
@@ -277,7 +289,7 @@ void loop() {
 
 		if (interval % 2 == 0) {
 			//do every 200ms
-			//wind.calcWindSpeedAndDir();
+			wind.calcWindSpeedAndDir();
 		}
 		if (interval % 5 == 0) {
 			//do every 500ms
@@ -294,12 +306,33 @@ void loop() {
 			alarm.checkWindAlarm();
 
 			nmea.printTrueHeading();
-			//Serial.print("Interrupts:");
-			//Serial.println(intCnt);
+			
 		}
-		//if (interval % 20 == 0) {
+		if (interval % 20 == 0) {
 		//do every 2000ms
-		//}
+			//test serial2
+
+			char testStrng[] = "Goodbye World!";
+			byte work = 0;
+			int i=0;
+			Serial.println("Writing \"Goodbye World!\" to UART TX");
+
+			  for (i = 0; i < sizeof(testStrng) - 1; i++){
+			    mSerial0.write(testStrng[i]);
+			    Serial.print(testStrng[i]);
+			  }
+			 // mSerial0.flush();
+			  Serial.println("\nReading back");
+			  work = mSerial0.available();
+			    Serial.println(work,DEC);
+			    Serial.println("Reading back contents of UART FIFO");
+
+			    while (0 < work) {
+			      Serial.print(mSerial0.read());
+			      work--;
+			    }
+			    Serial.println("Done");
+		}
 
 		execute = false;
 	}
@@ -444,3 +477,6 @@ byte getChecksum(char* str) {
 	}
 	return cs;
 }
+
+/*
+

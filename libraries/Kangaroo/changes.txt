@@ -1,0 +1,26 @@
+Arduino Library for Kangaroo
+Copyright (c) 2013-2014 Dimension Engineering LLC
+http://www.dimensionengineering.com/kangaroo
+
+Version 1.0.5 (14 June 2014)
+- Added KANGAROO_SYS_TUNE_ABORT.
+- Added streaming() on KangarooChannel for high speed updates.
+- Fixed some typos in the documentation.
+
+Version 1.0.4 (28 March 2013)
+- Exposed the systemCommand method on KangarooChannel.
+- Added a ProgrammaticTune example to demonstrate systemCommand.
+- Fixed a bug in sequence code handling that could occur when calling start and home based on the result of getP.
+- Improved the Movement example to demonstrate speed-limited position control.
+
+Version 1.0.3 (21 March 2013)
+- Added .chm help file.
+- Fixed the waitAny function.
+
+Version 1.0.1 (20 March 2013)
+- Added SerialTimeout and PowerDown examples.
+
+Version 1.0 (5 March 2013)
+- Initial public release.
+
+Please let us know if you run into any bugs! Thanks and enjoy the library!

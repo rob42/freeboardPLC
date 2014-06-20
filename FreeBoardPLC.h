@@ -41,6 +41,8 @@ typedef unsigned char byte;
 #include "Anchor.h"
 #include "NmeaSerial.h"
 #include "Autopilot.h"
+//#include "SPI.h"
+#include "MultiSerial.h"
 #include "FreeBoardModel.h"
 
 
