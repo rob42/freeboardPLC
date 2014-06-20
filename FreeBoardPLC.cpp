@@ -95,22 +95,22 @@ Wind wind(&model);
 //Gps
 Gps gps(&gpsSource, &model);
 
+
+MultiSerial mSerial1 = MultiSerial(CS_PIN,1); //NMEA4
 //Autopilot
-Autopilot autopilot(&model);
+
+Autopilot autopilot( &model);
 
 //Anchor
 Anchor anchor(&model);
 
 Seatalk seatalk(&Serial2, &model);
 
-MultiSerial mSerial0 = MultiSerial(CS_PIN,0); //autopilot
-MultiSerial mSerial1 = MultiSerial(CS_PIN,1); //NMEA4
-
 
 char inputSerialArray[100];
-char inputAutopilotArray[50];
+//char inputAutopilotArray[50];
 int inputSerialPos=0;
-int inputAutopilotPos=0;
+//int inputAutopilotPos=0;
 
 boolean inputSerial1Complete = false; // whether the GPS string is complete
 boolean inputSerial2Complete = false; // whether the string is complete
@@ -132,6 +132,7 @@ void setup() {
 		Serial.print("Start GPS Rx - serial1 at ");
 		Serial.println(model.getSerialBaud1());
 	}
+
 	Serial1.begin(model.getSerialBaud1());
 
 	if (model.getSeaTalk()) {
@@ -175,6 +176,7 @@ void setup() {
 		}
 	nmea.begin(model.getSerialBaud5());
 
+	autopilot.init();
 
 	//setup interrupts to windPins
 	if (DEBUG) Serial.println("Start wind..");
@@ -190,10 +192,6 @@ void setup() {
 	FlexiTimer2::set(100, calculate); // 100ms period
 	FlexiTimer2::start();
 	
-	if (DEBUG) Serial.println("Init autopilot..");
-	mSerial0.begin(model.getAutopilotBaud());
-	delay(100);
-
 	if (DEBUG) Serial.println("Setup complete..");
 	//print out the config
 	//model.sendData(Serial, CONFIG_T);
@@ -305,26 +303,6 @@ void serialEvent4() {
 	}
 }
 
-void autopilotEvent() {
-	while (mSerial0.available()) {
-				// get the new byte:
-				char inChar = (char) mSerial0.read();
-				// add it to the inputString:
-				inputAutopilotArray[inputAutopilotPos]=inChar;
-				inputAutopilotPos++;
-
-				if (inChar == '\n' || inChar == '\r' || inputAutopilotPos>48) {
-					//null to mark this array end
-					inputAutopilotArray[inputAutopilotPos]='\0';
-					//process(inputAutopilotPos, ',');
-					inputAutopilotPos=0;
-					memset(inputAutopilotArray, 0, sizeof(inputAutopilotPos));
-				}
-				//Serial.println(inputSerialArray);
-
-			}
-}
-
 void loop() {
 
 	//if (DEBUG)
@@ -352,7 +330,7 @@ void loop() {
 			//do every 1000ms
 			anchor.checkAnchor();
 			alarm.checkWindAlarm();
-
+			alarm.checkLpgAlarm();
 			nmea.printTrueHeading();
 			
 		}
@@ -361,7 +339,6 @@ void loop() {
 	}
 	//check SPI for incoming
 	serialEvent4();
-	autopilotEvent();
 
 //DEBUG
 //printf("Looping\n");

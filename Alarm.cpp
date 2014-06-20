@@ -30,10 +30,12 @@ Alarm::Alarm(FreeBoardModel* model) {
 	this->model=model;
 	alarmBeepState=false;
 	model->setAlarmLast(0);
-	pinMode(alarmPin0, OUTPUT);
+	pinMode(alarmPin0, OUTPUT); //main MOSFET pin
 	pinMode(alarmPin1, OUTPUT);
 	pinMode(alarmPin2, OUTPUT);
 	pinMode(alarmPin3, OUTPUT);
+	//TODO: setup lpg pin - actually its analogue
+	pinMode(lpgPin, INPUT);
 }
 
 Alarm::~Alarm() {
@@ -77,5 +79,16 @@ void Alarm::checkWindAlarm(){
 			model->setWindAlarmTriggered(true);
 		} else {
 			model->setWindAlarmTriggered(false);
+		}
+}
+
+void Alarm::checkLpgAlarm(){
+	//check lpg alarm val, pulled high when disconnected, ground to fire alarm
+	//not tested but no lpg = 1.3V (~200), high lpg = 5V (1024), alarm value will need calibration.
+		if (analogRead(lpgPin)>model->getLpgLimit()) {
+
+			model->setLpgAlarmTriggered(true);
+		} else {
+			model->setLpgAlarmTriggered(false);
 		}
 }

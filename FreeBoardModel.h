@@ -36,7 +36,7 @@
 
 #define AUTOPILOT_WIND 'W'
 #define AUTOPILOT_COMPASS 'C'
-#define EEPROM_VER 8
+#define EEPROM_VER 12
 #define EEPROM_DATA 4
 class FreeBoardModel {
 public:
@@ -67,6 +67,7 @@ public:
 	double getAutopilotTargetHeading();
 	int getAutopilotDeadZone();
 	int getAutopilotSlack();
+	long getAutopilotSpeed();
 	long getGpsAlarmFixTime() ;
 	float getGpsCourse() ;
 	unsigned long getGpsLastFix() ;
@@ -79,6 +80,11 @@ public:
 	float getMagneticHeading();
 	float getDeclination();
 	volatile bool isMobAlarmTriggered() ;
+
+	volatile bool isLpgAlarmTriggered() ;
+	int getLpgLimit();
+	void setLpgLimit(int lpgLimit);
+
 	volatile bool isRadarAlarmTriggered() ;
 	int getWindZeroOffset() ;
 	int getWindAlarmSpeed() ;
@@ -98,6 +104,8 @@ public:
 	bool isGpsAlarmTriggered() ;
 	bool isGpsDecode() ;
 	bool isWindAlarmOn() ;
+
+
 	// void setAlarmBeepState(bool alarmBeepState);
 	void setAlarmLast(unsigned long alarmLast);
 	void setAlarmSnooze(unsigned long alarmSnooze);
@@ -124,6 +132,7 @@ public:
 	void setAutopilotTargetHeading(double autopilotTargetHeading);
 	void setAutopilotDeadZone(int deadZone);
 	void setAutopilotSlack(int slack);
+	void setAutopilotSpeed(long speed);
 	void setGpsAlarmFixTime(long gpsAlarmFixTime);
 	void setGpsAlarmOn(bool gpsAlarmOn);
 	void setGpsAlarmTriggered(bool gpsAlarmTriggered);
@@ -140,6 +149,7 @@ public:
 	void setMenuLevel(volatile int menuLevel);
 	void setMenuState(volatile int menuState);
 	void setMobAlarmTriggered(volatile bool mobAlarmTriggered);
+	void setLpgAlarmTriggered(volatile bool lpgAlarmTriggered);
 	void setRadarAlarmTriggered(volatile bool radarAlarmTriggered);
 	void setWindZeroOffset(int windZeroOffset);
 	void setWindAlarmOn(bool windAlarmOn);
@@ -233,6 +243,7 @@ private:
 		double autopilotAlarmMaxXTError; //cross track error
 		double autopilotAlarmMaxWindError; //wind angle change while on windpilot
 		double autopilotAlarmMaxCourseError; //course error
+		long autopilotSpeed; //angular movement rate as (increments of total)/sec
 	}autopilotState;
 
 	//gps
@@ -257,7 +268,8 @@ private:
 	bool radarAlarmTriggered; //set to true to trigger radar alarm
 	//volatile bool mobAlarmOn; //set to true to enable mob alarm
 	bool mobAlarmTriggered; //set to true to trigger MOB alarm
-
+	bool lpgAlarmTriggered; //set to true to trigger lpg alarm
+	int lpgLimit; //0-1024 analogue range - higher is slower to alarm, eg more lpg
 	//wind
 	struct WindState{			//15 bytes
 
@@ -282,6 +294,7 @@ private:
 		bool autopilotAlarmOn;	//1 byte
 		int autopilotDeadZone; //16 bits (2 bytes)
 		int autopilotSlack; //16 bits (2 bytes)
+		long autopilotSpeed; //32 bits (4 bytes)
 		float gpsSpeedUnit;	//32 bits (4 bytes). 
 		bool gpsAlarmOn;	//1 byte
 		long gpsAlarmFixTime; 	//32 bits (4 bytes). 

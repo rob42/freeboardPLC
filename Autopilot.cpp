@@ -54,8 +54,22 @@
  */
 #include "Autopilot.h"
 
+MultiSerial mSerial0 = MultiSerial(CS_PIN,0); //autopilot
+KangarooSerial  K(mSerial0);
+KangarooChannel K1(K, '1');
+
 Autopilot::Autopilot(FreeBoardModel* model) {
+	//this->serial=serial;
 	this->model = model;
+}
+
+void Autopilot::init() {
+
+	this->inputAutopilotPos=0;
+	this->inputSerialPos=0;
+	if (DEBUG) Serial.println("Init autopilot..");
+	mSerial0.begin(this->model->getAutopilotBaud());
+	delay(100);
 	autopilotTargetHeading = model->getAutopilotTargetHeading() + 720;
 	autopilotCurrentHeading = autopilotTargetHeading + model->getAutopilotOffCourse();
 	autopilotRudderCommand = model->getAutopilotRudderCommand();
@@ -73,6 +87,8 @@ Autopilot::~Autopilot() {
 void Autopilot::calcAutoPilot() {
 	//we dont do this if the autopilot is MANUAL
 	if (model->isAutopilotOn()) {
+		//update incoming data from kangaroo
+		this->autopilotEvent();
 		//does nothing if its already on, inits if off
 		headingPid.SetMode(AUTOMATIC);
 		autopilotTargetHeading = model->getAutopilotTargetHeading() + 720;
@@ -100,10 +116,39 @@ void Autopilot::calcAutoPilot() {
 			//constrain(lastRudderCommand,0.0,66.0);
 			//update model
 			model->setAutopilotRudderCommand(lastRudderCommand);
+			//tell the kangaroo
+			K1.p(lastRudderCommand*100, model->getAutopilotSpeed());
 		}
 
 	} else {
 		headingPid.SetMode(MANUAL);
 	}
+
+}
+
+void Autopilot::process(char* message){
+	//read incoming data and update model here
+
+	}
+
+void Autopilot::autopilotEvent() {
+	while (mSerial0.available()) {
+				// get the new byte:
+				char inChar = (char) mSerial0.read();
+				// add it to the inputString:
+				this->inputAutopilotArray[this->inputAutopilotPos]=inChar;
+				this->inputAutopilotPos++;
+
+				if (inChar == '\n' || inChar == '\r' || this->inputAutopilotPos>48) {
+					//null to mark this array end
+					this->inputAutopilotArray[this->inputAutopilotPos]='\0';
+					Serial.println(this->inputAutopilotArray);
+					this->process(this->inputAutopilotArray);
+					this->inputAutopilotPos=0;
+					memset(this->inputAutopilotArray, 0, sizeof(this->inputAutopilotPos));
+				}
+
+
+			}
 }
 

@@ -60,7 +60,7 @@ FreeBoardModel::FreeBoardModel() {
 	autopilotState.autopilotAlarmMaxXTError = 100; // +/- meters cross track error
 	autopilotState.autopilotAlarmMaxWindError = 10; // +/- wind angle change, for over 1 minute
 	autopilotState.autopilotAlarmMaxCourseError = 10; // +/- course error, for over 1 minute
-
+	autopilotState.autopilotSpeed=128;
 	//compass
 	magneticHeading = 0;
 	declination = 0;
@@ -83,7 +83,7 @@ FreeBoardModel::FreeBoardModel() {
 	radarAlarmTriggered = false; //set to true to trigger radar alarm
 	//volatile bool mobAlarmOn; //set to true to enable mob alarm
 	mobAlarmTriggered = false; //set to true to trigger MOB alarm
-
+	lpgAlarmTriggered = false;
 	//wind
 	windState.windLastUpdate = 0;
 	windState.windAverage = 0.0;
@@ -385,6 +385,9 @@ int FreeBoardModel::getAutopilotDeadZone() {
 int FreeBoardModel::getAutopilotSlack() {
 	return this->config.autopilotSlack;
 }
+long FreeBoardModel::getAutopilotSpeed() {
+	return this->config.autopilotSpeed;
+}
 
 long FreeBoardModel::getGpsAlarmFixTime() {
 	return config.gpsAlarmFixTime;
@@ -432,6 +435,16 @@ float FreeBoardModel::getDeclination() {
 volatile bool FreeBoardModel::isMobAlarmTriggered() {
 	return mobAlarmTriggered;
 }
+volatile bool FreeBoardModel::isLpgAlarmTriggered() {
+	return lpgAlarmTriggered;
+}
+int FreeBoardModel::getLpgLimit(){
+	return lpgLimit;
+}
+void FreeBoardModel::setLpgLimit(int lpgLimit){
+	this->lpgLimit=lpgLimit;
+}
+
 
 volatile bool FreeBoardModel::isRadarAlarmTriggered() {
 	return radarAlarmTriggered;
@@ -594,6 +607,9 @@ void FreeBoardModel::setAutopilotAlarmTriggered(bool autopilotAlarmTriggered) {
 void FreeBoardModel::setAutopilotRudderCommand(double autopilotRudderCommand) {
 	this->autopilotState.autopilotRudderCommand = autopilotRudderCommand;
 }
+void FreeBoardModel::setAutopilotSpeed(long autopilotSpeed) {
+	this->autopilotState.autopilotSpeed = autopilotSpeed;
+}
 
 /**
  * For magnetic it will be 0-360degM
@@ -664,6 +680,9 @@ void FreeBoardModel::setDeclination(float declination) {
 void FreeBoardModel::setMobAlarmTriggered(volatile bool mobAlarmTriggered) {
 	this->mobAlarmTriggered = mobAlarmTriggered;
 }
+void FreeBoardModel::setLpgAlarmTriggered(volatile bool lpgAlarmTriggered) {
+	this->lpgAlarmTriggered = lpgAlarmTriggered;
+}
 
 void FreeBoardModel::setRadarAlarmTriggered(volatile bool radarAlarmTriggered) {
 	this->radarAlarmTriggered = radarAlarmTriggered;
@@ -702,7 +721,7 @@ void FreeBoardModel::setWindLastUpdate(unsigned long windLastUpdate) {
 
 volatile bool FreeBoardModel::isAlarmTriggered() {
 	return windState.windAlarmTriggered && radarAlarmTriggered && gpsState.gpsAlarmTriggered && anchorState.anchorAlarmTriggered
-			&& autopilotState.autopilotAlarmTriggered && mobAlarmTriggered;
+			&& autopilotState.autopilotAlarmTriggered && mobAlarmTriggered && lpgAlarmTriggered;
 }
 
 volatile bool FreeBoardModel::isMobAlarmOn() {

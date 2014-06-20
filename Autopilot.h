@@ -38,7 +38,9 @@ try to keep the boat on this target heading.
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
 #include "Gps.h"
-#include "PID_v1.h"
+#include <PID_v1.h>
+#include <Kangaroo.h>
+#include <MultiSerial.h>
 /**
  * Parameters and what they do (sort of)
  * P_Param:  the bigger the number the harder the controller pushes.
@@ -60,7 +62,9 @@ public:
 	~Autopilot();
 	void calcAutoPilot();
 	double getRudderCorrection();
-
+	void process(char* message);
+	void autopilotEvent();
+	void init();
 
 private:
 
@@ -69,6 +73,9 @@ private:
 	double autopilotRudderCommand; //Output
 	double lastRudderCommand;
 	bool	lastDirection; //last rudder movement direction
+	char inputAutopilotArray[50];
+	int inputSerialPos;
+	int inputAutopilotPos;
 
 	FreeBoardModel* model;
 	PID headingPid;
