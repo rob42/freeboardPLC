@@ -63,6 +63,7 @@ volatile int interval = 0;
 int inByteSerial1;
 int inByteSerial2;
 int inByteSerial3;
+int inByteSerial4;
 char input;
 
 
@@ -83,6 +84,7 @@ NMEA gpsSource(ALL);
 NMEA talker0(ALL);
 NMEA talker2(ALL);
 NMEA talker3(ALL);
+NMEA talker4(ALL);
 
 //alarm
 Alarm alarm(&model);
@@ -101,16 +103,19 @@ Anchor anchor(&model);
 
 Seatalk seatalk(&Serial2, &model);
 
-MultiSerial mSerial0 = MultiSerial(CS_PIN,0);
-MultiSerial mSerial1 = MultiSerial(CS_PIN,1);
+MultiSerial mSerial0 = MultiSerial(CS_PIN,0); //autopilot
+MultiSerial mSerial1 = MultiSerial(CS_PIN,1); //NMEA4
 
 
 char inputSerialArray[100];
+char inputAutopilotArray[50];
 int inputSerialPos=0;
+int inputAutopilotPos=0;
 
 boolean inputSerial1Complete = false; // whether the GPS string is complete
 boolean inputSerial2Complete = false; // whether the string is complete
 boolean inputSerial3Complete = false; // whether the string is complete
+boolean inputSerial4Complete = false; // whether the string is complete
 
 void setup() {
 	//model.saveConfig();
@@ -146,13 +151,29 @@ void setup() {
 	}
 	Serial3.begin(model.getSerialBaud3(), SERIAL_8N1); //talker2
 
-	if (DEBUG) Serial.println("Start nmea Tx..");
-	pinMode(nmeaRxPin, INPUT);
-	pinMode(nmeaTxPin, OUTPUT);
+	if (DEBUG) Serial.println("Start SPI uarts..");
+		delay(1000);
+		pinMode(CS_PIN, OUTPUT);
+		Serial.println("CS_PIN set to OUTPUT");
+		delay(100);
+		//Clear Chip Select
+		digitalWrite(CS_PIN,HIGH);
+		Serial.println("CS_PIN OUTPUT = HIGH");
+
 	if (DEBUG) {
-		Serial.println("Start nmea Tx - on pins 46 Tx, 48 Rx at 4800");
-	}
-	nmea.begin(4800);
+			Serial.print("Start nmea Rx - serial4 at ");
+			Serial.println(model.getSerialBaud4());
+		}
+	mSerial1.begin(model.getSerialBaud4()); //talker3
+	delay(100);
+	if (DEBUG) Serial.println("Start nmea Tx..");
+		pinMode(nmeaRxPin, INPUT);
+		pinMode(nmeaTxPin, OUTPUT);
+		if (DEBUG) {
+			Serial.print("Start nmea Tx - on pins 46 Tx, 48 Rx at ");
+			Serial.println(model.getSerialBaud5());
+		}
+	nmea.begin(model.getSerialBaud5());
 
 
 	//setup interrupts to windPins
@@ -169,18 +190,10 @@ void setup() {
 	FlexiTimer2::set(100, calculate); // 100ms period
 	FlexiTimer2::start();
 	
-	if (DEBUG) Serial.println("Start SPI uarts..");
-	delay(1000);
-	pinMode(A13, OUTPUT);
-	Serial.println("CS_PIN set to OUTPUT");
-	delay(1000);
-	//Clear Chip Select
-	digitalWrite(A13,HIGH);
-	Serial.println("CS_PIN OUTPUT = HIGH");
-	delay(1000);
-	mSerial0.begin(9600ul,7372800ul);
-	mSerial1.begin(9600ul,7372800ul);
-	
+	if (DEBUG) Serial.println("Init autopilot..");
+	mSerial0.begin(model.getAutopilotBaud());
+	delay(100);
+
 	if (DEBUG) Serial.println("Setup complete..");
 	//print out the config
 	//model.sendData(Serial, CONFIG_T);
@@ -277,6 +290,41 @@ void serialEvent3() {
 	}
 }
 
+//must call manually every loop - 3+ not in core arduino code
+void serialEvent4() {
+	while (mSerial1.available()) {
+		byte b = mSerial1.read();
+		Serial.println(b);
+		inputSerial4Complete = talker4.decode(b);
+		if (inputSerial4Complete) {
+			if (MUX) nmea.printNmea(talker4.sentence());
+			Serial.println(talker4.sentence());
+			//loop every sentence
+			break;
+		}
+	}
+}
+
+void autopilotEvent() {
+	while (mSerial0.available()) {
+				// get the new byte:
+				char inChar = (char) mSerial0.read();
+				// add it to the inputString:
+				inputAutopilotArray[inputAutopilotPos]=inChar;
+				inputAutopilotPos++;
+
+				if (inChar == '\n' || inChar == '\r' || inputAutopilotPos>48) {
+					//null to mark this array end
+					inputAutopilotArray[inputAutopilotPos]='\0';
+					//process(inputAutopilotPos, ',');
+					inputAutopilotPos=0;
+					memset(inputAutopilotArray, 0, sizeof(inputAutopilotPos));
+				}
+				//Serial.println(inputSerialArray);
+
+			}
+}
+
 void loop() {
 
 	//if (DEBUG)
@@ -308,34 +356,12 @@ void loop() {
 			nmea.printTrueHeading();
 			
 		}
-		if (interval % 20 == 0) {
-		//do every 2000ms
-			//test serial2
-
-			char testStrng[] = "Goodbye World!";
-			byte work = 0;
-			int i=0;
-			Serial.println("Writing \"Goodbye World!\" to UART TX");
-
-			  for (i = 0; i < sizeof(testStrng) - 1; i++){
-			    mSerial0.write(testStrng[i]);
-			    Serial.print(testStrng[i]);
-			  }
-			 // mSerial0.flush();
-			  Serial.println("\nReading back");
-			  work = mSerial0.available();
-			    Serial.println(work,DEC);
-			    Serial.println("Reading back contents of UART FIFO");
-
-			    while (0 < work) {
-			      Serial.print(mSerial0.read());
-			      work--;
-			    }
-			    Serial.println("Done");
-		}
 
 		execute = false;
 	}
+	//check SPI for incoming
+	serialEvent4();
+	autopilotEvent();
 
 //DEBUG
 //printf("Looping\n");
@@ -478,5 +504,5 @@ byte getChecksum(char* str) {
 	return cs;
 }
 
-/*
+
 

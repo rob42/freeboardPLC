@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include libraries/SPI/subdir.mk
 -include libraries/PString/subdir.mk
 -include libraries/PID_v1/subdir.mk
 -include libraries/NMEA/subdir.mk
@@ -70,7 +71,7 @@ sizedummy \
 all: FreeBoardPLC.elf secondary-outputs
 
 dependents:
-	-cd /home/robert/gitrep/Arduino_Mega_ATmega2560/Release && $(MAKE) clean all
+	-cd /home/robert/gitrep/Arduino_Mega_ATmega2560/Release && $(MAKE) all
 
 # Tool invocations
 FreeBoardPLC.elf: $(OBJS) $(USER_OBJS) /home/robert/gitrep/Arduino_Mega_ATmega2560/Release/libArduino_Mega_ATmega2560.a

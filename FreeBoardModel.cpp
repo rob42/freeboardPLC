@@ -118,6 +118,8 @@ FreeBoardModel::FreeBoardModel() {
 	config.serialBaud1 = 38400l;
 	config.serialBaud2 = 9600l; //seatalk?
 	config.serialBaud3 = 9600l; //16 bytes
+	config.serialBaud4 = 9600l; //16 bytes
+	config.autopilotBaud = 9600l; //16 bytes
 	config.seaTalk = false;
 	//}config;
 
@@ -775,6 +777,24 @@ long FreeBoardModel::getSerialBaud3() {
 }
 void FreeBoardModel::setSerialBaud3(long serialBaud3) {
 	this->config.serialBaud3 = serialBaud3;
+}
+long FreeBoardModel::getSerialBaud4() {
+	return this->config.serialBaud4;
+}
+void FreeBoardModel::setSerialBaud4(long serialBaud4) {
+	this->config.serialBaud4 = serialBaud4;
+}
+long FreeBoardModel::getSerialBaud5() {
+	return this->config.serialBaud5;
+}
+void FreeBoardModel::setSerialBaud5(long serialBaud5) {
+	this->config.serialBaud5 = serialBaud5;
+}
+long FreeBoardModel::getAutopilotBaud() {
+	return this->config.autopilotBaud;
+}
+void FreeBoardModel::setAutopilotBaud(long autopilotBaud) {
+	this->config.autopilotBaud = autopilotBaud;
 }
 bool FreeBoardModel::getSeaTalk() {
 	return this->config.seaTalk;

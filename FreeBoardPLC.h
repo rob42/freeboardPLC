@@ -32,7 +32,7 @@ typedef unsigned char byte;
 //add your includes for the project  here
 #include "FreeBoardConstants.h"
 #include "EEPROM.h"
-
+#include <MultiSerial.h>
 #include "FlexiTimer2.h"
 #include "Alarm.h"
 #include "Seatalk.h"
@@ -42,7 +42,7 @@ typedef unsigned char byte;
 #include "NmeaSerial.h"
 #include "Autopilot.h"
 //#include "SPI.h"
-#include "MultiSerial.h"
+//#include "MultiSerial.h"
 #include "FreeBoardModel.h"
 
 

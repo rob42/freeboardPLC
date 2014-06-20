@@ -34,6 +34,7 @@ SIZEDUMMY :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 . \
+libraries/SPI \
 libraries/PString \
 libraries/PID_v1 \
 libraries/NMEA \

@@ -36,7 +36,7 @@
 
 #define AUTOPILOT_WIND 'W'
 #define AUTOPILOT_COMPASS 'C'
-#define EEPROM_VER 7
+#define EEPROM_VER 8
 #define EEPROM_DATA 4
 class FreeBoardModel {
 public:
@@ -161,14 +161,28 @@ public:
     void setAutopilotOn(bool autopilotOn);
     short getGpsModel();
     void setGpsModel(short gpsModel);
+    //console
     long getSerialBaud();
     void setSerialBaud(long serialBaud);
+    //GPS
     long getSerialBaud1();
 	void setSerialBaud1(long serialBaud1);
+	//NMEA1
 	long getSerialBaud2();
 	void setSerialBaud2(long serialBaud2);
+	//NMEA2
 	long getSerialBaud3();
 	void setSerialBaud3(long serialBaud3);
+	//NMEA3 - SPI-2
+	long getSerialBaud4();
+	void setSerialBaud4(long serialBaud4);
+	//NMEA talker
+	long getSerialBaud5();
+	void setSerialBaud5(long serialBaud5);
+	//autopilot - SPI-1
+	long getAutopilotBaud();
+	void setAutopilotBaud(long autopilotBaud);
+
  	bool getSeaTalk();
  	void setSeaTalk(bool seaTalk);
 
@@ -283,6 +297,9 @@ private:
 		long serialBaud1; //4 bytes
 		long serialBaud2; //4 bytes
 		long serialBaud3; //4 bytes
+		long serialBaud4; //4 bytes
+		long serialBaud5; //4 bytes
+		long autopilotBaud; //4 bytes
 		bool seaTalk; //1 bytes
 	}config;
 

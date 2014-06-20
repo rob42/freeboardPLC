@@ -2,7 +2,7 @@
 #include "FreeBoardConstants.h"
 #include <AltSoftSerial.h>
 #include <SPI.h>
-#include "MultiSerial.h"
+#include <MultiSerial.h>
 
 
 AltSoftSerial altSerial; 
