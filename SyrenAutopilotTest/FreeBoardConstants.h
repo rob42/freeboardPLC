@@ -72,10 +72,10 @@
 //#define logPin 20 // pin20
 //#define logInterrupt 3 // INT3
 //#define logPin 21 // pin21 //INT 2
-#define lpgPin A12 // analogue pin A12
+#define lvl3Pin A12 // analogue pin A12
 #define sensorPin A13 // analogue pin A11
-#define level1Pin A10
-#define level2Pin A11
+#define lvl1Pin A10
+#define lvl2Pin A11
 
 // 0.00053995680 nautical miles per meter
 //decimal lat lon is in degrees, and we have 60 NM per degree so degrees per meter

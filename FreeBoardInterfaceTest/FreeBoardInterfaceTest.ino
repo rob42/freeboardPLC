@@ -183,19 +183,19 @@ void loop() {
       pinMode(alarmPin0, OUTPUT);
       digitalWrite(alarmPin0,LOW);
       
-      pinMode(level2Pin, INPUT_PULLUP);
-      pinMode(level1Pin, INPUT_PULLUP); 
+      pinMode(lvl2Pin, INPUT_PULLUP);
+      pinMode(lvl1Pin, INPUT_PULLUP); 
       delay(200);
-      //Serial.println(digitalRead(level1Pin));
-      if (HIGH == digitalRead(level1Pin)) {        
+      //Serial.println(digitalRead(lvl1Pin));
+      if (HIGH == digitalRead(lvl1Pin)) {        
         Serial.print("pass1..");
       }else{
         Serial.print("fail1..");
       }
       digitalWrite(alarmPin0, HIGH); //MOSFET grounds out
       delay(200);
-      //Serial.println(digitalRead(level1Pin));
-      if (LOW == digitalRead(level1Pin)) {        
+      //Serial.println(digitalRead(lvl1Pin));
+      if (LOW == digitalRead(lvl1Pin)) {        
         Serial.println("passed");
       }else{
         Serial.println("failed");
@@ -204,17 +204,17 @@ void loop() {
        Serial.print("*****Testing Level2 :");
 
       digitalWrite(alarmPin0, LOW); //MOSFET open
-       //Serial.println(digitalRead(level2Pin));
+       //Serial.println(digitalRead(lvl2Pin));
        delay(200);
-      if (HIGH == digitalRead(level2Pin)) {        
+      if (HIGH == digitalRead(lvl2Pin)) {        
         Serial.print("pass1..");
       }else{
         Serial.print("fail1..");
       }
       digitalWrite(alarmPin0, HIGH); //MOSFET grounds out
       delay(200);
-      //Serial.println(digitalRead(level2Pin));
-      if (LOW == digitalRead(level2Pin)) {        
+      //Serial.println(digitalRead(lvl2Pin));
+      if (LOW == digitalRead(lvl2Pin)) {        
         Serial.println("passed");
       }else{
         Serial.println("failed");
@@ -224,14 +224,14 @@ void loop() {
       
       
       Serial.println();
-      //log and lpg. They are linked to SOL M0SFET, which grounds them
+      //log and lvl3. They are linked to SOL M0SFET, which grounds them
         Serial.print("*****Testing LOG:");
         //setup MOSFET
       pinMode(autopilotEngagePin, OUTPUT);
       digitalWrite(autopilotEngagePin,LOW);
       //level1
       pinMode(logPin, INPUT_PULLUP);
-      pinMode(lpgPin, INPUT_PULLUP); 
+      pinMode(lvl3Pin, INPUT_PULLUP); 
       delay(200);
       if (HIGH == digitalRead(logPin)) {
         Serial.print("pass1..");
@@ -245,12 +245,12 @@ void loop() {
       }else{
         Serial.println("failed");
       }
-      //lpg
+      //lvl3
       Serial.print("*****Testing LPG:");
       //level1
       digitalWrite(autopilotEngagePin, LOW);
       delay(200);
-      byte pin = digitalRead(lpgPin);
+      byte pin = digitalRead(lvl3Pin);
       if (HIGH == pin) {
         Serial.print("pass1..");
       }else{
@@ -258,7 +258,7 @@ void loop() {
       }
       digitalWrite(autopilotEngagePin, HIGH);
      delay(200);
-     pin = digitalRead(lpgPin);
+     pin = digitalRead(lvl3Pin);
       if (LOW == pin) {
         Serial.println("passed");
       }else{

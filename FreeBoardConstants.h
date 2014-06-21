@@ -72,10 +72,10 @@
 //#define logPin 20 // pin20
 //#define logInterrupt 3 // INT3
 //#define logPin 21 // pin21 //INT 2
-#define lpgPin A12 // analogue pin A12
+#define lvl3Pin A12 // analogue pin A12
 #define sensorPin A13 // analogue pin A11
-#define level1Pin A10
-#define level2Pin A11
+#define lvl1Pin A10
+#define lvl2Pin A11
 
 // 0.00053995680 nautical miles per meter
 //decimal lat lon is in degrees, and we have 60 NM per degree so degrees per meter
@@ -189,6 +189,13 @@
 #define SERIAL_BAUD2 "#SB2"
 #define SERIAL_BAUD3 "#SB3"
 #define SEATALK "#STK"
+
+#define LEVEL1_UPPER_ALARM "#LU1"
+#define LEVEL2_UPPER_ALARM "#LU2"
+#define LEVEL3_UPPER_ALARM "#LU3"
+#define LEVEL1_LOWER_ALARM "#LU1"
+#define LEVEL2_LOWER_ALARM "#LU2"
+#define LEVEL3_LOWER_ALARM "#LU3"
 
 #define CONFIG "#CFG"
 #endif

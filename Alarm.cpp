@@ -34,8 +34,8 @@ Alarm::Alarm(FreeBoardModel* model) {
 	pinMode(alarmPin1, OUTPUT);
 	pinMode(alarmPin2, OUTPUT);
 	pinMode(alarmPin3, OUTPUT);
-	//TODO: setup lpg pin - actually its analogue
-	pinMode(lpgPin, INPUT);
+	//TODO: setup lvl3 pin - actually its analogue
+	pinMode(lvl3Pin, INPUT);
 }
 
 Alarm::~Alarm() {
@@ -82,13 +82,27 @@ void Alarm::checkWindAlarm(){
 		}
 }
 
-void Alarm::checkLpgAlarm(){
-	//check lpg alarm val, pulled high when disconnected, ground to fire alarm
-	//not tested but no lpg = 1.3V (~200), high lpg = 5V (1024), alarm value will need calibration.
-		if (analogRead(lpgPin)>model->getLpgLimit()) {
+void Alarm::checkLvlAlarms(){
+	//check lvl* alarm val, 0 is low, 1024 is high
+	int lvl1 = analogRead(lvl1Pin);
+			if ( lvl1 < model->getLvl1LowerLimit() || lvl1 >model->getLvl1UpperLimit()) {
 
-			model->setLpgAlarmTriggered(true);
+				model->setLvl1AlarmTriggered(true);
+			} else {
+				model->setLvl1AlarmTriggered(false);
+			}
+	int lvl2 = analogRead(lvl2Pin);
+			if ( lvl2 < model->getLvl2LowerLimit() || lvl2 >model->getLvl2UpperLimit()) {
+
+				model->setLvl2AlarmTriggered(true);
+			} else {
+				model->setLvl2AlarmTriggered(false);
+			}
+	int lvl3 = analogRead(lvl3Pin);
+		if ( lvl3 < model->getLvl3LowerLimit() || lvl3 >model->getLvl3UpperLimit()) {
+
+			model->setLvl3AlarmTriggered(true);
 		} else {
-			model->setLpgAlarmTriggered(false);
+			model->setLvl3AlarmTriggered(false);
 		}
 }

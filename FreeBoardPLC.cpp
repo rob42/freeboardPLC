@@ -330,7 +330,7 @@ void loop() {
 			//do every 1000ms
 			anchor.checkAnchor();
 			alarm.checkWindAlarm();
-			alarm.checkLpgAlarm();
+			alarm.checkLvlAlarms();
 			nmea.printTrueHeading();
 			
 		}
@@ -419,6 +419,24 @@ void process(char * s, char parser) {
 				save = true;
 			} else if (strcmp(key, WIND_ZERO_ADJUST) == 0) {
 				model.setWindZeroOffset(atoi(val));
+				save = true;
+			} else if (strcmp(key, LEVEL1_UPPER_ALARM) == 0) {
+				model.setLvl1UpperLimit(atoi(val));
+				save = true;
+			} else if (strcmp(key, LEVEL1_LOWER_ALARM) == 0) {
+				model.setLvl1LowerLimit(atoi(val));
+				save = true;
+			} else if (strcmp(key, LEVEL2_UPPER_ALARM) == 0) {
+				model.setLvl2UpperLimit(atoi(val));
+				save = true;
+			} else if (strcmp(key, LEVEL2_LOWER_ALARM) == 0) {
+				model.setLvl2LowerLimit(atoi(val));
+				save = true;
+			} else if (strcmp(key, LEVEL3_UPPER_ALARM) == 0) {
+				model.setLvl3UpperLimit(atoi(val));
+				save = true;
+			} else if (strcmp(key, LEVEL3_LOWER_ALARM) == 0) {
+				model.setLvl3LowerLimit(atoi(val));
 				save = true;
 			}else if (strcmp(key, CONFIG) == 0) {
 				//Serial.println("Sending config..");

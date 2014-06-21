@@ -38,7 +38,7 @@ public:
 	void checkAlarms();
 	bool alarmTriggered();
 	void checkWindAlarm();
-	void checkLpgAlarm();
+	void checkLvlAlarms();
 
 private:
 	FreeBoardModel* model;

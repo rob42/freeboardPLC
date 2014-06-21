@@ -36,7 +36,7 @@
 
 #define AUTOPILOT_WIND 'W'
 #define AUTOPILOT_COMPASS 'C'
-#define EEPROM_VER 12
+#define EEPROM_VER 13
 #define EEPROM_DATA 4
 class FreeBoardModel {
 public:
@@ -80,10 +80,23 @@ public:
 	float getMagneticHeading();
 	float getDeclination();
 	volatile bool isMobAlarmTriggered() ;
+	volatile bool isLvl1AlarmTriggered() ;
+	int getLvl1UpperLimit();
+	void setLvl1UpperLimit(int lvl1UpperLimit);
+	int getLvl1LowerLimit();
+	void setLvl1LowerLimit(int lvl1LowerLimit);
 
-	volatile bool isLpgAlarmTriggered() ;
-	int getLpgLimit();
-	void setLpgLimit(int lpgLimit);
+	volatile bool isLvl2AlarmTriggered() ;
+	int getLvl2UpperLimit();
+	void setLvl2UpperLimit(int lvl2UpperLimit);
+	int getLvl2LowerLimit();
+	void setLvl2LowerLimit(int lvl2LowerLimit);
+
+	volatile bool isLvl3AlarmTriggered() ;
+	int getLvl3UpperLimit();
+	void setLvl3UpperLimit(int lvl3UpperLimit);
+	int getLvl3LowerLimit();
+	void setLvl3LowerLimit(int lvl3LowerLimit);
 
 	volatile bool isRadarAlarmTriggered() ;
 	int getWindZeroOffset() ;
@@ -149,7 +162,9 @@ public:
 	void setMenuLevel(volatile int menuLevel);
 	void setMenuState(volatile int menuState);
 	void setMobAlarmTriggered(volatile bool mobAlarmTriggered);
-	void setLpgAlarmTriggered(volatile bool lpgAlarmTriggered);
+	void setLvl1AlarmTriggered(volatile bool lvl1AlarmTriggered);
+	void setLvl2AlarmTriggered(volatile bool lvl2AlarmTriggered);
+	void setLvl3AlarmTriggered(volatile bool lvl3AlarmTriggered);
 	void setRadarAlarmTriggered(volatile bool radarAlarmTriggered);
 	void setWindZeroOffset(int windZeroOffset);
 	void setWindAlarmOn(bool windAlarmOn);
@@ -268,8 +283,15 @@ private:
 	bool radarAlarmTriggered; //set to true to trigger radar alarm
 	//volatile bool mobAlarmOn; //set to true to enable mob alarm
 	bool mobAlarmTriggered; //set to true to trigger MOB alarm
-	bool lpgAlarmTriggered; //set to true to trigger lpg alarm
-	int lpgLimit; //0-1024 analogue range - higher is slower to alarm, eg more lpg
+	bool lvl1AlarmTriggered; //set to true to trigger lvl1 alarm
+	int lvl1UpperLimit; //0-1024 analogue range - higher is slower to alarm, eg more lvl1
+	int lvl1LowerLimit; //0-1024 analogue range - lower is slower to alarm, eg less lvl1
+	bool lvl2AlarmTriggered; //set to true to trigger lvl2 alarm
+	int lvl2UpperLimit; //0-1024 analogue range - higher is slower to alarm, eg more lvl2
+	int lvl2LowerLimit; //0-1024 analogue range - lower is slower to alarm, eg less lvl2
+	bool lvl3AlarmTriggered; //set to true to trigger lvl3 alarm
+	int lvl3UpperLimit; //0-1024 analogue range - higher is slower to alarm, eg more lvl3
+	int lvl3LowerLimit; //0-1024 analogue range - lower is slower to alarm, eg less lvl3
 	//wind
 	struct WindState{			//15 bytes
 

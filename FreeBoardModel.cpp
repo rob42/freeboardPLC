@@ -83,7 +83,7 @@ FreeBoardModel::FreeBoardModel() {
 	radarAlarmTriggered = false; //set to true to trigger radar alarm
 	//volatile bool mobAlarmOn; //set to true to enable mob alarm
 	mobAlarmTriggered = false; //set to true to trigger MOB alarm
-	lpgAlarmTriggered = false;
+	lvl3AlarmTriggered = false;
 	//wind
 	windState.windLastUpdate = 0;
 	windState.windAverage = 0.0;
@@ -207,6 +207,22 @@ int FreeBoardModel::writeConfig(HardwareSerial ser) {
 	ser.print(getSerialBaud3());
 	ser.print(",STK:");
 	ser.print(getSeaTalk());
+
+	ser.print(",LU1:");
+	ser.print(getLvl1UpperLimit());
+	ser.print(",LL1:");
+	ser.print(getLvl1LowerLimit());
+
+	ser.print(",LU2:");
+	ser.print(getLvl2UpperLimit());
+	ser.print(",LL2:");
+	ser.print(getLvl2LowerLimit());
+
+	ser.print(",LU3:");
+	ser.print(getLvl3UpperLimit());
+	ser.print(",LL3:");
+	ser.print(getLvl3LowerLimit());
+
 	ser.println(",");
 	return 0;
 }
@@ -435,14 +451,54 @@ float FreeBoardModel::getDeclination() {
 volatile bool FreeBoardModel::isMobAlarmTriggered() {
 	return mobAlarmTriggered;
 }
-volatile bool FreeBoardModel::isLpgAlarmTriggered() {
-	return lpgAlarmTriggered;
+volatile bool FreeBoardModel::isLvl1AlarmTriggered() {
+	return lvl1AlarmTriggered;
 }
-int FreeBoardModel::getLpgLimit(){
-	return lpgLimit;
+int FreeBoardModel::getLvl1UpperLimit(){
+	return lvl1UpperLimit;
 }
-void FreeBoardModel::setLpgLimit(int lpgLimit){
-	this->lpgLimit=lpgLimit;
+void FreeBoardModel::setLvl1UpperLimit(int lvl1UpperLimit){
+	this->lvl1UpperLimit=lvl1UpperLimit;
+}
+
+int FreeBoardModel::getLvl1LowerLimit(){
+	return lvl1LowerLimit;
+}
+void FreeBoardModel::setLvl1LowerLimit(int lvl1LowerLimit){
+	this->lvl1LowerLimit=lvl1LowerLimit;
+}
+volatile bool FreeBoardModel::isLvl2AlarmTriggered() {
+	return lvl2AlarmTriggered;
+}
+int FreeBoardModel::getLvl2UpperLimit(){
+	return lvl2UpperLimit;
+}
+void FreeBoardModel::setLvl2UpperLimit(int lvl2UpperLimit){
+	this->lvl2UpperLimit=lvl2UpperLimit;
+}
+
+int FreeBoardModel::getLvl2LowerLimit(){
+	return lvl2LowerLimit;
+}
+void FreeBoardModel::setLvl2LowerLimit(int lvl2LowerLimit){
+	this->lvl2LowerLimit=lvl2LowerLimit;
+}
+
+volatile bool FreeBoardModel::isLvl3AlarmTriggered() {
+	return lvl3AlarmTriggered;
+}
+int FreeBoardModel::getLvl3UpperLimit(){
+	return lvl3UpperLimit;
+}
+void FreeBoardModel::setLvl3UpperLimit(int lvl3UpperLimit){
+	this->lvl3UpperLimit=lvl3UpperLimit;
+}
+
+int FreeBoardModel::getLvl3LowerLimit(){
+	return lvl3LowerLimit;
+}
+void FreeBoardModel::setLvl3LowerLimit(int lvl3LowerLimit){
+	this->lvl3LowerLimit=lvl3LowerLimit;
 }
 
 
@@ -680,8 +736,14 @@ void FreeBoardModel::setDeclination(float declination) {
 void FreeBoardModel::setMobAlarmTriggered(volatile bool mobAlarmTriggered) {
 	this->mobAlarmTriggered = mobAlarmTriggered;
 }
-void FreeBoardModel::setLpgAlarmTriggered(volatile bool lpgAlarmTriggered) {
-	this->lpgAlarmTriggered = lpgAlarmTriggered;
+void FreeBoardModel::setLvl1AlarmTriggered(volatile bool lvl1AlarmTriggered) {
+	this->lvl1AlarmTriggered = lvl1AlarmTriggered;
+}
+void FreeBoardModel::setLvl2AlarmTriggered(volatile bool lvl2AlarmTriggered) {
+	this->lvl2AlarmTriggered = lvl2AlarmTriggered;
+}
+void FreeBoardModel::setLvl3AlarmTriggered(volatile bool lvl3AlarmTriggered) {
+	this->lvl3AlarmTriggered = lvl3AlarmTriggered;
 }
 
 void FreeBoardModel::setRadarAlarmTriggered(volatile bool radarAlarmTriggered) {
@@ -721,7 +783,7 @@ void FreeBoardModel::setWindLastUpdate(unsigned long windLastUpdate) {
 
 volatile bool FreeBoardModel::isAlarmTriggered() {
 	return windState.windAlarmTriggered && radarAlarmTriggered && gpsState.gpsAlarmTriggered && anchorState.anchorAlarmTriggered
-			&& autopilotState.autopilotAlarmTriggered && mobAlarmTriggered && lpgAlarmTriggered;
+			&& autopilotState.autopilotAlarmTriggered && mobAlarmTriggered && lvl1AlarmTriggered && lvl2AlarmTriggered && lvl3AlarmTriggered;
 }
 
 volatile bool FreeBoardModel::isMobAlarmOn() {
