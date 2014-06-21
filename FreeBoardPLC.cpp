@@ -58,6 +58,8 @@
 
 #include "FreeBoardPLC.h"
 
+using namespace stream_json_reader;
+
 volatile boolean execute = false;
 volatile int interval = 0;
 int inByteSerial1;
@@ -116,6 +118,10 @@ boolean inputSerial1Complete = false; // whether the GPS string is complete
 boolean inputSerial2Complete = false; // whether the string is complete
 boolean inputSerial3Complete = false; // whether the string is complete
 boolean inputSerial4Complete = false; // whether the string is complete
+
+//json support
+static const char* queries[] = { "navigation.position.latitude", "navigation.position.longitude"};
+StreamJsonReader jsonreader(queries, 2);
 
 void setup() {
 	//model.saveConfig();
@@ -228,6 +234,9 @@ void serialEvent() {
 	while (Serial.available()) {
 		// get the new byte:
 		char inChar = (char) Serial.read();
+		//try out the json reader here
+		jsonreader.process_char(inChar);
+
 		// add it to the inputString:
 		inputSerialArray[inputSerialPos]=inChar;
 					inputSerialPos++;
@@ -238,6 +247,11 @@ void serialEvent() {
 			process(inputSerialArray, ',');
 			inputSerialPos=0;
 			memset(inputSerialArray, 0, sizeof(inputSerialArray));
+			//and also dump out the json
+			Serial.print("jsonreader.results[0] = ");
+			Serial.println(jsonreader.results[0]);
+			Serial.print("jsonreader.results[1] = ");
+			Serial.println(jsonreader.results[1]);
 		}
 		//Serial.println(inputSerialArray);
 

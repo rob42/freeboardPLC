@@ -14,6 +14,7 @@ RM := rm -rf
 -include libraries/NMEA/subdir.mk
 -include libraries/MultiSerial/subdir.mk
 -include libraries/Kangaroo/subdir.mk
+-include libraries/JsonStream/subdir.mk
 -include libraries/FlexiTimer2/subdir.mk
 -include libraries/EEPROM/subdir.mk
 -include libraries/AltSoftSerial/subdir.mk

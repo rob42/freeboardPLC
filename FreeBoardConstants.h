@@ -73,7 +73,6 @@
 //#define logInterrupt 3 // INT3
 //#define logPin 21 // pin21 //INT 2
 #define lvl3Pin A12 // analogue pin A12
-#define sensorPin A13 // analogue pin A11
 #define lvl1Pin A10
 #define lvl2Pin A11
 

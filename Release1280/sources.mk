@@ -38,6 +38,7 @@ libraries/PID_v1 \
 libraries/NMEA \
 libraries/MultiSerial \
 libraries/Kangaroo \
+libraries/JsonStream \
 libraries/FlexiTimer2 \
 libraries/EEPROM \
 libraries/AltSoftSerial \
