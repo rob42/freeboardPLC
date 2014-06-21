@@ -83,7 +83,15 @@ FreeBoardModel::FreeBoardModel() {
 	radarAlarmTriggered = false; //set to true to trigger radar alarm
 	//volatile bool mobAlarmOn; //set to true to enable mob alarm
 	mobAlarmTriggered = false; //set to true to trigger MOB alarm
-	lvl3AlarmTriggered = false;
+	lvl1AlarmTriggered = false;
+	lvl1UpperLimit = 1025; //0-1024 analogue range - higher is slower to alarm, eg more lvl1
+	lvl1LowerLimit=-1; //0-1024 analogue range - lower is slower to alarm, eg less lvl1
+	lvl2AlarmTriggered =false; //set to true to trigger lvl2 alarm
+	lvl2UpperLimit= 1025; //0-1024 analogue range - higher is slower to alarm, eg more lvl2
+	lvl2LowerLimit=-1; //0-1024 analogue range - lower is slower to alarm, eg less lvl2
+	lvl3AlarmTriggered =false; //set to true to trigger lvl3 alarm
+	lvl3UpperLimit= 1025; //0-1024 analogue range - higher is slower to alarm, eg more lvl3
+	lvl3LowerLimit=-1; //0-1024 analogue range - lower is slower to alarm, eg less lvl3
 	//wind
 	windState.windLastUpdate = 0;
 	windState.windAverage = 0.0;
