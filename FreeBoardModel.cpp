@@ -84,14 +84,14 @@ FreeBoardModel::FreeBoardModel() {
 	//volatile bool mobAlarmOn; //set to true to enable mob alarm
 	mobAlarmTriggered = false; //set to true to trigger MOB alarm
 	lvl1AlarmTriggered = false;
-	lvl1UpperLimit = 1025; //0-1024 analogue range - higher is slower to alarm, eg more lvl1
-	lvl1LowerLimit=-1; //0-1024 analogue range - lower is slower to alarm, eg less lvl1
+	config.lvl1UpperLimit = 1025; //0-1024 analogue range - higher is slower to alarm, eg more lvl1
+	config.lvl1LowerLimit=-1; //0-1024 analogue range - lower is slower to alarm, eg less lvl1
 	lvl2AlarmTriggered =false; //set to true to trigger lvl2 alarm
-	lvl2UpperLimit= 1025; //0-1024 analogue range - higher is slower to alarm, eg more lvl2
-	lvl2LowerLimit=-1; //0-1024 analogue range - lower is slower to alarm, eg less lvl2
+	config.lvl2UpperLimit= 1025; //0-1024 analogue range - higher is slower to alarm, eg more lvl2
+	config.lvl2LowerLimit=-1; //0-1024 analogue range - lower is slower to alarm, eg less lvl2
 	lvl3AlarmTriggered =false; //set to true to trigger lvl3 alarm
-	lvl3UpperLimit= 1025; //0-1024 analogue range - higher is slower to alarm, eg more lvl3
-	lvl3LowerLimit=-1; //0-1024 analogue range - lower is slower to alarm, eg less lvl3
+	config.lvl3UpperLimit= 1025; //0-1024 analogue range - higher is slower to alarm, eg more lvl3
+	config.lvl3LowerLimit=-1; //0-1024 analogue range - lower is slower to alarm, eg less lvl3
 	//wind
 	windState.windLastUpdate = 0;
 	windState.windAverage = 0.0;
@@ -463,50 +463,50 @@ volatile bool FreeBoardModel::isLvl1AlarmTriggered() {
 	return lvl1AlarmTriggered;
 }
 int FreeBoardModel::getLvl1UpperLimit(){
-	return lvl1UpperLimit;
+	return config.lvl1UpperLimit;
 }
 void FreeBoardModel::setLvl1UpperLimit(int lvl1UpperLimit){
-	this->lvl1UpperLimit=lvl1UpperLimit;
+	this->config.lvl1UpperLimit=lvl1UpperLimit;
 }
 
 int FreeBoardModel::getLvl1LowerLimit(){
-	return lvl1LowerLimit;
+	return config.lvl1LowerLimit;
 }
 void FreeBoardModel::setLvl1LowerLimit(int lvl1LowerLimit){
-	this->lvl1LowerLimit=lvl1LowerLimit;
+	this->config.lvl1LowerLimit=lvl1LowerLimit;
 }
 volatile bool FreeBoardModel::isLvl2AlarmTriggered() {
 	return lvl2AlarmTriggered;
 }
 int FreeBoardModel::getLvl2UpperLimit(){
-	return lvl2UpperLimit;
+	return config.lvl2UpperLimit;
 }
 void FreeBoardModel::setLvl2UpperLimit(int lvl2UpperLimit){
-	this->lvl2UpperLimit=lvl2UpperLimit;
+	this->config.lvl2UpperLimit=lvl2UpperLimit;
 }
 
 int FreeBoardModel::getLvl2LowerLimit(){
-	return lvl2LowerLimit;
+	return config.lvl2LowerLimit;
 }
 void FreeBoardModel::setLvl2LowerLimit(int lvl2LowerLimit){
-	this->lvl2LowerLimit=lvl2LowerLimit;
+	this->config.lvl2LowerLimit=lvl2LowerLimit;
 }
 
 volatile bool FreeBoardModel::isLvl3AlarmTriggered() {
 	return lvl3AlarmTriggered;
 }
 int FreeBoardModel::getLvl3UpperLimit(){
-	return lvl3UpperLimit;
+	return config.lvl3UpperLimit;
 }
 void FreeBoardModel::setLvl3UpperLimit(int lvl3UpperLimit){
-	this->lvl3UpperLimit=lvl3UpperLimit;
+	this->config.lvl3UpperLimit=lvl3UpperLimit;
 }
 
 int FreeBoardModel::getLvl3LowerLimit(){
-	return lvl3LowerLimit;
+	return config.lvl3LowerLimit;
 }
 void FreeBoardModel::setLvl3LowerLimit(int lvl3LowerLimit){
-	this->lvl3LowerLimit=lvl3LowerLimit;
+	this->config.lvl3LowerLimit=lvl3LowerLimit;
 }
 
 

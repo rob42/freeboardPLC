@@ -43,81 +43,80 @@ public:
 //alarms
 	FreeBoardModel();
 
-	bool isWindAlarmTriggered() ;
+	bool isWindAlarmTriggered();
 	void setWindAlarmTriggered(bool windAlarmTriggered);
-	unsigned long getAlarmLast() ;
-	unsigned long getAlarmSnooze() ;
-	float getAnchorDistance() ;
-	float getAnchorE() ;
-	float getAnchorLat() ;
-	float getAnchorLon() ;
-	float getAnchorMaxDistance() ;
-	float getAnchorN() ;
-	float getAnchorRadius() ;
-	float getAnchorRadiusDeg() ;
-	float getAnchorS() ;
-	float getAnchorW() ;
-	char getAutopilotReference() ;
+	unsigned long getAlarmLast();
+	unsigned long getAlarmSnooze();
+	float getAnchorDistance();
+	float getAnchorE();
+	float getAnchorLat();
+	float getAnchorLon();
+	float getAnchorMaxDistance();
+	float getAnchorN();
+	float getAnchorRadius();
+	float getAnchorRadiusDeg();
+	float getAnchorS();
+	float getAnchorW();
+	char getAutopilotReference();
 	double getAutopilotOffCourse();
-	double getAutopilotAlarmMaxCourseError() ;
-	double getAutopilotAlarmMaxWindError() ;
-	double getAutopilotAlarmMaxXtError() ;
+	double getAutopilotAlarmMaxCourseError();
+	double getAutopilotAlarmMaxWindError();
+	double getAutopilotAlarmMaxXtError();
 	double getAutopilotCurrentHeading();
 	double getAutopilotRudderCommand();
 	double getAutopilotTargetHeading();
 	int getAutopilotDeadZone();
 	int getAutopilotSlack();
 	long getAutopilotSpeed();
-	long getGpsAlarmFixTime() ;
-	float getGpsCourse() ;
-	unsigned long getGpsLastFix() ;
-	float getGpsLatitude() ;
-	float getGpsLongitude() ;
-	float getGpsSpeed() ;
-	float getGpsSpeedUnit() ;
-	char getGpsStatus() ;
-	float getGpsUtc() ;
+	long getGpsAlarmFixTime();
+	float getGpsCourse();
+	unsigned long getGpsLastFix();
+	float getGpsLatitude();
+	float getGpsLongitude();
+	float getGpsSpeed();
+	float getGpsSpeedUnit();
+	char getGpsStatus();
+	float getGpsUtc();
 	float getMagneticHeading();
 	float getDeclination();
-	volatile bool isMobAlarmTriggered() ;
-	volatile bool isLvl1AlarmTriggered() ;
+	volatile bool isMobAlarmTriggered();
+	volatile bool isLvl1AlarmTriggered();
 	int getLvl1UpperLimit();
 	void setLvl1UpperLimit(int lvl1UpperLimit);
 	int getLvl1LowerLimit();
 	void setLvl1LowerLimit(int lvl1LowerLimit);
 
-	volatile bool isLvl2AlarmTriggered() ;
+	volatile bool isLvl2AlarmTriggered();
 	int getLvl2UpperLimit();
 	void setLvl2UpperLimit(int lvl2UpperLimit);
 	int getLvl2LowerLimit();
 	void setLvl2LowerLimit(int lvl2LowerLimit);
 
-	volatile bool isLvl3AlarmTriggered() ;
+	volatile bool isLvl3AlarmTriggered();
 	int getLvl3UpperLimit();
 	void setLvl3UpperLimit(int lvl3UpperLimit);
 	int getLvl3LowerLimit();
 	void setLvl3LowerLimit(int lvl3LowerLimit);
 
-	volatile bool isRadarAlarmTriggered() ;
-	int getWindZeroOffset() ;
-	int getWindAlarmSpeed() ;
-	int getWindApparentDir() ;
+	volatile bool isRadarAlarmTriggered();
+	int getWindZeroOffset();
+	int getWindAlarmSpeed();
+	int getWindApparentDir();
 	int getWindTrueDir();
-	float getWindAverage() ;
-	float getWindFactor() ;
-	unsigned long getWindLastUpdate() ;
-	int getWindMax() ;
+	float getWindAverage();
+	float getWindFactor();
+	unsigned long getWindLastUpdate();
+	int getWindMax();
 
 	//bool isAlarmBeepState() ;
-	bool isAnchorAlarmOn() ;
-	bool isAnchorAlarmTriggered() ;
-	bool isAutopilotAlarmOn() ;
-	bool isAutopilotAlarmTriggered() ;
-	bool isGpsAlarmOn() ;
-	bool isGpsAlarmTriggered() ;
-	bool isGpsDecode() ;
-	bool isWindAlarmOn() ;
-
+	bool isAnchorAlarmOn();
+	bool isAnchorAlarmTriggered();
+	bool isAutopilotAlarmOn();
+	bool isAutopilotAlarmTriggered();
+	bool isGpsAlarmOn();
+	bool isGpsAlarmTriggered();
+	bool isGpsDecode();
+	bool isWindAlarmOn();
 
 	// void setAlarmBeepState(bool alarmBeepState);
 	void setAlarmLast(unsigned long alarmLast);
@@ -177,20 +176,20 @@ public:
 	void setWindTrueDir(int windTrueDir);
 	void setMagneticHeading(float magneticHeading);
 	void setDeclination(float declination);
-	volatile bool isAlarmTriggered() ;
-	volatile bool isMobAlarmOn() ;
-	volatile bool isRadarAlarmOn() ;
+	volatile bool isAlarmTriggered();
+	volatile bool isMobAlarmOn();
+	volatile bool isRadarAlarmOn();
 	void setMobAlarmOn(volatile bool mobAlarmOn);
 	void setRadarAlarmOn(volatile bool radarAlarmOn);
-    bool isAutopilotOn() ;
-    void setAutopilotOn(bool autopilotOn);
-    short getGpsModel();
-    void setGpsModel(short gpsModel);
-    //console
-    long getSerialBaud();
-    void setSerialBaud(long serialBaud);
-    //GPS
-    long getSerialBaud1();
+	bool isAutopilotOn();
+	void setAutopilotOn(bool autopilotOn);
+	short getGpsModel();
+	void setGpsModel(short gpsModel);
+	//console
+	long getSerialBaud();
+	void setSerialBaud(long serialBaud);
+	//GPS
+	long getSerialBaud1();
 	void setSerialBaud1(long serialBaud1);
 	//NMEA1
 	long getSerialBaud2();
@@ -208,15 +207,15 @@ public:
 	long getAutopilotBaud();
 	void setAutopilotBaud(long autopilotBaud);
 
- 	bool getSeaTalk();
- 	void setSeaTalk(bool seaTalk);
+	bool getSeaTalk();
+	void setSeaTalk(bool seaTalk);
 
-    void saveConfig();
-    void readConfig();
-    int writeSimple(HardwareSerial ser);
-    int writeConfig(HardwareSerial ser);
-    int sendData(HardwareSerial ser, char name);
-    int receiveData(HardwareSerial ser, char name);
+	void saveConfig();
+	void readConfig();
+	int writeSimple(HardwareSerial ser);
+	int writeConfig(HardwareSerial ser);
+	int sendData(HardwareSerial ser, char name);
+	int receiveData(HardwareSerial ser, char name);
 private:
 
 	unsigned long alarmLast; //toggle to make alarm beep - beep beep
@@ -225,7 +224,7 @@ private:
 	float magneticHeading;
 	float declination;
 	//anchor
-	struct AnchorState{
+	struct AnchorState {
 		//float anchorRadius; //anchor alarm radius in meters
 		float anchorRadiusDeg; //anchor alarm radius in decimal degrees, eg 1deg = 60NM.
 
@@ -242,10 +241,10 @@ private:
 		float anchorS;
 		float anchorE;
 		float anchorW;
-	}anchorState;
+	} anchorState;
 
 	//autopilot
-	struct AutopilotState{
+	struct AutopilotState {
 		bool autopilotOn;
 		double autopilotOffCourse; //-179 to +180
 		char autopilotReference; //WIND (W) or COMPASS(C)
@@ -259,11 +258,11 @@ private:
 		double autopilotAlarmMaxWindError; //wind angle change while on windpilot
 		double autopilotAlarmMaxCourseError; //course error
 		long autopilotSpeed; //angular movement rate as (increments of total)/sec
-	}autopilotState;
+	} autopilotState;
 
 	//gps
 	//eg1. $GPRMC,081836,A,3751.65,S,14507.36,E,000.0,360.0,130998,011.3,E*62  //64 bytes
-	struct GpsState{												//27 bytes
+	struct GpsState { //27 bytes
 		bool gpsDecode; //flag to indicate a new sentence was decoded.  					1byte
 		unsigned long gpsLastFix; //time of last good gps fix.							32 bits (4 bytes). non neg
 		float gpsUtc; // decimal value of UTC term in last full GPRMC sentence					32 bits (4 bytes)
@@ -276,7 +275,7 @@ private:
 		//bool gpsAlarmOn; //true to engage alarm
 		bool gpsAlarmTriggered; //set to true to trigger gps alarm						1byte
 		//double gpsAlarmFixTime; //max time in millis without fix
-	}gpsState;
+	} gpsState;
 
 	//seatalk
 	//volatile bool radarAlarmOn; //set to true to enable radar alarm
@@ -284,48 +283,43 @@ private:
 	//volatile bool mobAlarmOn; //set to true to enable mob alarm
 	bool mobAlarmTriggered; //set to true to trigger MOB alarm
 	bool lvl1AlarmTriggered; //set to true to trigger lvl1 alarm
-	int lvl1UpperLimit; //0-1024 analogue range - higher is slower to alarm, eg more lvl1
-	int lvl1LowerLimit; //0-1024 analogue range - lower is slower to alarm, eg less lvl1
 	bool lvl2AlarmTriggered; //set to true to trigger lvl2 alarm
-	int lvl2UpperLimit; //0-1024 analogue range - higher is slower to alarm, eg more lvl2
-	int lvl2LowerLimit; //0-1024 analogue range - lower is slower to alarm, eg less lvl2
 	bool lvl3AlarmTriggered; //set to true to trigger lvl3 alarm
-	int lvl3UpperLimit; //0-1024 analogue range - higher is slower to alarm, eg more lvl3
-	int lvl3LowerLimit; //0-1024 analogue range - lower is slower to alarm, eg less lvl3
-	//wind
-	struct WindState{			//15 bytes
 
-		unsigned long windLastUpdate;	//32 bits (4 bytes). non neg
-		float windAverage;		//16 bits (2 bytes)
+	//wind
+	struct WindState { //15 bytes
+
+		unsigned long windLastUpdate; //32 bits (4 bytes). non neg
+		float windAverage; //16 bits (2 bytes)
 		//float windFactor;		//32 bits (4 bytes). 
-		int windMax;			//16 bits (2 bytes). 
-		int windApparentDir;		//16 bits (2 bytes)
-		int windTrueDir;			//16 bits (2 bytes)
+		int windMax; //16 bits (2 bytes).
+		int windApparentDir; //16 bits (2 bytes)
+		int windTrueDir; //16 bits (2 bytes)
 		//int windAlarmSpeed;
 		//bool windAlarmOn;
-		bool windAlarmTriggered;	//1 byte
-	}windState;
+		bool windAlarmTriggered; //1 byte
+	} windState;
 
 	//CONFIG_T
-	struct Configuration{		// 57 bytes
+	struct Configuration { // 57 bytes
 		//ver 5
-		float anchorLat;	//32 bits (4 bytes). 
-		float anchorLon;	//32 bits (4 bytes). 
-		float anchorRadius;	//32 bits (4 bytes). 
-		bool anchorAlarmOn;	//1 byte
-		bool autopilotAlarmOn;	//1 byte
+		float anchorLat; //32 bits (4 bytes).
+		float anchorLon; //32 bits (4 bytes).
+		float anchorRadius; //32 bits (4 bytes).
+		bool anchorAlarmOn; //1 byte
+		bool autopilotAlarmOn; //1 byte
 		int autopilotDeadZone; //16 bits (2 bytes)
 		int autopilotSlack; //16 bits (2 bytes)
 		long autopilotSpeed; //32 bits (4 bytes)
-		float gpsSpeedUnit;	//32 bits (4 bytes). 
-		bool gpsAlarmOn;	//1 byte
-		long gpsAlarmFixTime; 	//32 bits (4 bytes). 
-		bool radarAlarmOn;	//1 byte
-		bool mobAlarmOn;	//1 byte
-		int windAlarmSpeed;	//16 bits (2 bytes)
-		bool windAlarmOn;	//1 byte
-		float windFactor;	//32 bits (4 bytes).
-		int windZeroOffset;	//16 bits (2 bytes)
+		float gpsSpeedUnit; //32 bits (4 bytes).
+		bool gpsAlarmOn; //1 byte
+		long gpsAlarmFixTime; //32 bits (4 bytes).
+		bool radarAlarmOn; //1 byte
+		bool mobAlarmOn; //1 byte
+		int windAlarmSpeed; //16 bits (2 bytes)
+		bool windAlarmOn; //1 byte
+		float windFactor; //32 bits (4 bytes).
+		int windZeroOffset; //16 bits (2 bytes)
 		//ver 6
 		short gpsModel; //2 bytes
 		long serialBaud; //4 bytes, baud can be > 64000!
@@ -336,11 +330,15 @@ private:
 		long serialBaud5; //4 bytes
 		long autopilotBaud; //4 bytes
 		bool seaTalk; //1 bytes
-	}config;
+		int lvl1UpperLimit; //0-1024 analogue range - higher is slower to alarm, eg more lvl1
+		int lvl1LowerLimit; //0-1024 analogue range - lower is slower to alarm, eg less lvl1
+		int lvl2UpperLimit; //0-1024 analogue range - higher is slower to alarm, eg more lvl2
+		int lvl2LowerLimit; //0-1024 analogue range - lower is slower to alarm, eg less lvl2
+		int lvl3UpperLimit; //0-1024 analogue range - higher is slower to alarm, eg more lvl3
+		int lvl3LowerLimit; //0-1024 analogue range - lower is slower to alarm, eg less lvl3
+	} config;
 
 	int version;
 };
-
-
 
 #endif /* FREEBOARDMODEL_H_ */

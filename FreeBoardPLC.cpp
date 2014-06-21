@@ -333,7 +333,7 @@ void loop() {
 		}
 		if (interval % 5 == 0) {
 			//do every 500ms
-			wind.calcWindSpeedAndDir();
+			//wind.calcWindSpeedAndDir();
 			wind.calcWindData();
 			nmea.printWindNmea();
 			//fire any alarms

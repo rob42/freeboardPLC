@@ -89,11 +89,11 @@
 	/** version */
 #define VER  "VER"
 	/** Roll degrees */
-#define RLL  "RLL"
+#define RLL  "RLL"	//navigation.roll
 	/** Pitch degrees */
-#define PCH  "PCH"
+#define PCH  "PCH" //navigation.pitch
 	/** Yaw degrees*/
-#define YAW  "YAW"
+#define YAW  "YAW" //navigation.rateOfTurn
 	/** IMU Health?*/
 #define IMUH  "IMUH"
 	/** Mag X - roll*/
@@ -103,62 +103,62 @@
 	/** Mag Z - heading */
 #define MGZ  "MGZ"
 	/** Mag Heading */
-#define MGH  "MGH"
+#define MGH  "MGH" //navigation.headingMagnetic
 	/** Latitude*/
-#define LAT  "LAT"
+#define LAT  "LAT" //navigation.position.latitude
 	/** Longitude*/
-#define LON  "LON"
+#define LON  "LON" //navigation.position.longitude
 	/**Altitude */
-#define ALT  "ALT"
+#define ALT  "ALT" //navigation.position.altitude
 	/**CourseOverGround - true*/
-#define COG  "COG"
+#define COG  "COG" //navigation.courseOverGroundTrue
 	
 	/** Speed over ground */
-#define SOG  "SOG"
+#define SOG  "SOG" //navigation.speedOverGround
 	/** GPS fix true/false*/
-#define FIX  "FIX"
+#define FIX  "FIX" //environmental.fix
 	/** satellites*/
-#define SAT  "SAT"
+#define SAT  "SAT" //environmental.sat
 	/** Time of week*/
-#define TOW  "TOW"
+#define TOW  "TOW" //environmental.timeOfWeek
 	/**mag declination*/
-#define DECL  "DEC"
+#define DECL  "DEC" //navigation.declination
 	/**Wind speed apparent*/
-#define WSA  "WSA"
+#define WSA  "WSA" //environmental.wind.speedApparent
 	/**Wind speed true*/
-#define WST  "WST"
+#define WST  "WST" //environmental.wind.speedTrue
 	/**Wind dir apparent*/
-#define WDA  "WDA"
+#define WDA  "WDA" //environmental.wind.directionApparent
 	/**Wind dir true*/
-#define WDT  "WDT"
+#define WDT  "WDT" //environmental.wind.directionTrue
 	/**Wind speed units*/
 #define WSU  "WSU"
 /**Wind alarm speed (knots) */
-#define WSK  "WSK"
+#define WSK  "WSK" //environmental.wind.speedAlarm
 	/**Wind speed alarm state */
-#define WSX  "WSX"
+#define WSX  "WSX" //alarms.windAlarmState
 	
 	/** Autopilot state (on/off)*/
-#define APX  "APX" //0off, 1on
+#define APX  "APX" //0off, 1on steering.autopilot.state
 	/** Autopilot offset from source*/
-#define APT  "APT" //offset from source +/- deg
+#define APT  "APT" //offset from source +/- deg steering.autopilot.offset
 	/** Autopilot source*/
-#define APS  "APS" //W wind or C compass
+#define APS  "APS" //W wind or C compass steering.autopilot.headingSource
 	/** Autopilot current Heading*/
-#define APC  "APC" //0-360
-	/** Autopilot rudder angle*/
+#define APC  "APC" //0-360  steering.autopilot.currentHeading
+	/** Autopilot rudder angle*/ //steering.rudderAngle
 #define APR  "APR" // +/- deg, +ve is rudder to starboard, vessel turns to starboard
 	
 	/**Anchor alarm state*/
-#define AAX  "AAX"
+#define AAX  "AAX" //alarms.anchorAlarmState
 	/**Anchor alarm radius*/
-#define AAR  "AAR"
+#define AAR  "AAR" //alarms.anchorAlarmRadius
 	/**Anchor distance*/
-#define AAD  "AAD"
+#define AAD  "AAD" //alarms.anchorDistance
 	/**Anchor alarm Lat*/
-#define AAN  "AAN"
+#define AAN  "AAN" //alarms.anchorAlarmLat
 	/**Anchor alarm Lon*/
-#define AAE  "AAE"
+#define AAE  "AAE" //alarms.anchorAlarmLon
 
 //attached device types
 #define UID  "UID"
