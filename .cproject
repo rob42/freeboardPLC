@@ -24,35 +24,37 @@
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="it.baeyens.avreclipse.targetplatform.winavr.app.release.231503348" name="AVR Cross-Target" superClass="it.baeyens.avreclipse.targetplatform.winavr.app.release"/>
 							<builder buildPath="${workspace_loc:/second eclipse test/Release}" errorParsers="org.eclipse.cdt.core.MakeErrorParser" id="it.baeyens.avreclipse.target.builder.winavr.app.release.2080468417" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="it.baeyens.avreclipse.target.builder.winavr.app.release"/>
 							<tool command="avr-gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} -x c++ ${INPUTS}" errorParsers="org.eclipse.cdt.core.GASErrorParser" id="it.baeyens.avreclipse.tool.assembler.winavr.app.release.2056035817" name="AVR Assembler" superClass="it.baeyens.avreclipse.tool.assembler.winavr.app.release">
-								<option id="it.baeyens.avreclipse.assembler.option.debug.level.22469911" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.assembler.option.debug.level" value="it.baeyens.avreclipse.assembler.option.debug.level.g2" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.assembler.option.debug.level.22469911" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.assembler.option.debug.level" value="it.baeyens.avreclipse.assembler.option.debug.level.none" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.asm.option.include.paths.1193182990" name="#include paths for preprocessor(-I)" superClass="it.baeyens.avreclipse.asm.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_ATmega1280}&quot;"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include-fixed"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include"/>
 								</option>
-								<option id="it.baeyens.avreclipse.asm.option.include.gaspaths.1188914032" name=".include paths for assembler(-Wa,-I)" superClass="it.baeyens.avreclipse.asm.option.include.gaspaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_ATmega1280}&quot;"/>
-								</option>
+								<option id="it.baeyens.avreclipse.asm.option.include.gaspaths.1188914032" name=".include paths for assembler(-Wa,-I)" superClass="it.baeyens.avreclipse.asm.option.include.gaspaths"/>
 								<inputType id="it.baeyens.avreclipse.tool.assembler.input.237159600" superClass="it.baeyens.avreclipse.tool.assembler.input"/>
 							</tool>
 							<tool command="avr-gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} -x c++ ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="it.baeyens.avreclipse.tool.compiler.winavr.app.release.1677379678" name="AVR Compiler" superClass="it.baeyens.avreclipse.tool.compiler.winavr.app.release">
-								<option id="it.baeyens.avreclipse.compiler.option.debug.level.1349471076" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.compiler.option.debug.level" value="it.baeyens.avreclipse.compiler.option.debug.level.g2" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.compiler.option.debug.level.1349471076" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.compiler.option.debug.level" value="it.baeyens.avreclipse.compiler.option.debug.level.none" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.compiler.option.optimize.1229451333" name="Optimization Level" superClass="it.baeyens.avreclipse.compiler.option.optimize" value="it.baeyens.avreclipse.compiler.optimize.size" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.compiler.option.incpath.83382774" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.compiler.option.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_ATmega1280/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include-fixed"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include"/>
 								</option>
 								<option id="it.baeyens.avreclipse.compiler.option.def.1485111403" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.compiler.option.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__IN_ECLIPSE__=1"/>
 									<listOptionValue builtIn="false" value="ARDUINO=100"/>
 								</option>
-								<option id="it.baeyens.avreclipse.compiler.option.optimize.packstruct.566164028" name="Pack structs (-fpack-struct)" superClass="it.baeyens.avreclipse.compiler.option.optimize.packstruct" value="false" valueType="boolean"/>
-								<option id="it.baeyens.avreclipse.compiler.option.optimize.shortenums.651991132" name="Short enums (-fshort-enums)" superClass="it.baeyens.avreclipse.compiler.option.optimize.shortenums" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.packstruct.566164028" name="Pack structs (-fpack-struct)" superClass="it.baeyens.avreclipse.compiler.option.optimize.packstruct" value="true" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.shortenums.651991132" name="Short enums (-fshort-enums)" superClass="it.baeyens.avreclipse.compiler.option.optimize.shortenums" value="true" valueType="boolean"/>
 								<option id="it.baeyens.avreclipse.compiler.option.language.uchar.1812587876" name="char is unsigned (-funsigned-char)" superClass="it.baeyens.avreclipse.compiler.option.language.uchar" value="false" valueType="boolean"/>
 								<option id="it.baeyens.avreclipse.compiler.option.language.ubitfields.10704290" name="bitfields are unsigned (-funsigned-bitfields)" superClass="it.baeyens.avreclipse.compiler.option.language.ubitfields" value="false" valueType="boolean"/>
 								<option id="it.baeyens.avreclipse.compiler.option.std.683877028" name="Language Standard" superClass="it.baeyens.avreclipse.compiler.option.std" value="it.baeyens.avreclipse.compiler.option.std.default" valueType="enumerated"/>
-								<option id="it.baeyens.avreclipse.compiler.option.otherflags.138599099" name="Other flags" superClass="it.baeyens.avreclipse.compiler.option.otherflags" value="-g" valueType="string"/>
+								<option id="it.baeyens.avreclipse.compiler.option.otherflags.138599099" name="Other flags" superClass="it.baeyens.avreclipse.compiler.option.otherflags" value="-g -felide-constructors -std=c++0x" valueType="string"/>
 								<inputType id="it.baeyens.avreclipse.compiler.winavr.input.472891441" name="C Source Files" superClass="it.baeyens.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool command="avr-g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} -x c++ ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="it.baeyens.avreclipse.tool.cppcompiler.app.release.265767624" name="AVR C++ Compiler" superClass="it.baeyens.avreclipse.tool.cppcompiler.app.release">
-								<option id="it.baeyens.avreclipse.cppcompiler.option.debug.level.1244205041" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.cppcompiler.option.debug.level" value="it.baeyens.avreclipse.cppcompiler.option.debug.level.g2" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.debug.level.1244205041" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.cppcompiler.option.debug.level" value="it.baeyens.avreclipse.cppcompiler.option.debug.level.none" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.718166427" name="Optimization Level" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize" value="it.baeyens.avreclipse.cppcompiler.optimize.size" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.incpath.404803734" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.cppcompiler.option.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_ATmega1280/arduino}&quot;"/>
@@ -65,9 +67,11 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/EEPROM}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/NMEA}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/AltSoftSerial}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Kangaroo}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/JsonStream}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/MemoryFree}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Kangaroo}&quot;"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include-fixed"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include"/>
 								</option>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.def.479432623" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.cppcompiler.option.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__IN_ECLIPSE__=1"/>
@@ -78,7 +82,7 @@
 								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.shortenums.342320419" name="Short enums (-fshort-enums)" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize.shortenums" value="false" valueType="boolean"/>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.language.uchar.1159028291" name="char is unsigned (-funsigned-char)" superClass="it.baeyens.avreclipse.cppcompiler.option.language.uchar" value="false" valueType="boolean"/>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.language.ubitfields.1912413953" name="bitfields are unsigned (-funsigned-bitfields)" superClass="it.baeyens.avreclipse.cppcompiler.option.language.ubitfields" value="false" valueType="boolean"/>
-								<option id="it.baeyens.avreclipse.cppcompiler.option.otherflags.840937360" name="Other flags" superClass="it.baeyens.avreclipse.cppcompiler.option.otherflags" value="-g" valueType="string"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.otherflags.840937360" name="Other flags" superClass="it.baeyens.avreclipse.cppcompiler.option.otherflags" value="-g -felide-constructors -std=c++0x -MMD " valueType="string"/>
 								<inputType id="it.baeyens.avreclipse.cppcompiler.input.1732456011" superClass="it.baeyens.avreclipse.cppcompiler.input"/>
 							</tool>
 							<tool id="it.baeyens.avreclipse.tool.linker.winavr.app.release.1782124606" name="AVR C Linker" superClass="it.baeyens.avreclipse.tool.linker.winavr.app.release"/>
@@ -90,6 +94,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_ATmega1280}/Release&quot;"/>
 								</option>
 								<option id="it.baeyens.avreclipse.cpplinker.option.genmap.1519069921" name="Map Filename" superClass="it.baeyens.avreclipse.cpplinker.option.genmap" value="" valueType="string"/>
+								<option id="it.baeyens.avreclipse.cpplinker.option.nosyms.1481355970" name="Omit Symbols (-s)" superClass="it.baeyens.avreclipse.cpplinker.option.nosyms" value="true" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.cpplinker.option.nostart.2121604687" name="No startup or default libs (-nostdlib)" superClass="it.baeyens.avreclipse.cpplinker.option.nostart" value="false" valueType="boolean"/>
 								<inputType id="it.baeyens.avreclipse.tool.cpplinker.input.306845630" name="OBJ Files" superClass="it.baeyens.avreclipse.tool.cpplinker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -138,6 +144,8 @@
 								<option id="it.baeyens.avreclipse.assembler.option.debug.level.1375903999" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.assembler.option.debug.level" value="it.baeyens.avreclipse.assembler.option.debug.level.g2" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.asm.option.include.paths.1276229586" name="#include paths for preprocessor(-I)" superClass="it.baeyens.avreclipse.asm.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_ATmega2560}&quot;"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include-fixed"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include"/>
 								</option>
 								<option id="it.baeyens.avreclipse.asm.option.include.gaspaths.2121853666" name=".include paths for assembler(-Wa,-I)" superClass="it.baeyens.avreclipse.asm.option.include.gaspaths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_ATmega2560}&quot;"/>
@@ -149,6 +157,8 @@
 								<option id="it.baeyens.avreclipse.compiler.option.optimize.302058520" name="Optimization Level" superClass="it.baeyens.avreclipse.compiler.option.optimize" value="it.baeyens.avreclipse.compiler.optimize.size" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.compiler.option.incpath.897082429" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.compiler.option.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_ATmega2560/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include-fixed"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include"/>
 								</option>
 								<option id="it.baeyens.avreclipse.compiler.option.def.1786126598" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.compiler.option.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__IN_ECLIPSE__=1"/>
@@ -159,7 +169,7 @@
 								<option id="it.baeyens.avreclipse.compiler.option.language.uchar.1460702033" name="char is unsigned (-funsigned-char)" superClass="it.baeyens.avreclipse.compiler.option.language.uchar" value="false" valueType="boolean"/>
 								<option id="it.baeyens.avreclipse.compiler.option.language.ubitfields.2071402020" name="bitfields are unsigned (-funsigned-bitfields)" superClass="it.baeyens.avreclipse.compiler.option.language.ubitfields" value="false" valueType="boolean"/>
 								<option id="it.baeyens.avreclipse.compiler.option.std.820403153" name="Language Standard" superClass="it.baeyens.avreclipse.compiler.option.std" value="it.baeyens.avreclipse.compiler.option.std.default" valueType="enumerated"/>
-								<option id="it.baeyens.avreclipse.compiler.option.otherflags.998304111" name="Other flags" superClass="it.baeyens.avreclipse.compiler.option.otherflags" value="-g" valueType="string"/>
+								<option id="it.baeyens.avreclipse.compiler.option.otherflags.998304111" name="Other flags" superClass="it.baeyens.avreclipse.compiler.option.otherflags" value="-g -felide-constructors -std=c++0x" valueType="string"/>
 								<inputType id="it.baeyens.avreclipse.compiler.winavr.input.1515827252" name="C Source Files" superClass="it.baeyens.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool command="avr-g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} -x c++ ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="it.baeyens.avreclipse.tool.cppcompiler.app.release.1578834088" name="AVR C++ Compiler" superClass="it.baeyens.avreclipse.tool.cppcompiler.app.release">
@@ -167,6 +177,7 @@
 								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.1463496899" name="Optimization Level" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize" value="it.baeyens.avreclipse.cppcompiler.optimize.size" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.incpath.1402292746" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.cppcompiler.option.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_ATmega2560/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/MemoryFree}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SPI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/PString}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/AverageList}&quot;"/>
@@ -179,6 +190,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Kangaroo}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/JsonStream}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries}&quot;"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include-fixed"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/avr/4.7.2/include"/>
 								</option>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.def.139157572" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.cppcompiler.option.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__IN_ECLIPSE__=1"/>
@@ -189,7 +202,7 @@
 								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.shortenums.2017250670" name="Short enums (-fshort-enums)" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize.shortenums" value="false" valueType="boolean"/>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.language.uchar.132019903" name="char is unsigned (-funsigned-char)" superClass="it.baeyens.avreclipse.cppcompiler.option.language.uchar" value="false" valueType="boolean"/>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.language.ubitfields.644381370" name="bitfields are unsigned (-funsigned-bitfields)" superClass="it.baeyens.avreclipse.cppcompiler.option.language.ubitfields" value="false" valueType="boolean"/>
-								<option id="it.baeyens.avreclipse.cppcompiler.option.otherflags.759735013" name="Other flags" superClass="it.baeyens.avreclipse.cppcompiler.option.otherflags" value="-g" valueType="string"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.otherflags.759735013" name="Other flags" superClass="it.baeyens.avreclipse.cppcompiler.option.otherflags" value="-g -felide-constructors -std=c++0x -MMD " valueType="string"/>
 								<inputType id="it.baeyens.avreclipse.cppcompiler.input.1548128740" superClass="it.baeyens.avreclipse.cppcompiler.input"/>
 							</tool>
 							<tool id="it.baeyens.avreclipse.tool.linker.winavr.app.release.862087991" name="AVR C Linker" superClass="it.baeyens.avreclipse.tool.linker.winavr.app.release"/>
@@ -201,6 +214,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_ATmega2560}/Release&quot;"/>
 								</option>
 								<option id="it.baeyens.avreclipse.cpplinker.option.genmap.233581936" name="Map Filename" superClass="it.baeyens.avreclipse.cpplinker.option.genmap" value="" valueType="string"/>
+								<option id="it.baeyens.avreclipse.cpplinker.option.nosyms.444801589" name="Omit Symbols (-s)" superClass="it.baeyens.avreclipse.cpplinker.option.nosyms" value="true" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.cpplinker.option.nostart.2021780576" name="No startup or default libs (-nostdlib)" superClass="it.baeyens.avreclipse.cpplinker.option.nostart" value="false" valueType="boolean"/>
 								<inputType id="it.baeyens.avreclipse.tool.cpplinker.input.1246426533" name="OBJ Files" superClass="it.baeyens.avreclipse.tool.cpplinker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>

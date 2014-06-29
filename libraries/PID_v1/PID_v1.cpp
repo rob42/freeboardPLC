@@ -12,7 +12,7 @@
   #include "WProgram.h"
 #endif
 
-#include <PID_v1/PID_v1.h>
+#include <PID_v1.h>
 
 PID::PID(){};
 

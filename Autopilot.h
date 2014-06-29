@@ -73,7 +73,7 @@ private:
 	double autopilotRudderCommand; //Output
 	double lastRudderCommand;
 	bool	lastDirection; //last rudder movement direction
-	char inputAutopilotArray[50];
+	char inputAutopilotArray[10];
 	int inputSerialPos;
 	int inputAutopilotPos;
 

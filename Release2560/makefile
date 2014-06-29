@@ -13,6 +13,7 @@ RM := rm -rf
 -include libraries/PID_v1/subdir.mk
 -include libraries/NMEA/subdir.mk
 -include libraries/MultiSerial/subdir.mk
+-include libraries/MemoryFree/subdir.mk
 -include libraries/Kangaroo/subdir.mk
 -include libraries/JsonStream/subdir.mk
 -include libraries/FlexiTimer2/subdir.mk
@@ -77,7 +78,7 @@ dependents:
 FreeBoardPLC.elf: $(OBJS) $(USER_OBJS) /home/robert/gitrep/Arduino_Mega_ATmega2560/Release/libArduino_Mega_ATmega2560.a
 	@echo 'Building target: $@'
 	@echo 'Invoking: AVR C++ Linker'
-	avr-gcc -Os -Wl,--gc-sections  -L"/home/robert/gitrep/Arduino_Mega_ATmega2560/Release" -mmcu=atmega2560 -o"FreeBoardPLC.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lm
+	avr-gcc -Os -Wl,--gc-sections  -s -L"/home/robert/gitrep/Arduino_Mega_ATmega2560/Release" -mmcu=atmega2560 -o"FreeBoardPLC.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lm
 	@echo 'Finished building target: $@'
 	@echo ' '
 

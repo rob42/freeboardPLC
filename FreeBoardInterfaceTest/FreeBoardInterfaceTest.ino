@@ -94,10 +94,10 @@ void loop() {
       Serial2.print("test");
   
       delay(150);
-      Serial.println(Serial2.available());
+      //Serial.println(Serial2.available());
       while(Serial2.available()>0) {
           character = Serial2.read();
-          Serial.println(character);
+          //Serial.println(character);
           delay(50);
           content.concat(character);
       }

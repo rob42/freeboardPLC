@@ -28,7 +28,7 @@
 
 #include "Arduino.h"
 
-#include "PString.h"
+#include <PString.h>
 #include "Gps.h"
 #include "FreeBoardModel.h"
 

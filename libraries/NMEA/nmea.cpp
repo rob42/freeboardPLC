@@ -19,7 +19,7 @@
 */
 
 #include <Arduino.h>
-#include "NMEA/nmea.h"
+#include "nmea.h"
 
 #define _GPRMC_TERM   "$GPRMC,"		// GPRMC datatype identifier
 #define _LIB_VERSION	1						// software version of this library
@@ -47,7 +47,7 @@ NMEA::NMEA(int connect)
 	f_sentence[0] = 0;
 	f_terms = 0;
 	// allocate memory for individual terms of sentence
-  for (int t=0; t<30; t++) {
+  for (int t=0; t<20; t++) {
     _term[t] = (char*) malloc (15 * sizeof(char));
     f_term[t] = (char*) malloc (15 * sizeof(char));
     (f_term[t])[0] = 0;
@@ -60,8 +60,8 @@ NMEA::NMEA(int connect)
 //
 
 int NMEA::decode(char c) {
-  // avoid runaway sentences (>99 chars or >29 terms) and terms (>14 chars)
-  if ((n >= 100) || (_terms >= 30) || (_nt >= 15)) { _state = 0; }
+  // avoid runaway sentences (>99 chars or >20 terms) and terms (>14 chars)
+  if ((n >= 100) || (_terms >= 20) || (_nt >= 15)) { _state = 0; }
   // LF and CR always reset parser
   if ((c == 0x0A) || (c == 0x0D)) { _state = 0; }
   // '$' always starts a new sentence

@@ -31,9 +31,9 @@ typedef unsigned char byte;
 #include "Arduino.h"
 //add your includes for the project  here
 #include "FreeBoardConstants.h"
-#include "EEPROM.h"
+#include <EEPROM.h>
 #include <MultiSerial.h>
-#include "FlexiTimer2.h"
+#include <FlexiTimer2.h>
 #include "Alarm.h"
 #include "Seatalk.h"
 #include "Wind.h"
@@ -42,10 +42,9 @@ typedef unsigned char byte;
 #include "NmeaSerial.h"
 #include "Autopilot.h"
 #include <stream_json_reader.h>
-//#include "SPI.h"
-//#include "MultiSerial.h"
+#include <MemoryFree.h>
+#include "NmeaRelay.h"
 #include "FreeBoardModel.h"
-
 
 //end of add your includes here
 #ifdef __cplusplus
@@ -61,6 +60,7 @@ void setup();
 
 //add your function definitions for the project  here
 void check_mem();
+int freeRam();
 void readWDS();
 void readWDD();
 

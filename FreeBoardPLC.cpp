@@ -72,8 +72,6 @@ char input;
 //freeboard model
 FreeBoardModel model;
 
-// set up a new serial port for the lcd
-//Lcd lcd(&model,(uint8_t) rxPin, (uint8_t) txPin);
 
 //NMEA output - The arduino puts out TTL, NMEA is RS232. They are different V and amps. The +-5V levels may need inverting or you get
 // garbage.
@@ -83,10 +81,10 @@ NmeaSerial nmea(&model);
 
 //NMEA ports
 NMEA gpsSource(ALL);
-NMEA talker0(ALL);
-NMEA talker2(ALL);
-NMEA talker3(ALL);
-NMEA talker4(ALL);
+NMEARelay talker0(ALL);
+NMEARelay talker2(ALL);
+NMEARelay talker3(ALL);
+NMEARelay talker4(ALL);
 
 //alarm
 Alarm alarm(&model);
@@ -120,8 +118,10 @@ boolean inputSerial3Complete = false; // whether the string is complete
 boolean inputSerial4Complete = false; // whether the string is complete
 
 //json support
+//{"navigation":{ "position":{ "latitude":-43.5,"longitude":173.5}}}
 static const char* queries[] = { "navigation.position.latitude", "navigation.position.longitude"};
-StreamJsonReader jsonreader(queries, 2);
+StreamJsonReader jsonreader(&Serial, queries, 2);
+
 
 void setup() {
 	//model.saveConfig();
@@ -129,55 +129,55 @@ void setup() {
 
 	// initialize  serial ports:
 	Serial.begin(model.getSerialBaud(), SERIAL_8N1);
-	if (DEBUG) Serial.println("Initializing..");
+	if (DEBUG) Serial.println(F("Initializing.."));
 	
 	//start gps on serial1, autobaud
-	if (DEBUG) Serial.println("Start gps..");
+	//if (DEBUG) Serial.println(F("Start gps.."));
 	gps.setupGps();
 	if (DEBUG) {
-		Serial.print("Start GPS Rx - serial1 at ");
+		Serial.print(F("Start GPS Rx - serial1 at "));
 		Serial.println(model.getSerialBaud1());
 	}
 
 	Serial1.begin(model.getSerialBaud1());
 
 	if (model.getSeaTalk()) {
-		if (DEBUG) Serial.println("Start seatalk - serial2 at 4800");
+		if (DEBUG) Serial.println(F("Start seatalk - serial2 at 4800"));
 		Serial2.begin(4800, SERIAL_9N1); //Seatalk interface
 	} else {
 		if (DEBUG) {
-			Serial.print("Start nmea Rx - serial2 at ");
+			Serial.print(F("Start nmea Rx - serial2 at "));
 			Serial.println(model.getSerialBaud2());
 		}
 		Serial2.begin(model.getSerialBaud2(), SERIAL_8N1);
 	}
 
 	if (DEBUG) {
-		Serial.print("Start nmea Rx - serial3 at ");
+		Serial.print(F("Start nmea Rx - serial3 at "));
 		Serial.println(model.getSerialBaud3());
 	}
 	Serial3.begin(model.getSerialBaud3(), SERIAL_8N1); //talker2
 
-	if (DEBUG) Serial.println("Start SPI uarts..");
+	if (DEBUG) Serial.println(F("Start SPI uarts.."));
 		delay(1000);
 		pinMode(CS_PIN, OUTPUT);
-		Serial.println("CS_PIN set to OUTPUT");
+		Serial.println(F("CS_PIN set to OUTPUT"));
 		delay(100);
 		//Clear Chip Select
 		digitalWrite(CS_PIN,HIGH);
-		Serial.println("CS_PIN OUTPUT = HIGH");
+		Serial.println(F("CS_PIN OUTPUT = HIGH"));
 
 	if (DEBUG) {
-			Serial.print("Start nmea Rx - serial4 at ");
+			Serial.print(F("Start nmea Rx - serial4 at "));
 			Serial.println(model.getSerialBaud4());
 		}
 	mSerial1.begin(model.getSerialBaud4()); //talker3
 	delay(100);
-	if (DEBUG) Serial.println("Start nmea Tx..");
+	if (DEBUG) Serial.println(F("Start nmea Tx.."));
 		pinMode(nmeaRxPin, INPUT);
 		pinMode(nmeaTxPin, OUTPUT);
 		if (DEBUG) {
-			Serial.print("Start nmea Tx - on pins 46 Tx, 48 Rx at ");
+			Serial.print(F("Start nmea Tx - on pins 46 Tx, 48 Rx at "));
 			Serial.println(model.getSerialBaud5());
 		}
 	nmea.begin(model.getSerialBaud5());
@@ -185,7 +185,7 @@ void setup() {
 	autopilot.init();
 
 	//setup interrupts to windPins
-	if (DEBUG) Serial.println("Start wind..");
+	if (DEBUG) Serial.println(F("Start wind.."));
 	pinMode(windSpeedPin, INPUT);
 	//digitalWrite (windSpeedPin, HIGH) ;
 	attachInterrupt(windSpeedInterrupt, readWDS, RISING);
@@ -194,11 +194,15 @@ void setup() {
 	attachInterrupt(windDirInterrupt, readWDD, RISING);
 
 //	//setup timers
-	if (DEBUG) Serial.println("Start timer..");
+	if (DEBUG) Serial.println(F("Start timer.."));
 	FlexiTimer2::set(100, calculate); // 100ms period
 	FlexiTimer2::start();
 	
-	if (DEBUG) Serial.println("Setup complete..");
+	//Check memory
+	//check_mem() ;
+	// freeRam();
+
+	if (DEBUG) Serial.println(F("Setup complete.."));
 	//print out the config
 	//model.sendData(Serial, CONFIG_T);
 }
@@ -244,13 +248,14 @@ void serialEvent() {
 		if (inChar == '\n' || inChar == '\r' || inputSerialPos>98) {
 			//null to mark this array end
 			inputSerialArray[inputSerialPos]='\0';
-			process(inputSerialArray, ',');
+			//process(inputSerialArray, ',');
+			Serial.println(inputSerialArray);
 			inputSerialPos=0;
 			memset(inputSerialArray, 0, sizeof(inputSerialArray));
 			//and also dump out the json
-			Serial.print("jsonreader.results[0] = ");
+			Serial.print(F("jsonreader.results[0] = "));
 			Serial.println(jsonreader.results[0]);
-			Serial.print("jsonreader.results[1] = ");
+			Serial.print(F("jsonreader.results[1] = "));
 			Serial.println(jsonreader.results[1]);
 		}
 		//Serial.println(inputSerialArray);
@@ -264,8 +269,8 @@ void serialEvent1() {
 		inputSerial1Complete = gps.decode(Serial1.read());
 		// read from port 1 (GPS), send to port 0:
 		if (inputSerial1Complete) {
-			if (MUX) nmea.printNmea(gpsSource.sentence());
-			Serial.println(gpsSource.sentence());
+			//if (MUX) nmea.printNmea(gpsSource.sentence());
+			//Serial.println(gpsSource.sentence());
 			//loop every sentence
 			break;
 		}
@@ -333,7 +338,7 @@ void loop() {
 		}
 		if (interval % 5 == 0) {
 			//do every 500ms
-			//wind.calcWindSpeedAndDir();
+			wind.calcWindSpeedAndDir();
 			wind.calcWindData();
 			nmea.printWindNmea();
 			//fire any alarms
@@ -341,6 +346,8 @@ void loop() {
 			model.writeSimple(Serial);
 		}
 		if (interval % 10 == 0) {
+			//Serial.print("freeMemory()=");
+			//Serial.println(freeMemory());
 			//do every 1000ms
 			anchor.checkAnchor();
 			alarm.checkWindAlarm();
@@ -357,18 +364,34 @@ void loop() {
 //DEBUG
 //printf("Looping\n");
 
-	 //Check memory
-	 /*check_mem() ;
-	 String s= "Heap: ";
-	 s.reserve(20);
-	 s.concat((int)heapptr);
-	 s.concat(", stack: ");
-	 s.concat((int)stackptr);
-	 if(DEBUG)Serial.println(s);
-	 */
-
 }
 
+
+
+
+//free mem
+
+/*
+void check_mem() {
+  uint8_t * heapptr, *stackptr;
+  stackptr = (uint8_t *)malloc(4);          // use stackptr temporarily
+  heapptr = stackptr;                     // save value of heap pointer
+  free(stackptr);      // free up the memory again (sets stackptr to 0)
+  stackptr =  (uint8_t *)(SP);           // save value of stack pointer//
+  Serial.print("Heap: ");
+  		 Serial.print((int)heapptr);
+  		 Serial.print(", stack: ");
+  		 Serial.println((int)stackptr);
+}
+
+int freeRam () {
+  extern int __heap_start, *__brkval;
+  int v;
+  int fr = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+  Serial.print("Free ram: ");
+  Serial.println(fr);
+ return fr;
+}*/
 void process(char * s, char parser) {
 	//if (DEBUG) Serial.print("Process str:");
 	//if (DEBUG) Serial.println(s);

@@ -155,40 +155,40 @@ int FreeBoardModel::writeSimple(HardwareSerial ser) {
 	//ArduIMU output format
 	//!!VER:1.9,RLL:-0.52,PCH:0.06,YAW:80.24,IMUH:253,MGX:44,MGY:-254,MGZ:-257,MGH:80.11,LAT:-412937350,LON:1732472000,ALT:14,COG:116,SOG:0,FIX:1,SAT:5,TOW:22504700,
 
-	ser.print("!!VER:1.9,");
-	ser.print("UID:MEGA,APX:");
+	ser.print(F("!!VER:1.9,"));
+	ser.print(F("UID:MEGA,APX:"));
 	ser.print(autopilotState.autopilotOn);
-	ser.print(",APS:");
+	ser.print(F(",APS:"));
 	ser.print(autopilotState.autopilotReference);
 	//if autopilot on, send autopilot data
 	if (autopilotState.autopilotOn) {
-		ser.print(",APT:");
+		ser.print(F(",APT:"));
 		ser.print(getAutopilotTargetHeading());
-		ser.print(",APC:");
+		ser.print(F(",APC:"));
 		ser.print(getAutopilotCurrentHeading());
-		ser.print(",APR:");
+		ser.print(F(",APR:"));
 		ser.print(autopilotState.autopilotRudderCommand - 33.0); // 0-66 in model
 	}
 	//if anchor alarm on, send data
-	ser.print(",AAX:");
+	ser.print(F(",AAX:"));
 	ser.print(config.anchorAlarmOn);
-	ser.print(",AAR:");
+	ser.print(F(",AAR:"));
 	ser.print(config.anchorRadius);
 	if (config.anchorAlarmOn) {
-		ser.print(",AAN:");
+		ser.print(F(",AAN:"));
 		ser.print(config.anchorLat);
-		ser.print(",AAE:");
+		ser.print(F(",AAE:"));
 		ser.print(config.anchorLon);
-		ser.print(",AAD:");
+		ser.print(F(",AAD:"));
 		ser.print(getAnchorDistance());
 	}
 	//if wind alarm on, send data
-	ser.print(",WSX:");
+	ser.print(F(",WSX:"));
 	ser.print(config.windAlarmOn);
-	ser.print(",WSK:");
+	ser.print(F(",WSK:"));
 	ser.print(config.windAlarmSpeed);
 
-	ser.println(",");
+	ser.println(F(","));
 	return 0;
 }
 /*
@@ -198,40 +198,40 @@ int FreeBoardModel::writeConfig(HardwareSerial ser) {
 	//ArduIMU output format
 	//!!VER:1.9,RLL:-0.52,PCH:0.06,YAW:80.24,IMUH:253,MGX:44,MGY:-254,MGZ:-257,MGH:80.11,LAT:-412937350,LON:1732472000,ALT:14,COG:116,SOG:0,FIX:1,SAT:5,TOW:22504700,
 
-	ser.print("!!VER:1.9,");
-	ser.print("UID:MEGA,APX:");
+	ser.print(F("!!VER:1.9,"));
+	ser.print(F("UID:MEGA,APX:"));
 
-	ser.print(",WZJ:");
+	ser.print(F(",WZJ:"));
 	ser.print(getWindZeroOffset());
-	ser.print(",GPS:");
+	ser.print(F(",GPS:"));
 	ser.print(getGpsModel());
-	ser.print(",SB0:");
+	ser.print(F(",SB0:"));
 	ser.print(getSerialBaud());
-	ser.print(",SB1:");
+	ser.print(F(",SB1:"));
 	ser.print(getSerialBaud1());
-	ser.print(",SB2:");
+	ser.print(F(",SB2:"));
 	ser.print(getSerialBaud2());
-	ser.print(",SB3:");
+	ser.print(F(",SB3:"));
 	ser.print(getSerialBaud3());
-	ser.print(",STK:");
+	ser.print(F(",STK:"));
 	ser.print(getSeaTalk());
 
-	ser.print(",LU1:");
+	ser.print(F(",LU1:"));
 	ser.print(getLvl1UpperLimit());
-	ser.print(",LL1:");
+	ser.print(F(",LL1:"));
 	ser.print(getLvl1LowerLimit());
 
-	ser.print(",LU2:");
+	ser.print(F(",LU2:"));
 	ser.print(getLvl2UpperLimit());
-	ser.print(",LL2:");
+	ser.print(F(",LL2:"));
 	ser.print(getLvl2LowerLimit());
 
-	ser.print(",LU3:");
+	ser.print(F(",LU3:"));
 	ser.print(getLvl3UpperLimit());
-	ser.print(",LL3:");
+	ser.print(F(",LL3:"));
 	ser.print(getLvl3LowerLimit());
 
-	ser.println(",");
+	ser.println(F(","));
 	return 0;
 }
 int FreeBoardModel::sendData(HardwareSerial ser, char name) {
@@ -257,9 +257,9 @@ template<class T> int readObject(HardwareSerial ser, T& value, char name) {
 	}
 	//TODO: make sure this actually works
 	if (ser.read() == checksum) {
-		Serial.print("Checksum valid");
+		Serial.print(F("Checksum valid"));
 	} else {
-		Serial.print("Checksum invalid");
+		Serial.print(F("Checksum invalid"));
 	}
 
 	return i;

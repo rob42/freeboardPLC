@@ -64,11 +64,11 @@ void NmeaSerial::printWindNmea() {
 	//Assemble a sentence of the various parts so that we can calculate the proper checksum
 
 	PString str(windSentence, sizeof(windSentence));
-	str.print("$WIMWV,");
+	str.print(F("$WIMWV,"));
 	str.print(model->getWindApparentDir());
-	str.print(".0,R,");
+	str.print(F(".0,R,"));
 	str.print(model->getWindAverage());
-	str.print(",N,A*");
+	str.print(F(",N,A*"));
 	//calculate the checksum
 
 	cs = getChecksum(windSentence); //clear any old checksum
@@ -94,10 +94,10 @@ void NmeaSerial::printTrueHeading() {
 	if(model->getDeclination()==0.0)return;
 
 	PString str(trueHeadingSentence, sizeof(trueHeadingSentence));
-	str.print("$HCHDT,");
+	str.print(F("$HCHDT,"));
 	float trueHeading = model->getMagneticHeading()-model->getDeclination();
 	str.print(trueHeading);
-	str.print(",T*");
+	str.print(F(",T*"));
 	//calculate the checksum
 
 	cs = 0; //clear any old checksum

@@ -66,26 +66,27 @@ const unsigned long MILLIS_DEBOUNCE = 15ul;
 const unsigned long MICROS_DEBOUNCE = 15000ul;
 volatile unsigned long lastSpeedPulse, lastDirPulse = 0ul;
 
-long windSpeedRps = 0ul;
 volatile unsigned long windSpeedMicros, windSpeedMicrosLast, wsTempLastX, wsTempX = 0ul;
 volatile unsigned long windDirMicros, windDirMicrosLast = 0ul;
 
-unsigned long windSpeedDur, windDirDur, windDirChg = 0ul;
-
-unsigned long wsTempLast, wsTemp, wdTemp = 0ul;
+unsigned long windSpeedDur = 0ul;
 
 volatile bool windSpeedFlag;
 
 typedef volatile unsigned long val;
 const byte MAX_NUMBER_OF_READINGS = 5;
 val dirStorage[MAX_NUMBER_OF_READINGS] = { 0 };
-const unsigned int isinTable16[] = { 0, 1144, 2287, 3430, 4571, 5712, 6850, 7987, 9121, 10252, 11380, 12505, 13625, 14742, 15854, 16962, 18064, 19161, 20251,
+
+const unsigned int isinTable16[] = { 0, 1144, 2287, 3430, 4571, 5712, 6850, 7987,
+		9121, 10252, 11380, 12505, 13625, 14742, 15854, 16962, 18064, 19161, 20251,
 		21336, 22414, 23486, 24550, 25607, 26655, 27696, 28729, 29752, 30767, 31772, 32768,
 
-		33753, 34728, 35693, 36647, 37589, 38521, 39440, 40347, 41243, 42125, 42995, 43851, 44695, 45524, 46340, 47142, 47929, 48702, 49460, 50203, 50930,
+		33753, 34728, 35693, 36647, 37589, 38521, 39440, 40347, 41243, 42125, 42995,
+		43851, 44695, 45524, 46340, 47142, 47929, 48702, 49460, 50203, 50930,
 		51642, 52339, 53019, 53683, 54331, 54962, 55577, 56174, 56755,
 
-		57318, 57864, 58392, 58902, 59395, 59869, 60325, 60763, 61182, 61583, 61965, 62327, 62671, 62996, 63302, 63588, 63855, 64103, 64331, 64539, 64728,
+		57318, 57864, 58392, 58902, 59395, 59869, 60325, 60763, 61182, 61583,
+		61965, 62327, 62671, 62996, 63302, 63588, 63855, 64103, 64331, 64539, 64728,
 		64897, 65047, 65176, 65286, 65375, 65445, 65495, 65525, 65535, };
 
 AverageList<val> dirList = AverageList<val>(dirStorage, MAX_NUMBER_OF_READINGS);
@@ -95,7 +96,7 @@ Wind::Wind(FreeBoardModel* model) {
 	//initialise the wind interrupt
 	windSpeedMicros = micros();
 	windSpeedMicrosLast = windSpeedMicros;
-	windDirDur = 0;
+	//windDirDur = 0;
 	windSpeedDur = 0;
 	windSpeedFlag = true;
 	dirList.reset();
@@ -230,12 +231,12 @@ void Wind::calcWindSpeedAndDir() {
 //grab data
 // an interrupt could fire in here
 	noInterrupts();
-	wsTempLast = wsTempLastX;
-	wsTemp = wsTempX;
-	wdTemp = windDirMicrosLast;
+	unsigned long wsTempLast = wsTempLastX;
+	unsigned long wsTemp = wsTempX;
+	unsigned long wdTemp = windDirMicrosLast;
 	interrupts();
 
-	Serial.print("DEBUG:wsl=");
+	/*Serial.print("DEBUG:wsl=");
 	Serial.print(wsTempLastX);
 	Serial.print(",wd=");
 	Serial.print(wsTempX);
@@ -243,6 +244,7 @@ void Wind::calcWindSpeedAndDir() {
 	Serial.print(windDirMicrosLast);
 	Serial.print(",lastSpeedPulse=");
 	Serial.println(lastSpeedPulse);
+	*/
 
 //micros resets every 50 min,
 // avoid 0, bad data, rollover and too fast (bounce? <25ms)
@@ -272,7 +274,7 @@ void Wind::calcWindSpeedAndDir() {
 
 		//convert to degrees, this is deg clockwise from arbitrary 'north'
 
-		windDirDur = (wdTemp * 360ul) / windSpeedDur;
+		unsigned long windDirDur = (wdTemp * 360ul) / windSpeedDur;
 		//Serial.print(", wdAvg=");
 		//Serial.println(wdAvg);
 		//correct the dir to clockwise
@@ -311,7 +313,7 @@ void Wind::calcWindData() {
 		if (windSpeedDur > 0) {
 			// arduino long = -2,147,483,648 to 2,147,483,647
 			//1000 millis = 1 rps - this is 1000 x rps (for int arithmetic) range 333 - 33333
-			windSpeedRps = 100000000 / windSpeedDur;
+			long windSpeedRps = 100000000 / windSpeedDur;
 			//NOTE:converted multipliers to KNTS
 			//need to avoid div/0 errors
 			if (windSpeedRps < 323) {

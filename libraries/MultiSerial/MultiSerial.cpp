@@ -64,7 +64,7 @@ void MultiSerial::begin(unsigned long baud) {
 // Returns: nothing
 void MultiSerial::begin(unsigned long baud, unsigned long crystalHz) {
 
-	Serial.println("MultiSerial::begin");
+	Serial.println(F("MultiSerial::begin"));
 
 	SPI.begin();
 	//delay(100);
@@ -84,7 +84,7 @@ void MultiSerial::begin(unsigned long baud, unsigned long crystalHz) {
 	  SPI.setDataMode(SPI_MODE0);
 	  //delay(10);
 	  //Serial.println("SPI mode done");
-	  Serial.println("SPI started");
+	  Serial.println(F("SPI started"));
 	  //delay(10);
 
   // if this is the first time the shield is used, reset the UART so
@@ -93,8 +93,9 @@ void MultiSerial::begin(unsigned long baud, unsigned long crystalHz) {
   if(needsReset==1) {
   	msWriteRegister(IOControl, 0x8);
   	needsReset=0;
+  	Serial.println(F("SPI UART reset"));
   }
-  Serial.println("SPI UART reset");
+
   delay(100);
 
   // switch to the special register bank
@@ -116,6 +117,7 @@ void MultiSerial::begin(unsigned long baud, unsigned long crystalHz) {
 
   // enable the TX/RX fifos
   msWriteRegister(FCR, 7);
+  Serial.println(F("SPI init complete"));
 }
 
 // Description: Transmit a byte of data out the serial port.

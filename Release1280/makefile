@@ -13,6 +13,7 @@ RM := rm -rf
 -include libraries/PID_v1/subdir.mk
 -include libraries/NMEA/subdir.mk
 -include libraries/MultiSerial/subdir.mk
+-include libraries/MemoryFree/subdir.mk
 -include libraries/Kangaroo/subdir.mk
 -include libraries/JsonStream/subdir.mk
 -include libraries/FlexiTimer2/subdir.mk
@@ -74,7 +75,7 @@ all: FreeBoardPLC.elf secondary-outputs
 FreeBoardPLC.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: AVR C++ Linker'
-	avr-gcc -Os -Wl,--gc-sections  -L"/home/robert/gitrep/Arduino_Mega_ATmega1280/Release" -mmcu=atmega1280 -o"FreeBoardPLC.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lm
+	avr-gcc -Os -Wl,--gc-sections  -s -L"/home/robert/gitrep/Arduino_Mega_ATmega1280/Release" -mmcu=atmega1280 -o"FreeBoardPLC.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lm
 	@echo 'Finished building target: $@'
 	@echo ' '
 

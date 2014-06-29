@@ -37,6 +37,7 @@ libraries/PString \
 libraries/PID_v1 \
 libraries/NMEA \
 libraries/MultiSerial \
+libraries/MemoryFree \
 libraries/Kangaroo \
 libraries/JsonStream \
 libraries/FlexiTimer2 \

@@ -58,9 +58,9 @@ bool Gps::testMsg() {
 	}
 	if (DEBUG) {
 		if (valid)
-			Serial.println("OK");
+			Serial.println(F("OK"));
 		else
-			Serial.println("FAIL");
+			Serial.println(F("FAIL"));
 	}
 	return (valid && nmea);
 }
@@ -79,7 +79,7 @@ long Gps::detectRate(int rcvPin)  // function to return valid received baud rate
       rate = x < rate ? x : rate;
   }
   if(DEBUG){
-	  Serial.print("  detected pulse rate = ");
+	  Serial.print(F("  detected pulse rate = "));
 	  Serial.println(rate);
   }
 /*
@@ -127,20 +127,20 @@ long Gps::autoBaud() {
 	//try the various baud rates until one makes sense
 	//should only output simple NMEA [$A-Z0-9*\r\c]
 	//start with saved default
-	Serial.print("   try autobaud .. ");
+	Serial.print(F("   try autobaud .. "));
 	long baud = detectRate(GPS_RX_PIN);
 
 	if(baud>0){
-		Serial.print("OK at ");
+		Serial.print(F("OK at "));
 		Serial.println(baud);
 		Serial1.begin(baud);
 		return baud;
 	}else{
-		Serial.print("FAILED");
+		Serial.print(F("FAILED"));
 	}
 
 
-	if (DEBUG) Serial.println("   default to 4800..");
+	if (DEBUG) Serial.println(F("   default to 4800.."));
 	Serial1.begin(4800);
 	return 4800;
 }
@@ -240,14 +240,14 @@ PString Gps::getLatString(float lat, int decimals, int padding, PString str) {
 
 	str.begin();
 	if (lat >= 0.0) {
-		str.print("N");
+		str.print(F("N"));
 		str.print(lat, 4);
-		str.print("    ");
+		str.print(F("    "));
 	} else {
-		str.print("S");
+		str.print(F("S"));
 		float plusLat = 0 - lat;
 		str.print(plusLat, 4);
-		str.print("    ");
+		str.print(F("    "));
 	}
 	//float absLat = abs(lat);
 	//char * rslt = padFloat(absLat,decimals,padding);
@@ -259,14 +259,14 @@ PString Gps::getLonString(float lon, int decimals, int padding, PString str) {
 
 	str.begin();
 	if (lon >= 0) {
-		str.print("E");
+		str.print(F("E"));
 		str.print(lon, 4);
-		str.print("    ");
+		str.print(F("    "));
 	} else {
-		str.print("W");
+		str.print(F("W"));
 		float plusLon = 0 - lon;
 		str.print(plusLon, 4);
-		str.print("    ");
+		str.print(F("    "));
 	}
 	// float absLon = abs(lon);
 	//char * rslt = padFloat(absLon,decimals,padding);
@@ -280,31 +280,31 @@ PString Gps::getLonString(float lon, int decimals, int padding, PString str) {
  */
 void Gps::setupGpsImpl(){
 	//setup based on GPS type - probably wants a more modular way if many GPS types appear
-	Serial.println("Setting GPS config..." );
+	Serial.println(F("Setting GPS config..." ));
 	if(GPS_GENERIC == model->getGpsModel()){
-			Serial.println("Setting GPS to GENERIC" );
+			Serial.println(F("Setting GPS to GENERIC" ));
 	}
 	if(GPS_EM_406A == model->getGpsModel()){
-		Serial.println("Setting GPS to EM_406A" );
+		Serial.println(F("Setting GPS to EM_406A" ));
 		//Serial1.begin(38400, 8, 1, 0); //gps
 		//set debug on
-		Serial1.println("$PSRF105,1*3E");
+		Serial1.println(F("$PSRF105,1*3E"));
 
 		//set VTG off -  Vector track an Speed over the Ground
-		Serial1.println("$PSRF103,05,00,00,01*21");
+		Serial1.println(F("$PSRF103,05,00,00,01*21"));
 		//set GLL off -  Lat/Lon data
-		Serial1.println("$PSRF103,01,00,00,01*25");
+		Serial1.println(F("$PSRF103,01,00,00,01*25"));
 		//set GGA on, 5sec, constant -  Fix information
-		Serial1.println("$PSRF103,00,00,05,01*21");
+		Serial1.println(F("$PSRF103,00,00,05,01*21"));
 		//set GSA on, 5 sec, constant - Overall Satellite data
-		Serial1.println("$PSRF103,02,00,05,01*23");
+		Serial1.println(F("$PSRF103,02,00,05,01*23"));
 		//set GSV on, 20sec, constant -Detailed Satellite data
-		Serial1.println("$PSRF103,03,00,20,01*25");
+		Serial1.println(F("$PSRF103,03,00,20,01*25"));
 		//set RMC on, 1sec, constant, Recommended minimum info
-		Serial1.println("$PSRF103,04,00,01,01*21");
+		Serial1.println(F("$PSRF103,04,00,01,01*21"));
 
 		//debug off
-		Serial1.println("$PSRF105,0*3F");
+		Serial1.println(F("$PSRF105,0*3F"));
 
 		//set baud faster ?
 		//GPS SIRF configuration strings...
@@ -317,9 +317,9 @@ void Gps::setupGpsImpl(){
 		//$PSRF100,1,38400,8,1,0*3D\r\n
 		char gpsSentence [30];
 		PString str(gpsSentence, sizeof(gpsSentence));
-		str.print("$PSRF100,1,");
+		str.print(F("$PSRF100,1,"));
 		str.print(model->getSerialBaud1());
-		str.print(",8,1,0*");
+		str.print(F(",8,1,0*"));
 		//calculate the checksum
 		byte cs = getChecksum(gpsSentence); //clear any old checksum
 		//bug - arduino prints 0x007 as 7, 0x02B as 2B, so we add it now
@@ -330,11 +330,11 @@ void Gps::setupGpsImpl(){
 		Serial.println(gpsSentence);
 	}
 	if(GPS_MTEK_3329 == model->getGpsModel()){
-		Serial.println("Setting GPS to MTEK_3329" );
+		Serial.println(F("Setting GPS to MTEK_3329") );
 		//setting update rate to 1Hz
-		Serial1.println("$PMTK220,1000*1F");
+		Serial1.println(F("$PMTK220,1000*1F"));
 		//setting the NMEA Output to get RMC, GGA, GSA & GSV.
-		Serial1.println("$PMTK314,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28");
+		Serial1.println(F("$PMTK314,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28"));
 
 		/*
 		  -Change unit refresh rate:
@@ -352,7 +352,7 @@ void Gps::setupGpsImpl(){
 
 		char gpsSentence [30];
 		PString str(gpsSentence, sizeof(gpsSentence));
-		str.print("$PMTK251,");
+		str.print(F("$PMTK251,"));
 		str.print(model->getSerialBaud1());
 		str.print("*");
 		//calculate the checksum

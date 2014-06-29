@@ -27,8 +27,8 @@
 #define NMEASERIAL_H_
 
 #include "Arduino.h"
-#include "PString.h"
-#include "AltSoftSerial.h"
+#include <PString.h>
+#include <AltSoftSerial.h>
 #include "FreeBoardConstants.h"
 #include "FreeBoardModel.h"
 #include "FreeBoardPLC.h"

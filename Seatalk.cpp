@@ -125,13 +125,13 @@ void Seatalk::radarCommand(byte * seatalkStream) {
 			&& seatalkStream[4] == 0x00) {
 		if (seatalkStream[5] == 0xD3) {
 			if (DEBUG)
-				Serial.println("  Radar Guard Zone Alarm ON");
+				Serial.println(F("  Radar Guard Zone Alarm ON"));
 			model->setAlarmSnooze(0);
 			model->setRadarAlarmTriggered(true);
 		}
 		if (seatalkStream[5] == 0xC3) {
 			if (DEBUG)
-				Serial.println("  Radar Guard Zone Alarm OFF");
+				Serial.println(F("  Radar Guard Zone Alarm OFF"));
 			model->setRadarAlarmTriggered(false);
 		}
 
@@ -157,14 +157,14 @@ void Seatalk::processSeatalk(byte * seatalkStream) {
 				&& seatalkStream[6] == 0x00 && seatalkStream[7] == 0x00
 				&& seatalkStream[8] == 0x00 && seatalkStream[9] == 0x00) {
 			if (DEBUG)
-				Serial.println("  MOB Alarm ON");
+				Serial.println(F("  MOB Alarm ON"));
 			model->setMobAlarmTriggered(true);
 		}
 		break;
 	case 0x36:
 		if (seatalkStream[1] == 0x00 && seatalkStream[2] == 0x01) {
 			if (DEBUG)
-				Serial.println("  Cancel MOB Alarm");
+				Serial.println(F("  Cancel MOB Alarm"));
 			model->setMobAlarmTriggered(false);
 		}
 		break;

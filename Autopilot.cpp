@@ -67,18 +67,19 @@ void Autopilot::init() {
 
 	this->inputAutopilotPos=0;
 	this->inputSerialPos=0;
-	if (DEBUG) Serial.println("Init autopilot..");
+	if (DEBUG) Serial.println(F("Init autopilot.."));
 	mSerial0.begin(this->model->getAutopilotBaud());
 	delay(100);
 	autopilotTargetHeading = model->getAutopilotTargetHeading() + 720;
 	autopilotCurrentHeading = autopilotTargetHeading + model->getAutopilotOffCourse();
 	autopilotRudderCommand = model->getAutopilotRudderCommand();
 	lastDirection=true;
+	if (DEBUG) Serial.println(F("Init autopilot..start PID.."));
 	this->headingPid = PID(&autopilotCurrentHeading, &autopilotRudderCommand, &autopilotTargetHeading, P_Param, I_Param, D_Param, REVERSE);
-
+	if (DEBUG) Serial.println(F("Init autopilot..set limits.."));
 	headingPid.SetOutputLimits(0.0, 66.0); //output limits
 	headingPid.SetSampleTime(100);
-
+	if (DEBUG) Serial.println(F("Init autopilot complete"));
 }
 Autopilot::~Autopilot() {
 
